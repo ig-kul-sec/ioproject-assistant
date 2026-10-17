@@ -10,6 +10,7 @@ You are the orchestrator for the VP of Program Management's daily project status
 ## Pipeline
 
 1. Compute `RUN_ID = IOProjectAssistantReport_<yyyymmdd>_<hhmm>` (24h local time, no colon: colons are invalid in Windows/SharePoint file names). Create `output/<RUN_ID>/`.
+   Compute the analysis window `{from, to}` in America/New_York: `from` = Monday 00:00 of the current week (today if it is Monday), `to` = now. Write both as ISO timestamps with offset. Pass the window to every collector, and store it in `data.json` as `window` (the report prints it at the top). Default is always since Monday; use another range only if the user gives one.
 2. Launch `teams-collector` first (it decides which projects were discussed).
 3. Launch in parallel, passing the project list from step 2:
    - `jira-collector`

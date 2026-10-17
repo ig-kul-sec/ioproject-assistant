@@ -49,6 +49,7 @@ header.top{{background:var(--forest);color:var(--off-white);padding:32px 0 36px}
 header.top img{{display:block;width:160px;height:auto;margin-bottom:28px}}
 header.top h1{{color:var(--off-white);font-size:38px}}
 header.top p{{margin:.5rem 0 0;color:var(--spearmint)}}
+header.top p.range{{color:var(--off-white);font-weight:600;font-size:17px}}
 .wrap{{max-width:1080px;margin:0 auto;padding:0 24px}}
 main.wrap{{padding-top:32px;padding-bottom:48px}}
 h2{{font-size:26px;margin:2.5rem 0 1rem}}
@@ -73,10 +74,12 @@ def head(title: str, extra_css: str = "", fonts: bool = True) -> str:
     )
 
 
-def banner(title: str, subtitle: str) -> str:
+def banner(title: str, subtitle: str, range_line: str = "") -> str:
     logo = _data_uri("sectigo-logo-light.png", "image/png")  # wordmark for the Forest band
     img = f"<img src='{logo}' alt='Sectigo'>" if logo else ""
     return (
         f"<header class='top'><div class='wrap'>{img}<h1>{escape(title)}</h1>"
-        f"<p>{escape(subtitle)}</p></div></header>"
+        f"<p>{escape(subtitle)}</p>"
+        + (f"<p class='range'>{escape(range_line)}</p>" if range_line else "")
+        + "</div></header>"
     )

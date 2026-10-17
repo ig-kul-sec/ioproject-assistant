@@ -3,7 +3,8 @@ from __future__ import annotations
 
 import json
 import re
-from datetime import date
+from datetime import date, datetime
+from zoneinfo import ZoneInfo
 from html import escape
 from pathlib import Path
 
@@ -241,6 +242,20 @@ details{margin:.5rem 0}summary{cursor:pointer;color:var(--forest);font-weight:60
 """
 
 
+REPORT_TZ = "America/New_York"
+
+
+def _range(window) -> str:
+    """'Analysis range: from yyyy.mm.dd till yyyy.mm.dd hh:mm EST (24h)'; the zone label is EST or EDT as in force."""
+    try:
+        tz = ZoneInfo(REPORT_TZ)
+        start = datetime.fromisoformat(str(window["from"]).replace("Z", "+00:00")).astimezone(tz)
+        end = datetime.fromisoformat(str(window["to"]).replace("Z", "+00:00")).astimezone(tz)
+    except (TypeError, KeyError, ValueError):
+        return f"Analysis range: {NA}"
+    return f"Analysis range: from {start:%Y.%m.%d} till {end:%Y.%m.%d %H:%M} {end.tzname()} (24h)"
+
+
 def _footer() -> str:
     return (
         "<footer><p><b>IO Project Assistant</b> &nbsp;|&nbsp; "
@@ -284,7 +299,8 @@ def render(data: dict, title: str) -> str:
     return (
         brand.head(title, EXTRA_CSS)
         + "<body>"
-        + brand.banner("I&O project status report", f"{title}  |  Generated {data.get('generated_at') or NA}")
+        + brand.banner("I&O project status report", f"{title}  |  Generated {data.get('generated_at') or NA}",
+                       _range(data.get("window")))
         + "<main class='wrap'>"
         f"<h2>Summary</h2><div class='kpis'>{kpis}</div>"
         "<h2>Projects at a glance</h2>"

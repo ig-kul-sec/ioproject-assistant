@@ -65,3 +65,9 @@ def test_per_project_view(tmp_path):
     assert html.index("IOSP-471</a>") < html.index("IOSP-1</a>")  # active before done
     assert "Add backup VLAN IPs" in html and "Move start to 10/18" in html
     assert "Version: " in html and "github.com/ig-kul-sec/ioproject-assistant" in html
+
+
+def test_analysis_range_header():
+    out = report._range({"from": "2026-10-12T00:00:00-04:00", "to": "2026-10-17T19:07:00Z"})
+    assert out == "Analysis range: from 2026.10.12 till 2026.10.17 15:07 EDT (24h)"
+    assert report._range(None) == "Analysis range: n/a"

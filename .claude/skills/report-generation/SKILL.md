@@ -10,6 +10,7 @@ description: Merged-data schema and rendering of the clickable HTML status repor
 ```json
 {
   "generated_at": "ISO",
+  "window": {"from": "ISO with offset", "to": "ISO with offset"},
   "sprint": {"name": "", "start": "", "end": "", "tickets": [{"key": "", "url": "", "status": "", "assignee": "", "due": ""}]},
   "projects": [{
     "name": "", "status": "On track | At risk | Off track", "notes": [], "progress": "", "timeline": "", "dates": {"start": "", "end": ""},
@@ -19,6 +20,8 @@ description: Merged-data schema and rendering of the clickable HTML status repor
   "gaps": []
 }
 ```
+
+`window` is the analysis range, printed at the top as `from yyyy.mm.dd till yyyy.mm.dd hh:mm EST/EDT (24h)` (24-hour clock, America/New_York).
 
 Per-project fields used by the per-project view (all optional; `jira_base_url` defaults to https://projects.sectigo.net/browse/):
 

@@ -14,7 +14,7 @@ Spaces:
 
 For each discussed project (by key from the Teams collector, otherwise by epic/name search):
 1. Epic + child tickets: key, summary, status, assignee, start date, due/end date, URL.
-2. Changes and comments with `updated >= -24h` (author, time, short text).
+2. Changes and comments with `updated >= <window.from>` (the analysis window passed by the orchestrator; default since Monday 00:00 America/New_York) (author, time, short text).
 3. Active IOSP sprint: name, start, end, duration in days, tickets as above.
 
 **Always-included epics** (reviewed every run, in addition to whatever the Teams collector reports; never replace the discussed-project list):
@@ -30,7 +30,7 @@ Use read-only REST calls (`/rest/api/2/search`, `/rest/agile/1.0/board/{id}/spri
 {
   "sprint": {"name": "", "start": "YYYY-MM-DD", "end": "YYYY-MM-DD", "tickets": [
     {"key": "", "url": "", "summary": "", "status": "", "assignee": "", "due": null}]},
-  "projects": [{"name": "", "changes_24h": [{"key": "", "who": "", "when": "", "text": ""}],
+  "projects": [{"name": "", "changes": [{"key": "", "who": "", "when": "", "text": ""}],
     "tickets": [{"key": "", "url": "", "name": "", "status": "", "assignee": "", "start": null, "end": null,
                  "epic": false, "related": [{"key": "", "url": ""}]}]}],
   "gaps": []

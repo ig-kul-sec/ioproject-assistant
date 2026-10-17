@@ -1,0 +1,131 @@
+{
+  "run_id": "IOProjectAssistantReport_20261017_1714",
+  "window": {"from": "2026-10-12T00:00:00-04:00", "to": "2026-10-17T10:14:56-04:00"},
+  "sources": {
+    "chat_url": "https://teams.microsoft.com/l/chat/19:meeting_NDAxMzEzOGEtZmUzYS00MTMxLTk3NTItODc1MGM1ZTBkZWQ2@thread.v2/conversations",
+    "transcript_url": null,
+    "rubrik_chat_url": "https://teams.microsoft.com/l/chat/19:meeting_YjU0ZDdlMWEtNjc1Mi00Nzg4LTlhZjItNDBmMWEzNmExNzFl@thread.v2/conversations",
+    "rubrik_transcript_url": "meeting-transcript:///events/aHR0cHM6Ly90ZWFtcy5taWNyb3NvZnQuY29tL2wvbWVldHVwLWpvaW4vMTklM2FtZWV0aW5nX1lqVTBaRGRsTVdFdE5qYzFNaTAwTnpnNExUbGhaakl0TkRCbU1XRXpObUV4TnpGbCU0MHRocmVhZC52Mi8wP2NvbnRleHQ9JTdiJTIyVGlkJTIyJTNhJTIyMGU5YzQ4OTQtNmNhYS00NjVkLTk2NjAtNGI2OTY4YjQ5ZmI3JTIyJTJjJTIyT2lkJTIyJTNhJTIyYzNjMjk3MTItN2RjZC00ZDExLTllYzUtN2NlMWYwZmZlNmZkJTIyJTdk?start=2026-10-14T15%3A00%3A00.000Z&end=2026-10-14T15%3A20%3A00.000Z",
+    "rubrik_meeting_url": "https://teams.microsoft.com/l/meetup-join/19%3ameeting_YjU0ZDdlMWEtNjc1Mi00Nzg4LTlhZjItNDBmMWEzNmExNzFl%40thread.v2/0",
+    "standup_meeting_url": "https://teams.microsoft.com/l/meetup-join/19%3ameeting_NDAxMzEzOGEtZmUzYS00MTMxLTk3NTItODc1MGM1ZTBkZWQ2%40thread.v2/0",
+    "rubrik_status_emails": [
+      {"subject": "RUBRIK - Project Status (2026/10/14)", "received": "2026-10-14T15:48:43Z", "url": "https://outlook.office365.com/owa/?ItemID=AAMkADE5NzU1Nzk4LTU2YjktNDIyZS05ZTI0LWU5NTA0MmIwMDM4OABGAAAAAADfiIpf9YlRQL%2BGNBNg%2BLIwBwBkE5XVjIpUS6tjkF1Bp8f3AAAAAAEMAABkE5XVjIpUS6tjkF1Bp8f3AAHiv6dFAAA%3D&exvsurl=1&viewmodel=ReadMessageItem"}
+    ]
+  },
+  "projects": [
+    {
+      "name": "Rubrik DR backup",
+      "jira_keys": ["IOSP-471", "IOSP-880", "IOSP-1004", "IOSP-1005", "IOSP-1006", "IOSP-1007", "IOSP-1008", "IOSP-1009", "IOSP-1010", "IOSP-1011", "IOSP-1012", "IOSP-1013", "IOSP-1014", "IOSP-1015", "RM-1553", "COR-11600"],
+      "status_signal": "ON-TRACK per 10/14 status email; RAC enablement at risk of slipping because of a newly found backup-VLAN gap",
+      "notes": [
+        {"date": "2026-10-13", "source": "standup chat / rubrik chat", "text": "Calvin Cochran: Rubrik doing fine; log-deletion issue still needs confirmation. Starting the ~16h RAC initial backup on a weekday was rejected because it could interfere with the production backup (Mike Massimino and Karl Witt: low tolerance for production risk). Plan: kick off Friday night, then a few days of dual running next week, then ship readiness. Karl: Manchester space should be ready before arrival. (Source: Igor's notes-to-self summary of the standup Rubrik segment.)"},
+        {"date": "2026-10-13", "source": "rubrik chat", "text": "Igor posted the timeline: 4 successful Pure backups so far (2-3 more ideal). 10/16 IOSP-1014 confirm Pure backup healthy (Calvin); 10/16 18:00 UTC IOSP-1012 enable RAC instance backup (Earle); 10/17-10/20 IOSP-880 run/validate RAC backup; from 10/20 IOSP-1013 prepare appliances for shutdown/Manchester incl. network/IP (Sri, Calvin); 10/27-11/9 IOSP-1015 international shipment (logistics)."},
+        {"date": "2026-10-13", "source": "rubrik chat", "text": "Karl Witt: a company is being contracted to pack and ship the gear and will provide anything needing signature."},
+        {"date": "2026-10-14", "source": "rubrik transcript", "text": "IOSP-1011 and IOSP-1014 (Pure-based backup) considered complete: ran several days without issues (Earle Long, Calvin Cochran)."},
+        {"date": "2026-10-14", "source": "rubrik transcript", "text": "Shipment: Calvin pinged Karl again on contract status; contract signed by procurement is the gating item and the ship date (27th) will not be moved up until then. Work is done by Tech X, resold via MicroAge (approved vendor). Appliance prep (new IP per node, shut down; about a dozen nodes) is a couple of hours; Igor set IOSP-1013 to 10/21. Two Sectigo people needed on site at the cage (Calvin arranging with Olu and Jamie)."},
+        {"date": "2026-10-14", "source": "rubrik transcript", "text": "Earle Long: standby now running in Manchester and catching up; Oracle DBA background work (IOSP-1009) may start earlier than November, possibly end of next week (around 10/23)."},
+        {"date": "2026-10-14", "source": "rubrik transcript", "text": "Calvin: IOSP-880 validation must also confirm replication to Manchester, since that is fundamental to shutting down and shipping."},
+        {"date": "2026-10-14", "source": "rubrik transcript", "text": "Network gap: SCDPCARAC1/2 have no interface on the CA Backup VLAN 130 (Rubrik is configured for VLAN 130 and 2988 only); the IPs Prajeet shared are RAC interconnect/VIPs on other VLANs. Agreed that backup traffic should have its own VLAN. Calvin/Earle: the change needs an RM ticket and must be done in the maintenance window (Sunday 7 PM Eastern; two SREs, Tier 2 Ramana Chowdary), so the Rubrik RAC initial backup moves from Friday to after the window, tentatively 13:00 UTC Sunday 10/18, overlapping briefly with Monday morning production RMAN."},
+        {"date": "2026-10-14", "source": "rubrik transcript", "text": "Rubrik/Oracle question: how Rubrik should reach RAC (second VIP on the backup VLAN vs SCAN vs per-node addresses). Calvin will not create tickets until Oracle and Rubrik support answer."},
+        {"date": "2026-10-14", "source": "rubrik chat", "text": "Calvin summarised 5 options (preferred: second VIP on backup VLAN, Prajeet to research; then per-host backup-VLAN addresses with Rubrik detecting live host, Sri to research; Option 3 manual cutover is MVP; Option 4 back up both hosts; Option 5 direct into CA environment, security concern). Under Option 3 RM tickets would be raised and VLAN sub-interfaces configured on rac1/rac2 in the maintenance window, then the initial backup would start right after, keeping the shipment timeline. Prajeet noted Rubrik backup IPs do not need to be registered with Clusterware."},
+        {"date": "2026-10-14", "source": "rubrik chat", "text": "Igor added project objectives to epic IOSP-471 after confirming with Calvin and Aylin (old Confluence page review; Postgres onboarding to Rubrik is among the objectives). Earle clarified he meant SASP 'Recover' (restore using Rubrik as source), not backup; Calvin translated and Earle agreed."},
+        {"date": "2026-10-14", "source": "status email", "text": "Status ON-TRACK. Completed: IOSP-1011 (Earle), IOSP-1014 (Calvin). Timeline in email: IOSP-1012 10/16 18:00 UTC enable RAC backup (owner shown as Sri); IOSP-880 10/17-10/20; IOSP-1013 10/21 (Sri, Calvin); IOSP-1010 10/21-TBD shipment plan and contracts (Karl/Calvin, procurement); IOSP-1015 Oct 27-Nov 9 shipment; IOSP-1009 Oct 23-Nov 23 background DBA work (Earle); IOSP-1004/1005 Nov 9-16 rack/cable/power-up (Manchester team, Priya/Mena); IOSP-1006 Nov 16-Dec 6 commissioning (Calvin, Sri); IOSP-1007 Nov 30-Dec 6 production testing; IOSP-1008 Dec 7 fully production in Europe."},
+        {"date": "2026-10-15", "source": "rubrik chat", "text": "Calvin (in a separate maintenance-window chat): the VLAN change must complete within the maintenance window or it pushes back Rubrik timelines; Martijn Katerbarg approved but raised that IP usage is not officially tracked. Prajeet shared a Rubrik backup Wallet item for SASP Production RAC databases."},
+        {"date": "2026-10-15", "source": "rubrik chat", "text": "Calvin: the standalone Oracle in Secaucus is alive only for the Rubrik POC, so it can be decommissioned no later than the first week of November, possibly the last week of October (not formally part of the Rubrik project)."},
+        {"date": "2026-10-15", "source": "rubrik chat", "text": "Igor asked Sri (1:1) to be added as optional to next week's call with the Network team on preparing Manchester for Rubrik."}
+      ],
+      "action_items": [
+        {"text": "Confirm the log-deletion issue is resolved and continue validation through the week", "owner": "Calvin Cochran", "due": null, "source": "standup chat summary 2026-10-13"},
+        {"text": "Research second VIP on backup VLAN for RAC (Option 1) and raise Oracle Support ticket; Prajeet to wait for response, after which Calvin creates the RM ticket", "owner": "Prajeet Singh Kahlon", "due": null, "source": "rubrik transcript / status email 2026-10-14"},
+        {"text": "Contact Rubrik Support / research per-host backup-VLAN addressing (Option 2)", "owner": "SriChand Myla", "due": null, "source": "rubrik transcript / rubrik chat 2026-10-14"},
+        {"text": "Create RM ticket for backup VLAN interface change on SCDPCARAC1/2 and coordinate with SREs for the maintenance window (Sunday 7 PM Eastern)", "owner": "Calvin Cochran", "due": "2026-10-18", "source": "rubrik transcript 2026-10-14"},
+        {"text": "Enable Rubrik RAC backup (IOSP-1012); originally 10/16 18:00 UTC, now likely after maintenance window (about 2026-10-18 13:00 UTC)", "owner": "Earle Long / SriChand Myla (owner differs between sources)", "due": "2026-10-18", "source": "rubrik chat 2026-10-13, transcript 2026-10-14, status email"},
+        {"text": "Run/validate RAC backup and replication to Manchester (IOSP-880)", "owner": null, "due": "2026-10-20", "source": "status email 2026-10-14"},
+        {"text": "Prepare Rubrik appliances for shutdown and Manchester deployment (IOSP-1013)", "owner": "SriChand Myla, Calvin Cochran", "due": "2026-10-21", "source": "rubrik transcript / status email"},
+        {"text": "Prepare shipment plan and contracts (IOSP-1010); procurement contract signature gates the ship date", "owner": "Karl Witt, Calvin Cochran, procurement", "due": null, "source": "status email 2026-10-14"},
+        {"text": "Ensure Manchester space/readiness before equipment arrives; meeting with Network team next week on Manchester preparation", "owner": "Karl Witt (space); SriChand Myla (network meeting)", "due": null, "source": "standup chat summary / status email"},
+        {"text": "Update Jira with corrected line owners (IOSP-1012) and share ticket links in chat", "owner": "Igor Kulyk", "due": null, "source": "rubrik transcript 2026-10-14"},
+        {"text": "Decide on standalone Oracle (Secaucus) decommission date", "owner": null, "due": "2026-11-06", "source": "rubrik chat 2026-10-15 (Calvin suggests no later than first week of November)"}
+      ],
+      "risks": [
+        "RAC Rubrik initial backup (about 16h) slipped from Friday 10/16 to after the Sunday maintenance window because rac1/rac2 lack a CA Backup VLAN 130 interface; if the change is not completed in the window, Rubrik timelines are pushed back (Calvin, 2026-10-15).",
+        "Backup network design unresolved (VIP vs per-node vs direct into CA environment); depends on Oracle and Rubrik support replies (about 24h).",
+        "Shipment (IOSP-1015, Oct 27-Nov 9) gated by procurement contract signature (Karl/Calvin) and Manchester readiness.",
+        "RAC initial backup will overlap production RMAN backups on Monday morning (low production-risk tolerance stated by Mike Massimino and Karl Witt).",
+        "Earlier history: Postgres/EDB dependency is on hold (March 2027 per 9/30 email); not rediscussed in this window."
+      ],
+      "links": {
+        "teams_chat": "https://teams.microsoft.com/l/chat/19:meeting_YjU0ZDdlMWEtNjc1Mi00Nzg4LTlhZjItNDBmMWEzNmExNzFl@thread.v2/conversations",
+        "standup_chat": "https://teams.microsoft.com/l/chat/19:meeting_NDAxMzEzOGEtZmUzYS00MTMxLTk3NTItODc1MGM1ZTBkZWQ2@thread.v2/conversations",
+        "meeting": "https://teams.microsoft.com/l/meetup-join/19%3ameeting_YjU0ZDdlMWEtNjc1Mi00Nzg4LTlhZjItNDBmMWEzNmExNzFl%40thread.v2/0",
+        "key_messages": [
+          "https://teams.microsoft.com/l/message/19%3ameeting_OTMzZTc0YWQtYWZkMS00YzMyLWFmY2ItMjlkYjE3N2ZiYzFi%40thread.v2/1791905983042",
+          "https://teams.microsoft.com/l/message/19%3ameeting_YjU0ZDdlMWEtNjc1Mi00Nzg4LTlhZjItNDBmMWEzNmExNzFl%40thread.v2/1792000492920",
+          "https://teams.microsoft.com/l/message/19%3ameeting_YjU0ZDdlMWEtNjc1Mi00Nzg4LTlhZjItNDBmMWEzNmExNzFl%40thread.v2/1792090840368",
+          "https://teams.microsoft.com/l/message/19%3ameeting_MDI5NjBlMzgtZDNmNC00YWI0LTliZDQtNGQ5M2JjMTc4NmMy%40thread.v2/1792070622029"
+        ]
+      }
+    },
+    {
+      "name": "AVS server maintenance",
+      "jira_keys": ["RM-1650"],
+      "notes": [
+        {"date": "2026-10-13", "source": "standup chat", "text": "Jeff Novick: dev AVS servers done and went well; production ones scheduled for the weekend (RM-1650); one firewall left; wants to switch to the new setup this weekend and let it burn in until next weekend. Mike Massimino asked whether it covers only production AVS."},
+        {"date": "2026-10-13", "source": "standup chat", "text": "Jeff Novick: not totally a network issue; Olu has questions for the Network team."}
+      ],
+      "action_items": [
+        {"text": "Production AVS server changes (RM-1650) over the weekend, then burn-in for a week", "owner": "Jeff Novick", "due": "2026-10-18", "source": "standup chat 2026-10-13"}
+      ],
+      "risks": [],
+      "links": {"teams_chat": "https://teams.microsoft.com/l/message/19%3ameeting_NDAxMzEzOGEtZmUzYS00MTMxLTk3NTItODc1MGM1ZTBkZWQ2%40thread.v2/1791898348492"}
+    },
+    {
+      "name": "AI POC (UAT approach)",
+      "jira_keys": [],
+      "notes": [
+        {"date": "2026-10-13", "source": "other Teams chats (not standup)", "text": "Igor asked I&O/ops teams for typical UAT flows at Sectigo (where feedback and issues are tracked) and asked Ashwadeep for a call to plan user testing and communication flow."},
+        {"date": "2026-10-14", "source": "other Teams chats (not standup)", "text": "Igor sent a draft UAT approach to Maarten Broekman, Karl Witt and Mofei Kasunic for review; offered a 15-minute call. On 10/15 he followed up with Karl; Karl said the approach works and Igor will send it to the I&O managers."}
+      ],
+      "action_items": [
+        {"text": "Send UAT approach to I&O managers", "owner": "Igor Kulyk", "due": null, "source": "teams 1:1 2026-10-15"}
+      ],
+      "risks": [],
+      "links": {}
+    },
+    {
+      "name": "I&O intake load and sprint planning",
+      "jira_keys": [],
+      "notes": [
+        {"date": "2026-10-15", "source": "standup chat", "text": "Karl Witt and Mike Massimino discussed an ASAP request (ticket created 10 minutes earlier) from Arkadii; agreed response is to review the request and size it before committing, with 'add it to the next sprint' a viable answer. Mike noted Nik is out of office; Karl to speak to him after 3 PM. Concern that sprint deferral will be used as an 'I&O is a bottleneck' argument. IOSP board shared (rapidView=485)."},
+        {"date": "2026-10-14", "source": "standup chat", "text": "Mike Massimino: a compliance-related item is auditable; COR is off the project and it sits with Compliance (discussed with Prem and Karl)."}
+      ],
+      "action_items": [
+        {"text": "Review and size the ASAP request from Arkadii before committing", "owner": "Mike Massimino / Karl Witt", "due": null, "source": "standup chat 2026-10-15"}
+      ],
+      "risks": ["I&O capacity perceived as a bottleneck; short-notice ASAP requests."],
+      "links": {"jira_board": "https://projects.sectigo.net/secure/RapidBoard.jspa?rapidView=485&projectKey=IOSP"}
+    },
+    {
+      "name": "Observability project",
+      "jira_keys": [],
+      "notes": [
+        {"date": "2026-10-14", "source": "other Teams chats (not standup)", "text": "Igor shared the Observability at Sectigo plan document; on 10/15 asked Dmitry for updates from Prem on the approach."}
+      ],
+      "action_items": [],
+      "risks": [],
+      "links": {}
+    }
+  ],
+  "jira_keys_mentioned": ["IOSP-471", "IOSP-880", "IOSP-1004", "IOSP-1005", "IOSP-1006", "IOSP-1007", "IOSP-1008", "IOSP-1009", "IOSP-1010", "IOSP-1011", "IOSP-1012", "IOSP-1013", "IOSP-1014", "IOSP-1015", "RM-1553", "RM-1650", "COR-11600"],
+  "gaps": [
+    "Daily Ops Standup transcript unavailable: organizer-only access (organizer Shane Knable); read of the 2026-10-14 occurrence returned NOT_FOUND (HTTP 404, Meeting properties are not found). Not retried; other standup dates (10/12, 10/13, 10/15, 10/16) not attempted for the same reason. Standup notes are built from the chat plus Igor's own notes-to-self summary of 10/13.",
+    "Standup chat coverage is partial: chat_message_search cannot filter by chat, and an unfiltered search is flooded by alert-bot channels. Searched per sender (Igor Kulyk, Karl Witt, Mike Massimino, Jeff Novick; Shane Knable returned nothing) and read previews only. Other participants (Maarten Broekman, Calvin Cochran, Prajeet, Gabriel, Kostiantyn, Aylin, meeting bot) were not searched for the standup chat. Most standup chat content found was informal banter; there are no standup meeting-bot summaries in the results.",
+    "Rubrik chat coverage: searched by 'Rubrik' keyword (pages 0-28) and by sender Igor Kulyk; searches by Earle Long, SriChand Myla, Prajeet Singh Kahlon, Gabriel Rovira and Karl Witt in the Rubrik chat were not run individually. Most message previews were not read in full (key messages were).",
+    "Rubrik transcript read OK (occurrence 2026-10-14 18:00 EEST/15:00 UTC; calendar start 2026-10-14T18:00 FLE). Text is speech recognition: 'Aurel/Earle', 'Sri', 'Pavel' garbled; the 10/14 transcript has Igor's speaker label correct; owners were taken from named speakers only.",
+    "Conflict (status email vs chat/transcript): the 10/14 status email still lists IOSP-1012 as 10/16 18:00 UTC with owner Sri, while the 10/13 chat lists Earle as owner and the 10/14 transcript says the RAC backup cannot start until after the Sunday maintenance window (about 10/18 13:00 UTC). The email also says Calvin will create the RM ticket after Oracle responds, whereas the transcript says no ticket until Oracle/Rubrik reply.",
+    "Conflict (email vs email): IOSP-1009 shows Nov 1-30 in the 10/8 status and Oct 23-Nov 23 in the 10/14 status; the 10/14 email is the latest.",
+    "Only one RUBRIK - Project Status email (2026/10/14) fell in the window; its body includes the quoted earlier thread (not re-reported).",
+    "The 10/17 weekend window (Friday evening and Saturday) shows only PagerDuty/alert bot traffic in the unfiltered search; no human standup messages were found after 10/16 13:09 UTC.",
+    "Non-standup, non-Rubrik content (AI POC UAT, Observability) comes from Igor's 1:1 and other group chats found incidentally via sender search; Igor's own messages only, no replies except those quoted, so treat as low confidence."
+  ]
+}
