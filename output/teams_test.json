@@ -1,0 +1,65 @@
+{
+  "window": {"from": "2026-10-16T00:00:00Z", "to": "2026-10-17T23:59:59Z"},
+  "sources": {
+    "chat_url": "teams:///chats/19%3Ameeting_NDAxMzEzOGEtZmUzYS00MTMxLTk3NTItODc1MGM1ZTBkZWQ2%40thread.v2/messages",
+    "transcript_url": null
+  },
+  "retrieval_stats": {
+    "standup_chat_messages_total": 34,
+    "by_sender": {"Gabriel Rovira": 28, "Maarten Broekman": 3, "Prajeet Singh Kahlon": 2, "Karl Witt": 1},
+    "earliest_message": "2026-10-16T13:02:50Z",
+    "latest_message": "2026-10-16T13:34:12Z",
+    "pages_fetched": "2 unfiltered pages (offsets 0-49, covering 2026-10-17T10:50Z back to 08:11Z, 0 standup-chat hits) plus per-sender searches for all 18 invitees"
+  },
+  "projects": [
+    {
+      "name": "EDB servers",
+      "jira_keys": ["COR-10818"],
+      "notes": ["Maarten Broekman: RAC work took priority, so no substantial progress was made on the EDB servers."],
+      "action_items": [],
+      "risks": ["No progress on EDB servers this period because of RAC priority."]
+    },
+    {
+      "name": "Postgres migration",
+      "jira_keys": [],
+      "notes": [
+        "Gabriel Rovira: Service Core NON-PROD cut-over finished; credit to Raymond and Mohammed.",
+        "Next week: AVS and SCM Demo (NON-PROD), with a working meeting on Wednesday.",
+        "DBAs are moving ahead of schedule.",
+        "Gabriel: 'We have it for completion on Nov 23' (project not named in the preview; likely this one, unconfirmed)."
+      ],
+      "action_items": [
+        {"text": "Working meeting to cut over AVS and SCM Demo (NON-PROD)", "owner": "Gabriel Rovira / DBA team", "due": "2026-10-21"}
+      ],
+      "risks": ["Schedule has built-in uncertainty (Gabriel)."]
+    },
+    {
+      "name": "HSM",
+      "jira_keys": [],
+      "notes": ["Gabriel Rovira: no change; status was sent the previous day."],
+      "action_items": [],
+      "risks": []
+    },
+    {
+      "name": "Sprint hygiene",
+      "jira_keys": [],
+      "notes": [
+        "Gabriel Rovira: close out or document tasks in the current sprint, or move them to the next sprint.",
+        "Cadence: set the sprint Monday, close it Friday."
+      ],
+      "action_items": [
+        {"text": "Update the active sprint", "owner": "Gabriel Rovira", "due": null},
+        {"text": "Close out or document open sprint tasks and move leftovers to the next sprint", "owner": "Project Managers", "due": null}
+      ],
+      "risks": []
+    }
+  ],
+  "gaps": [
+    "Transcript unavailable: organizer-only access; chat and meeting-bot summaries used instead. read_resource on meetingTranscriptUrl returned NOT_FOUND (404, 'Meeting properties are not found'). Attempted once, not retried. Organizer is shane.knable@sectigo.com.",
+    "Window used: 2026-10-16 through 2026-10-17 (the 2026-10-16 standup was 13:00Z; chat messages are all from that day). No standup-chat messages found for 2026-10-17 in the paged range.",
+    "Unfiltered chat_message_search is flooded by alert bots (PagerDuty, Workflows) across all chats. Only the first 2 pages (offsets 0-49, down to 2026-10-17T08:11Z) were read before switching to per-sender searches as the skill advises. Total is the de-duplicated count from per-sender searches.",
+    "Per-sender paging was inconsistent: some pages returned moreResults with no further items, and one page repeated an item (de-duplicated by id). The meeting bot and senders outside the 18 invitees were not searched, so the 34 count may be a lower bound.",
+    "Summaries were previews. Full text was not read via read_resource for any message, so the Gabriel 'Nov 23' item and the Postgres notes are from truncated previews.",
+    "Messages from the same people in other meeting chats (Oracle RAC backup maintenance, RM-1628 VM decommission approvals) were excluded because they are not in the standup chat."
+  ]
+}

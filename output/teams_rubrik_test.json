@@ -1,0 +1,89 @@
+{
+  "window": {"from": "2026-10-10T00:00:00Z", "to": "2026-10-17T23:59:59Z"},
+  "sources": {
+    "chat_url": "teams:///chats/19%3Ameeting_YjU0ZDdlMWEtNjc1Mi00Nzg4LTlhZjItNDBmMWEzNmExNzFl%40thread.v2/messages",
+    "chat_thread_id": "19:meeting_YjU0ZDdlMWEtNjc1Mi00Nzg4LTlhZjItNDBmMWEzNmExNzFl@thread.v2",
+    "chat_message_link_example": "https://teams.microsoft.com/l/message/19%3ameeting_YjU0ZDdlMWEtNjc1Mi00Nzg4LTlhZjItNDBmMWEzNmExNzFl%40thread.v2/1792000492920?context=%7B%22contextType%22:%22chat%22%7D",
+    "transcript_url": "meeting-transcript:///events/aHR0cHM6Ly90ZWFtcy5taWNyb3NvZnQuY29tL2wvbWVldHVwLWpvaW4vMTklM2FtZWV0aW5nX1lqVTBaRGRsTVdFdE5qYzFNaTAwTnpnNExUbGhaakl0TkRCbU1XRXpObUV4TnpGbCU0MHRocmVhZC52Mi8wP2NvbnRleHQ9JTdiJTIyVGlkJTIyJTNhJTIyMGU5YzQ4OTQtNmNhYS00NjVkLTk2NjAtNGI2OTY4YjQ5ZmI3JTIyJTJjJTIyT2lkJTIyJTNhJTIyYzNjMjk3MTItN2RjZC00ZDExLTllYzUtN2NlMWYwZmZlNmZkJTIyJTdk?start=2026-10-14T15%3A00%3A00.000Z&end=2026-10-14T15%3A20%3A00.000Z",
+    "calendar_event_link": "https://outlook.office365.com/owa/?itemid=AAkBOQAICN8phhccgAAuAAAAAB2EAxGqZhHNm8gAqgAvxFoNAGQTldWMilRLq2OQXUGnx%2FcAAGgFxhYAABA%3D&exvsurl=1&path=/calendar/item"
+  },
+  "retrieval": {
+    "total_messages_retrieved": 71,
+    "earliest": "2026-10-12T13:35:40Z",
+    "latest": "2026-10-16T19:13:32Z",
+    "method": "chat_message_search (query * and query Rubrik) paged per sender (Igor Kulyk, Calvin Cochran, Earle Long, Prajeet Singh Kahlon, SriChand Myla, Karl Witt, Gabriel Rovira, Vlad Serbanescu, Aylin Saydag), filtered to the Rubrik chatUri, de-duplicated by message id. 17 previews ending in '...' or otherwise important were read in full via read_resource; one read (1791905983042) returned NOT_FOUND because that message belongs to a different meeting chat.",
+    "senders_seen_in_chat": ["Calvin Cochran", "Earle Long", "Prajeet Singh Kahlon", "Igor Kulyk", "SriChand Myla", "Karl Witt"],
+    "meeting_bot": "Searched sender 'Microsoft Teams' and subject 'Rubrik Project SyncUp': no bot or recap messages in the Rubrik chat. One self-notes message (48:notes, 2026-10-13) holds a Rubrik summary of the Daily Ops Standup, which is not part of this chat."
+  },
+  "transcript": {
+    "readable": true,
+    "meeting": "Rubrik Project SyncUp, 2026-10-14 18:00-18:20 FLE (15:00Z)",
+    "organizer": "Igor Kulyk (igor.kulyk@sectigo.com), who is the signed-in user, so the organizer-only restriction did not apply",
+    "error": null,
+    "read_attempts": 1,
+    "notes": "Read once, verbatim meetingTranscriptUrl. Transcript createdDateTime 2026-10-14T15:02:33Z, length about 46 min, ASR text with name and word errors. The returned meeting.startDateTime (2026-07-08) is the series origin, not this occurrence. Calendar search found 4 occurrences: 2026-09-23, 09-30, 10-07, 10-14. Only the 10-14 occurrence is in the window."
+  },
+  "projects": [
+    {
+      "name": "Rubrik disaster recovery backup system (Oracle RAC onboarding, Manchester shipment)",
+      "jira_keys": ["IOSP-471", "IOSP-880", "IOSP-1006", "IOSP-1010", "IOSP-1011", "IOSP-1012", "IOSP-1013", "IOSP-1014", "IOSP-1015", "RM-1553", "RM-1658", "RM-1660", "RM-1661", "COR-11600"],
+      "notes": [
+        "2026-10-13 (Igor, chat): weekly plan IOSP-1010 shipment plan/contracts (Karl, Calvin, procurement), IOSP-1011 Pure-based backup running several days (Earle), IOSP-1014 confirm Pure backup healthy (Calvin), IOSP-1012 enable RAC instance backup (Earle). Timeline posted: 10/16 IOSP-1014; 10/16 18:00 UTC IOSP-1012; 10/17-10/20 IOSP-880 validate RAC backup; 10/20 onward IOSP-1013 prepare appliances for shutdown and Manchester; 10/27-11/9 IOSP-1015 international shipment.",
+        "2026-10-13 (Earle): 4 successful Pure backups so far, wants 2 or 3 more; agreed Calvin's proposal to start Rubrik on RAC Friday 10-16. Oracle RMAN on scdpcarac1 runs 06:00 UTC, Rubrik daily run planned 18:00 UTC. IOSP-1012 is done for Secaucus (backup goes to flash blade); he thought it was for Manchester.",
+        "2026-10-13 (Calvin): initial Rubrik RAC backup about 16 hours, daily about 3 hours; do not start on a weekday. Timing and tickets looked fine to him. Asked for the IP list of rac1 because the Rubrik agent is already on the host.",
+        "2026-10-13 (Karl): a contractor is hired to pack and ship the gear and will provide anything needing signature.",
+        "2026-10-14 transcript: Pure backup ran several days with no issues, so IOSP-1011 and IOSP-1014 treated as passed (Earle, Calvin). Rubrik RAC enable was planned for Friday 6 PM UTC.",
+        "2026-10-14 transcript (Calvin): shipment preparation is quick (give each node its new IP and shut down, about a dozen appliances, a couple of hours). Target ship date Oct 27, possibly earlier, but the contract with procurement is the blocker; he will not move the date up until it is signed. Work is done by Tech X, resold through Microage (already an approved vendor). Two Sectigo staff must be in the cage (Olu plus one coordinated with Jamie). Igor put Oct 21 as the preparation placeholder.",
+        "2026-10-14 transcript (Earle): Manchester standby is running and catching up; DBA work may start earlier than November, likely end of next week (Oct 23). Sri set up a meeting with Net Ops next week to prepare connecting the Rubriks that go to Manchester. Calvin asked that backup and replication to Manchester be explicitly verified, as it is the basis for shutdown and shipping.",
+        "2026-10-14 chat and transcript: RAC nodes scdpcarac1 and scdpcarac2 have no interface on CA Backup VLAN 130 (only 128 and 137 private addresses), so Rubrik cannot reach them. Agreed approach is to add VLAN 130 addressing via RM tickets, with work done only in a maintenance window on the production RAC. Calvin filed RM-1658 (CA Backup VLAN on RAC hosts) on 10-14 and RM-1660 (MCR hosts) on 10-15 with approvals requested in a separate approvals chat.",
+        "2026-10-14 (Calvin, 17:54Z) options in order of preference: 1 second VIP on the backup VLAN (Prajeet to research), 2 address on backup VLAN on both hosts with Rubrik detecting the live host (Sri to research), 3 same but manual switch of Rubrik on failure (MVP fallback), 4 back up both hosts and accept storage penalty, 5 Rubrik directly in CA environment (security concern). Later same day Calvin confirmed Option 2 is supported by Rubrik.",
+        "2026-10-15 (Prajeet): research says no floating backup VIP is needed; give each RAC node its own static backup IP and register both nodes in Rubrik, which supports an ordered node list and automatic distribution. If node 1 fails mid-backup the job may fail and need retry via node 2 (confirm for the CDM version). Backup IPs need not be registered with Clusterware. RM-1661 (Oracle credentials wallet for Rubrik backup on SASP production RAC) requested for approval for this weekend.",
+        "2026-10-14 transcript outcome: Calvin and Sri will contact Rubrik Support about reaching the RAC over the backup VLAN; Prajeet will open an Oracle Support ticket (response expected within 24 hours). Calvin held off on tickets until replies came, then filed RM-1658 later that day.",
+        "2026-10-16 (Earle, Calvin): maintenance window is Saturday 7pm-9pm Eastern (Oct 17). Earle's SASP maintenance does not take Oracle down, but Aurel's patching does. Calvin asked Earle to post a note as soon as the CA backup interfaces are up so Sri can add the hosts in Rubrik; the backup will not start until the window is complete. Ramana Chowdary (Tier 2 secondary on call) is expected to work the window; Sri asked for the call invite.",
+        "2026-10-14 transcript: Earle suggested starting the 16-hour Rubrik initial run at 13:00 UTC Sunday Oct 18 so it ends near 05:00 UTC Monday; overlap with the primary RMAN backup (about 6 hours now, up from 4) accepted by Prajeet. Earle declined to touch or reschedule backups on the primary.",
+        "2026-10-14 objectives review (Igor with Calvin, Earle, on IOSP-471): remove Postgres onboarding from 2026 scope; Calvin proposed rewording to 'Evaluate decommission of legacy backup mechanisms'; Earle asked for an added step 'Successfully recover a Rubrik SASP backup onto bdddcanlora[3 or 5]' (recovery, not backup); 'Validate monthly restore using Rubrik as the source' accepted. Source: https://confluence.comodoca.net/display/CO/Rubrik"
+      ],
+      "action_items": [
+        {"text": "Create and get approved RM tickets for CA Backup VLAN (130) interfaces on RAC hosts (RM-1658) and MCR hosts (RM-1660) before the maintenance window", "owner": "Calvin Cochran", "due": "2026-10-17 (before Sat 7pm Eastern window)"},
+        {"text": "Post a note in the chat as soon as the CA backup interfaces on scdpcarac1/2 are up so hosts can be added in Rubrik", "owner": "Earle Long", "due": "2026-10-17 (during maintenance window)"},
+        {"text": "Add RAC hosts in Rubrik after interfaces are up and run the 16-hour initial backup after the window (proposed start 13:00 UTC Sun Oct 18)", "owner": "SriChand Myla", "due": "2026-10-18"},
+        {"text": "Contact Rubrik Support about backing up RAC over the backup VLAN, and research Option 2 (host detection)", "owner": "SriChand Myla with Calvin Cochran", "due": null},
+        {"text": "Open Oracle Support ticket about a second VIP or backup VLAN for RAC and research Option 1", "owner": "Prajeet Singh Kahlon", "due": null},
+        {"text": "Get the shipment contract signed (Microage/Tech X) so the ship date can be pulled in; ship window currently 10/27-11/9", "owner": "Calvin Cochran with Karl Witt and procurement", "due": "2026-10-27 (target ship date)"},
+        {"text": "Prepare Rubrik appliances for shutdown (assign new IPs) and verify backup replicates to Manchester before shutdown (IOSP-1013)", "owner": "SriChand Myla and Calvin Cochran", "due": "2026-10-21 (Igor placeholder)"},
+        {"text": "Update Jira: line C assignee to Sri (not Aurel), add Postgres removal and objective rewording to IOSP-471, add recover-SASP-backup step", "owner": "Igor Kulyk", "due": null},
+        {"text": "Provide IP/interface listing for rac1 in Secaucus", "owner": "Prajeet Singh Kahlon", "due": "2026-10-14 (done, posted in chat)"}
+      ],
+      "risks": [
+        "RAC nodes have no CA Backup VLAN interface; change must happen in the Sat Oct 17 window on the production primary. If not completed, Rubrik timelines and the shipment slip (Calvin, 2026-10-15).",
+        "Shipment contract not signed by procurement; Calvin will not commit an earlier date. Current plan already 'behind' per Calvin.",
+        "The 16-hour initial Rubrik run overlaps production RMAN backups and may spill into Monday morning; Prajeet prefers holding the primary backup, Earle declined to change it.",
+        "Rubrik reaching the RAC through the CA environment (Option 5) raises security concerns; fallback Option 3 needs a manual cutover if node 1 fails.",
+        "Rubrik retry behaviour if node 1 fails mid-backup is unconfirmed for the CDM version.",
+        "Maintenance window also includes firewall work by Jeff Novick and Aurel's patching, which takes databases down.",
+        "Legacy backup decommission is still debated; objective softened to 'evaluate'.",
+        "Transcript is machine-generated; names, dates and phrasing may be wrong (for example 'Pavel', 'Aurel' versus 'Earle')."
+      ]
+    },
+    {
+      "name": "Standalone Oracle in Secaucus (scdpcasasp1) decommission",
+      "jira_keys": [],
+      "notes": [
+        "2026-10-15 (Calvin): not officially part of the Rubrik project, but the standalone Oracle in SEC only supports the Rubrik POC, so it can be retired no later than the first week of November, maybe the last week of October.",
+        "2026-10-15 (Earle, Prajeet): agreed; Prajeet says it needs substantial work (reset redo routes, update Data Guard) and will raise an RM."
+      ],
+      "action_items": [
+        {"text": "Create an RM for decommissioning the standalone Oracle in SEC", "owner": "Prajeet Singh Kahlon", "due": "NLT first week of November 2026 (target last week of October)"}
+      ],
+      "risks": ["Decommission depends on Rubrik RAC backup being validated first; slip in Rubrik work delays it."]
+    }
+  ],
+  "gaps": [
+    "Message count (71) covers only messages found through per-sender search for the nine named senders; other chat members, if any, could not be searched by name. A full unfiltered wildcard paging of all chats was not completed.",
+    "Search pages ended per sender (earliest Rubrik chat message found: 2026-10-12T13:35:40Z); no messages from 2026-10-10 to 2026-10-12 13:35Z and none after 2026-10-16T19:13:32Z were found.",
+    "Several Rubrik-chat messages are replies and quoted-reply previews; only 17 were read in full.",
+    "RM-1660 and RM-1661 were seen in a separate approvals chat (19:meeting_MDI5NjBlMzgtZDNmNC00YWI0LTliZDQtNGQ5M2JjMTc4NmMy@thread.v2), not in the Rubrik chat.",
+    "Igor's 'RUBRIK PROJECT' status post (1791905983042) is in another meeting chat and was excluded from the count.",
+    "Transcript organizer is the signed-in user, which differs from the expected organizer-only failure for the Daily Ops StandUp; no meeting-bot messages found."
+  ]
+}

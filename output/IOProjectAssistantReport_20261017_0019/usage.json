@@ -1,0 +1,58 @@
+[
+ {
+  "agent": "jira-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 21693,
+  "output_tokens": 0,
+  "seconds": 86.8,
+  "note": "Usage block reports only total tokens; total recorded in input_tokens."
+ },
+ {
+  "agent": "confluence-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 22646,
+  "output_tokens": 0,
+  "seconds": 183.3,
+  "note": "Total tokens only."
+ },
+ {
+  "agent": "sharepoint-collector (read)",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 21357,
+  "output_tokens": 0,
+  "seconds": 89.9,
+  "note": "Total tokens only."
+ },
+ {
+  "agent": "jira-fallback (general-purpose)",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 55681,
+  "output_tokens": 0,
+  "seconds": 75.1,
+  "note": "Total tokens only."
+ },
+ {
+  "agent": "report-builder",
+  "model": "claude-haiku-5-5",
+  "input_tokens": 25563,
+  "output_tokens": 0,
+  "seconds": 75.1,
+  "note": "Total tokens only."
+ },
+ {
+  "agent": "sharepoint-collector (upload)",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 20933,
+  "output_tokens": 0,
+  "seconds": 15.7,
+  "note": "Total tokens only."
+ },
+ {
+  "agent": "orchestrator",
+  "model": "claude-opus-5-5",
+  "input_tokens": 0,
+  "output_tokens": 0,
+  "seconds": 0.0,
+  "note": "UNMEASURED: orchestrator has no access to its own usage counters; 0 is a placeholder, not a measurement."
+ }
+]

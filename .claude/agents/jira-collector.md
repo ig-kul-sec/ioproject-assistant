@@ -1,7 +1,7 @@
 ---
 name: jira-collector
 description: Reviews JIRA tickets (IOSP, RM, COR) for the discussed projects and the current sprint: 24h changes and comments, dates, assignees, statuses.
-tools: Read, Write, Skill, ToolSearch, WebFetch
+tools: Read, Write, Skill, ToolSearch, WebFetch, Bash
 model: sonnet
 ---
 

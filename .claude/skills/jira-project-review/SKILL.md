@@ -17,6 +17,9 @@ For each discussed project (by key from the Teams collector, otherwise by epic/n
 2. Changes and comments with `updated >= -24h` (author, time, short text).
 3. Active IOSP sprint: name, start, end, duration in days, tickets as above.
 
+**Always-included epics** (reviewed every run, in addition to whatever the Teams collector reports; never replace the discussed-project list):
+- **Rubrik DR backup: IOSP-471** (https://projects.sectigo.net/browse/IOSP-471). Fetch the epic itself (summary, status, description/objectives, assignee, dates) and all child issues (`"Epic Link" = IOSP-471`, plus issue links to RM and COR tickets such as RM-1658, RM-1660). Apply steps 1 and 2 to it. Report it as the project "Rubrik DR backup".
+
 Use read-only REST calls (`/rest/api/2/search`, `/rest/agile/1.0/board/{id}/sprint`). If the API is unreachable, fall back to the connector/browser if available, else record a gap.
 
 ## Output JSON

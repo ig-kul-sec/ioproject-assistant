@@ -1,0 +1,10 @@
+{
+  "source": "Pre-collected by caller (teams-collector skipped). Daily Ops Standup 2026-10-16 12:57-13:43 UTC, chat messages only; transcript NOT read.",
+  "projects": [
+    {"name": "Oracle RAC", "notes": ["Largely complete; disk replacement and housekeeping pending.", "Gabriel Rovira: completion planned Nov 23.", "COR-10818 discussed (RAC work, Maarten Broekman)."], "risks": ["Meeting bot flagged unresolved discrepancy: remaining work / realistic completion date.", "Meeting bot flagged unresolved discrepancy: legacy-server decommission timeline."]},
+    {"name": "Postgres migration", "notes": ["Service Core NON-PROD cutover finished.", "AVS and SCM Demo (non-prod) next week; working meeting Wednesday.", "DBAs ahead of schedule."]},
+    {"name": "HSM", "notes": ["No change; status sent 2026-10-15."]},
+    {"name": "Sprints", "notes": ["Monday sets sprint, Friday closes.", "Tasks must be closed or documented and moved to next sprint.", "Gabriel updating the active sprint."]},
+    {"name": "Rubrik", "notes": ["Separate chat. Maintenance window this weekend.", "Backup not started yet."], "action_items": [{"text": "Confirm CA backup interfaces are up after patching before hosts are added", "owner": null, "due": null}]}
+  ]
+}

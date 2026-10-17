@@ -1,7 +1,7 @@
 ---
 name: sharepoint-collector
 description: Reads the PMO SharePoint folder and the I&O Project Roadmap deck for per-project status, and (upload mode) saves the finished reports to the PMO folder.
-tools: Read, Write, Skill, ToolSearch
+tools: Read, Write, Skill, ToolSearch, mcp__claude_ai_Microsoft_365__sharepoint_search, mcp__claude_ai_Microsoft_365__sharepoint_folder_search, mcp__claude_ai_Microsoft_365__read_resource, mcp__claude_ai_Microsoft_365__sharepoint_upload_file
 model: sonnet
 ---
 
