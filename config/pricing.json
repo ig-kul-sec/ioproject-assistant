@@ -1,6 +1,17 @@
 {
-  "_note": "USD per 1M tokens. Fill in from Anthropic's current price list; null means cost is reported as n/a.",
-  "claude-opus-5-5": {"input": null, "output": null},
-  "claude-sonnet-5-5": {"input": null, "output": null},
-  "claude-haiku-5-5": {"input": null, "output": null}
+ "_note": "USD per 1M tokens, ROUGH. From Anthropic search snippets on 2026-10-17 (not checked against the pricing page); verify before using for budgets. Cache discounts are ignored, so costs are overstated.",
+ "_output_share": 0.1,
+ "_output_share_note": "Agent results give only a total token count. When a row has output_tokens = 0, this share of the total is priced as output and the rest as input.",
+ "claude-opus-5-5": {
+  "input": 4.0,
+  "output": 20.0
+ },
+ "claude-sonnet-5-5": {
+  "input": 2.0,
+  "output": 10.0
+ },
+ "claude-haiku-5-5": {
+  "input": 0.1,
+  "output": 0.5
+ }
 }

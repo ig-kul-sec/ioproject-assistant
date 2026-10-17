@@ -1,0 +1,58 @@
+[
+ {
+  "agent": "teams-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 297486,
+  "output_tokens": 0,
+  "seconds": 229.6,
+  "note": "total tokens only; Agent tool reports no input/output split"
+ },
+ {
+  "agent": "jira-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 0,
+  "output_tokens": 0,
+  "seconds": 0.0,
+  "note": "not launched: agent type jira-collector not found"
+ },
+ {
+  "agent": "confluence-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 34255,
+  "output_tokens": 0,
+  "seconds": 698.0,
+  "note": "total tokens only; Agent tool reports no input/output split"
+ },
+ {
+  "agent": "sharepoint-collector (read)",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 80912,
+  "output_tokens": 0,
+  "seconds": 102.0,
+  "note": "total tokens only; Agent tool reports no input/output split"
+ },
+ {
+  "agent": "report-builder",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 25901,
+  "output_tokens": 0,
+  "seconds": 69.1,
+  "note": "total tokens only; Agent tool reports no input/output split"
+ },
+ {
+  "agent": "orchestrator",
+  "model": "claude-opus-5-5",
+  "input_tokens": 69174,
+  "output_tokens": 0,
+  "seconds": 1726.5,
+  "note": "Total tokens only (in input_tokens) and duration, from the usage block of the Agent call that launched the orchestrator (the orchestrator cannot see its own usage)."
+ },
+ {
+  "agent": "sharepoint-collector (upload)",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 492471,
+  "output_tokens": 0,
+  "seconds": 71.1,
+  "note": "total tokens only; upload failed (no files uploaded)"
+ }
+]

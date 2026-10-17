@@ -6,9 +6,12 @@ skill) and inlined as base64 so each report is a single self-contained file.
 from __future__ import annotations
 
 import base64
+import os
 from functools import lru_cache
 from html import escape
 from pathlib import Path
+
+from . import __version__
 
 BRAND_DIR = Path(__file__).resolve().parent / "brand"
 
@@ -57,6 +60,16 @@ table{{border-collapse:collapse;width:100%;font-size:14px}}
 th{{text-align:left;font-weight:600;color:var(--forest);border-bottom:2px solid var(--forest);padding:6px 10px}}
 td{{padding:6px 10px;border-bottom:1px solid rgba(51,49,50,.18);vertical-align:top}}
 footer{{border-top:1px solid rgba(51,49,50,.18);margin-top:3rem;padding-top:1rem;font-size:12px}}
+header.top a{{color:var(--spearmint)}}
+header.top a:hover{{background:none;color:var(--off-white)}}
+header.top p.store{{font-size:13px}}
+th.sortable{{cursor:pointer;user-select:none;white-space:nowrap}}
+th.sortable:hover{{background:rgba(6,223,199,.25)}}
+th.sortable[data-dir=asc]::after{{content:" \\25B2";font-size:10px}}
+th.sortable[data-dir=desc]::after{{content:" \\25BC";font-size:10px}}
+button.tool{{background:var(--forest);color:var(--off-white);border:0;border-radius:8px;padding:6px 14px;
+font:600 13px 'DM Sans',Arial,sans-serif;cursor:pointer;margin-right:8px}}
+button.tool:hover{{background:var(--spearmint);color:var(--forest)}}
 """
 
 
@@ -74,12 +87,91 @@ def head(title: str, extra_css: str = "", fonts: bool = True) -> str:
     )
 
 
-def banner(title: str, subtitle: str, range_line: str = "") -> str:
-    logo = _data_uri("sectigo-logo-light.png", "image/png")  # wordmark for the Forest band
+def banner(title: str, subtitle: str, range_line: str = "", compact: bool = False, note_html: str = "") -> str:
+    # wordmark for the Forest band. Compact builds (connector upload, text only) carry no logo: a model cannot
+    # retype the base64 faithfully, and an approximated logo would break the brand rules.
+    logo = "" if compact else _data_uri("sectigo-logo-light.png", "image/png")
     img = f"<img src='{logo}' alt='Sectigo'>" if logo else ""
     return (
         f"<header class='top'><div class='wrap'>{img}<h1>{escape(title)}</h1>"
         f"<p>{escape(subtitle)}</p>"
         + (f"<p class='range'>{escape(range_line)}</p>" if range_line else "")
+        + (f"<p class='store'>{note_html}</p>" if note_html else "")
         + "</div></header>"
     )
+
+
+AUTHOR_EMAIL = "igor.kulyk@sectigo.com"
+REPO_URL = "https://github.com/ig-kul-sec/ioproject-assistant"
+REPORT_FOLDER_URL = (
+    "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared%20Documents/"
+    "ITSM%20Freshservice/Archive/AI%20Test%20SharePoint%20Folder"
+)
+
+
+def footer() -> str:
+    return (
+        "<footer><p><b>IO Project Assistant</b> &nbsp;|&nbsp; "
+        f"Version: {escape(__version__)} &nbsp;|&nbsp; Author: "
+        f'<a href="mailto:{AUTHOR_EMAIL}">{AUTHOR_EMAIL}</a> &nbsp;|&nbsp; '
+        f'GitHub: <a href="{REPO_URL}" target="_blank" rel="noopener">{REPO_URL}</a></p>'
+        "<p>sectigo.com &nbsp;|&nbsp; Sectigo&copy; 2026. All rights reserved.</p></footer>"
+    )
+
+
+def sharepoint_folder_url() -> str:
+    """Report folder on SharePoint (SHAREPOINT_REPORT_FOLDER_URL overrides the default)."""
+    return (os.environ.get("SHAREPOINT_REPORT_FOLDER_URL") or REPORT_FOLDER_URL).strip()
+
+
+def sharepoint_file_url(filename: str) -> str:
+    """URL of a report file in that folder (the folder URL itself when it has a query string and cannot be extended)."""
+    folder = sharepoint_folder_url()
+    return folder if "?" in folder else folder.rstrip("/") + "/" + filename
+
+
+def sharepoint_note(filename: str) -> str:
+    """Raw HTML line linking the report file and its folder on SharePoint."""
+    folder = escape(sharepoint_folder_url(), quote=True)
+    file_url = sharepoint_file_url(filename)
+    file_link = ""
+    if file_url != sharepoint_folder_url():
+        file_link = f'<a href="{escape(file_url, quote=True)}" target="_blank" rel="noopener">{escape(filename)}</a> in '
+    return f'Stored in SharePoint: {file_link}<a href="{folder}" target="_blank" rel="noopener">AI Test SharePoint Folder</a>'
+
+
+SCRIPT = r"""<script>
+(function(){
+function val(c){var v=c.getAttribute('data-s');if(v===null)v=c.textContent.trim();return v}
+function num(v){var n=parseFloat(String(v).replace(/[$,%]/g,'').replace(/,/g,''));return isNaN(n)||!/^[-$\d.,%\s]+$/.test(v)?null:n}
+document.querySelectorAll('table').forEach(function(t){
+ t.querySelectorAll('th').forEach(function(h,i){
+  h.classList.add('sortable');h.title='Click to sort';
+  h.addEventListener('click',function(){
+   var asc=h.getAttribute('data-dir')!=='asc';
+   t.querySelectorAll('th').forEach(function(x){x.removeAttribute('data-dir')});
+   h.setAttribute('data-dir',asc?'asc':'desc');
+   var rows=Array.prototype.filter.call(t.rows,function(r){return r.querySelector('td')});
+   if(!rows.length)return;var par=rows[0].parentNode;
+   rows.sort(function(a,b){
+    var x=a.cells[i]?val(a.cells[i]):'',y=b.cells[i]?val(b.cells[i]):'';
+    var xe=!x||x==='n/a',ye=!y||y==='n/a';
+    if(xe||ye)return xe&&ye?0:(xe?1:-1);
+    var nx=num(x),ny=num(y);
+    var r=nx!==null&&ny!==null?nx-ny:x.localeCompare(y,undefined,{numeric:true,sensitivity:'base'});
+    return asc?r:-r});
+   rows.forEach(function(r){par.appendChild(r)});
+  })})});
+function openTo(){var id=decodeURIComponent(location.hash.slice(1));var e=id&&document.getElementById(id);
+ while(e){if(e.tagName==='DETAILS')e.open=true;e=e.parentElement}}
+window.addEventListener('hashchange',openTo);openTo();
+function all(open){document.querySelectorAll('details').forEach(function(d){d.open=open})}
+var c=document.getElementById('collapse-all'),x=document.getElementById('expand-all');
+if(c)c.addEventListener('click',function(){all(false)});
+if(x)x.addEventListener('click',function(){all(true)});
+})();
+</script>"""
+
+
+def foot() -> str:
+    return SCRIPT + "</body></html>"

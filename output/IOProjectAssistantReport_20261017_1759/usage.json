@@ -1,0 +1,66 @@
+[
+ {
+  "agent": "teams-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 287294,
+  "output_tokens": 0,
+  "seconds": 212.5,
+  "note": "total tokens only; Agent tool usage block reports no input/output split (total recorded as input_tokens)"
+ },
+ {
+  "agent": "jira-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 28508,
+  "output_tokens": 0,
+  "seconds": 153.9,
+  "note": "total tokens only; Agent tool usage block reports no input/output split (total recorded as input_tokens)"
+ },
+ {
+  "agent": "confluence-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 29515,
+  "output_tokens": 0,
+  "seconds": 124.3,
+  "note": "total tokens only; Agent tool usage block reports no input/output split (total recorded as input_tokens)"
+ },
+ {
+  "agent": "sharepoint-collector (read)",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 107379,
+  "output_tokens": 0,
+  "seconds": 144.2,
+  "note": "total tokens only; Agent tool usage block reports no input/output split (total recorded as input_tokens)"
+ },
+ {
+  "agent": "report-builder (status report)",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 24157,
+  "output_tokens": 0,
+  "seconds": 314.9,
+  "note": "total tokens only; Agent tool usage block reports no input/output split (total recorded as input_tokens)"
+ },
+ {
+  "agent": "sharepoint-collector (upload)",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 28260,
+  "output_tokens": 0,
+  "seconds": 46.2,
+  "note": "total tokens only; upload not performed (upload tool needs inline bytes, agent has no shell to encode the ~500 KB file)"
+ },
+ {
+  "agent": "report-builder (spending report)",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 23033,
+  "output_tokens": 0,
+  "seconds": 31.8,
+  "note": "total tokens only; measured after this run rendered the spending report, so not in the rendered HTML until the next re-render"
+ },
+ {
+  "agent": "orchestrator",
+  "model": "claude-opus-5-5",
+  "input_tokens": 100858,
+  "output_tokens": 0,
+  "seconds": 1630.8,
+  "note": "Total tokens only (in input_tokens) and duration, from the usage block of the Agent call that launched the orchestrator."
+ }
+]

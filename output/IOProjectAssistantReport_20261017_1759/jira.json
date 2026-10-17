@@ -1,0 +1,1870 @@
+{
+ "window": {
+  "from": "2026-10-12T00:00:00-04:00",
+  "to": "2026-10-17T10:59:00-04:00",
+  "run_id": "IOProjectAssistantReport_20261017_1759"
+ },
+ "sprint": {
+  "name": "I&O 26.42",
+  "start": "2026-10-12T07:00:00.000+01:00",
+  "end": "2026-10-16T22:00:00.000+01:00",
+  "tickets": [
+   {
+    "key": "COR-7997",
+    "url": "https://projects.sectigo.net/browse/COR-7997",
+    "status": "Done",
+    "summary": "Please add bdddcarac1 and bdddcarac2 to Grafana",
+    "assignee": "Akhil Kumar",
+    "due": null
+   },
+   {
+    "key": "COR-9967",
+    "url": "https://projects.sectigo.net/browse/COR-9967",
+    "status": "Rejected",
+    "summary": "ts_api_stage.pl cannot open https connection to the auth server",
+    "assignee": "Maarten Broekman",
+    "due": null
+   },
+   {
+    "key": "COR-11471",
+    "url": "https://projects.sectigo.net/browse/COR-11471",
+    "status": "QA",
+    "summary": "Elastic API access",
+    "assignee": "Ashwadeep Vaishnav",
+    "due": null
+   },
+   {
+    "key": "COR-12004",
+    "url": "https://projects.sectigo.net/browse/COR-12004",
+    "status": "Done",
+    "summary": "Upgrade bddpinlb1.brad.dc.comodoca.net to Debian 12",
+    "assignee": "Jeff Novick",
+    "due": null
+   },
+   {
+    "key": "COR-12005",
+    "url": "https://projects.sectigo.net/browse/COR-12005",
+    "status": "Done",
+    "summary": "Upgrade bddpinlb2.brad.dc.comodoca.net to Debian 12",
+    "assignee": "Jeff Novick",
+    "due": null
+   },
+   {
+    "key": "COR-12006",
+    "url": "https://projects.sectigo.net/browse/COR-12006",
+    "status": "Done",
+    "summary": "Upgrade bddscaavsapp1.brad.dc.comodoca.net to Debian 12",
+    "assignee": "Jeff Novick",
+    "due": null
+   },
+   {
+    "key": "COR-12019",
+    "url": "https://projects.sectigo.net/browse/COR-12019",
+    "status": "In Progress",
+    "summary": "Upgrade mcdpcaavsapp.mcr.dc.comodoca.net to Debian 12",
+    "assignee": "Jeff Novick",
+    "due": null
+   },
+   {
+    "key": "COR-12021",
+    "url": "https://projects.sectigo.net/browse/COR-12021",
+    "status": "In Progress",
+    "summary": "Upgrade scdpcaavsapp.sec.dc.comodoca.net to Debian 12",
+    "assignee": "Jeff Novick",
+    "due": null
+   },
+   {
+    "key": "COR-12333",
+    "url": "https://projects.sectigo.net/browse/COR-12333",
+    "status": "In Progress",
+    "summary": "Upgrade mcdpcaavspsql.mcr.dc.comodoca.net to Debian 12",
+    "assignee": "Jeff Novick",
+    "due": null
+   },
+   {
+    "key": "COR-12334",
+    "url": "https://projects.sectigo.net/browse/COR-12334",
+    "status": "In Progress",
+    "summary": "Upgrade scdpcaavspsql.sec.dc.comodoca.net to Debian 12",
+    "assignee": "Jeff Novick",
+    "due": null
+   },
+   {
+    "key": "COR-11041",
+    "url": "https://projects.sectigo.net/browse/COR-11041",
+    "status": "Done",
+    "summary": "[iSCSI] Identify the encryption details",
+    "assignee": "Andrey Kozudaev",
+    "due": null
+   },
+   {
+    "key": "COR-11042",
+    "url": "https://projects.sectigo.net/browse/COR-11042",
+    "status": "Done",
+    "summary": "[iSCSI] Figured out the configuration",
+    "assignee": "Andrey Kozudaev",
+    "due": null
+   },
+   {
+    "key": "COR-11036",
+    "url": "https://projects.sectigo.net/browse/COR-11036",
+    "status": "In Progress",
+    "summary": "[iSCSI] Figured out the consumers",
+    "assignee": "Andrey Kozudaev",
+    "due": null
+   },
+   {
+    "key": "COR-10998",
+    "url": "https://projects.sectigo.net/browse/COR-10998",
+    "status": "QA",
+    "summary": "[Post Failover2] Fix CAFW and INRT access prerequisites before failover day",
+    "assignee": "Andrey Kozudaev",
+    "due": null
+   },
+   {
+    "key": "COR-11005",
+    "url": "https://projects.sectigo.net/browse/COR-11005",
+    "status": "QA",
+    "summary": "[Post Failover2] Document dr.yaml UI flow and remove main-branch push dependency",
+    "assignee": "Andrey Kozudaev",
+    "due": null
+   },
+   {
+    "key": "COR-11015",
+    "url": "https://projects.sectigo.net/browse/COR-11015",
+    "status": "QA",
+    "summary": "[Post Failover2] Add step to run puppet on a standby DR to make backup servers works",
+    "assignee": "Andrey Kozudaev",
+    "due": null
+   },
+   {
+    "key": "COR-11729",
+    "url": "https://projects.sectigo.net/browse/COR-11729",
+    "status": "In Progress",
+    "summary": "Need a VM on GCP for Golden Gate",
+    "assignee": "Ashwadeep Vaishnav",
+    "due": null
+   },
+   {
+    "key": "COR-7664",
+    "url": "https://projects.sectigo.net/browse/COR-7664",
+    "status": "On Hold",
+    "summary": "Set Up IAM-Based Authentication for CloudSQL Databases in GCP",
+    "assignee": "Ashwadeep Vaishnav",
+    "due": null
+   },
+   {
+    "key": "COR-11752",
+    "url": "https://projects.sectigo.net/browse/COR-11752",
+    "status": "On Hold",
+    "summary": "Automate AWS IAM Identity Center Access Report Publishing to SharePoint",
+    "assignee": "Ashwadeep Vaishnav",
+    "due": null
+   },
+   {
+    "key": "COR-11501",
+    "url": "https://projects.sectigo.net/browse/COR-11501",
+    "status": "QA",
+    "summary": "Implement AWS IAM Identity Center SCIM Token Expiry Alerting",
+    "assignee": "Ashwadeep Vaishnav",
+    "due": null
+   },
+   {
+    "key": "COR-10708",
+    "url": "https://projects.sectigo.net/browse/COR-10708",
+    "status": "QA",
+    "summary": "Production Task 0.5: Deploy Spacelift runners",
+    "assignee": "Edino Moniz",
+    "due": null
+   },
+   {
+    "key": "COR-10768",
+    "url": "https://projects.sectigo.net/browse/COR-10768",
+    "status": "Done",
+    "summary": "MCR : Provision runner VMs via Ansible IaC",
+    "assignee": "Edino Moniz",
+    "due": null
+   },
+   {
+    "key": "COR-10769",
+    "url": "https://projects.sectigo.net/browse/COR-10769",
+    "status": "Done",
+    "summary": "MCR : Prep nodes by running ansible site.yaml",
+    "assignee": "Andrey Kozudaev",
+    "due": null
+   },
+   {
+    "key": "COR-10770",
+    "url": "https://projects.sectigo.net/browse/COR-10770",
+    "status": "Done",
+    "summary": "MCR : Bootstrap Cluster with Kubespray",
+    "assignee": "Andrey Kozudaev",
+    "due": null
+   },
+   {
+    "key": "COR-10774",
+    "url": "https://projects.sectigo.net/browse/COR-10774",
+    "status": "Done",
+    "summary": "MCR : Set up crowdstrike to runner cluster",
+    "assignee": "Edino Moniz",
+    "due": null
+   },
+   {
+    "key": "COR-10775",
+    "url": "https://projects.sectigo.net/browse/COR-10775",
+    "status": "Done",
+    "summary": "MCR : KubeState Metrics to runner's cluster",
+    "assignee": "Edino Moniz",
+    "due": null
+   },
+   {
+    "key": "COR-10776",
+    "url": "https://projects.sectigo.net/browse/COR-10776",
+    "status": "QA",
+    "summary": "MCR : Set up elastic agent",
+    "assignee": "Priya Muttum",
+    "due": null
+   },
+   {
+    "key": "COR-10777",
+    "url": "https://projects.sectigo.net/browse/COR-10777",
+    "status": "Done",
+    "summary": "MCR : set up externalSecret Operator",
+    "assignee": "Andrey Kozudaev",
+    "due": null
+   },
+   {
+    "key": "COR-10778",
+    "url": "https://projects.sectigo.net/browse/COR-10778",
+    "status": "Done",
+    "summary": "MCR : Deploy Spacelift Helm Chart",
+    "assignee": "Andrey Kozudaev",
+    "due": null
+   },
+   {
+    "key": "COR-10780",
+    "url": "https://projects.sectigo.net/browse/COR-10780",
+    "status": "Done",
+    "summary": "Deprecation of ingress-nginx for sectigo-kubespray",
+    "assignee": "Edino Moniz",
+    "due": null
+   },
+   {
+    "key": "COR-10827",
+    "url": "https://projects.sectigo.net/browse/COR-10827",
+    "status": "Done",
+    "summary": "MCR: Apply rbac roles from k8s-rbac",
+    "assignee": "Edino Moniz",
+    "due": null
+   },
+   {
+    "key": "COR-10828",
+    "url": "https://projects.sectigo.net/browse/COR-10828",
+    "status": "Done",
+    "summary": "SEC: Apply rbac roles from k8s-rbac",
+    "assignee": "Edino Moniz",
+    "due": null
+   },
+   {
+    "key": "COR-10832",
+    "url": "https://projects.sectigo.net/browse/COR-10832",
+    "status": "Done",
+    "summary": "MCR: Set up flux operator on the cluster",
+    "assignee": "Edino Moniz",
+    "due": null
+   },
+   {
+    "key": "COR-10833",
+    "url": "https://projects.sectigo.net/browse/COR-10833",
+    "status": "Done",
+    "summary": "SEC: Set up flux operator on the cluster",
+    "assignee": "Edino Moniz",
+    "due": null
+   },
+   {
+    "key": "COR-10850",
+    "url": "https://projects.sectigo.net/browse/COR-10850",
+    "status": "Done",
+    "summary": "SEC : Bootstrap Cluster with Kubespray",
+    "assignee": "Andrey Kozudaev",
+    "due": null
+   },
+   {
+    "key": "COR-10851",
+    "url": "https://projects.sectigo.net/browse/COR-10851",
+    "status": "Done",
+    "summary": "Adding git workflows",
+    "assignee": "Edino Moniz",
+    "due": null
+   },
+   {
+    "key": "COR-10853",
+    "url": "https://projects.sectigo.net/browse/COR-10853",
+    "status": "Done",
+    "summary": "SEC : Set up crowdstrike to runner cluster",
+    "assignee": "Edino Moniz",
+    "due": null
+   },
+   {
+    "key": "COR-10854",
+    "url": "https://projects.sectigo.net/browse/COR-10854",
+    "status": "Done",
+    "summary": "SEC : KubeState Metrics to runner's cluster",
+    "assignee": "Edino Moniz",
+    "due": null
+   },
+   {
+    "key": "COR-10855",
+    "url": "https://projects.sectigo.net/browse/COR-10855",
+    "status": "Done",
+    "summary": "SEC : set up externalSecret Operator",
+    "assignee": "Andrey Kozudaev",
+    "due": null
+   },
+   {
+    "key": "COR-10856",
+    "url": "https://projects.sectigo.net/browse/COR-10856",
+    "status": "QA",
+    "summary": "SEC : Set up elastic agent",
+    "assignee": "Priya Muttum",
+    "due": null
+   },
+   {
+    "key": "COR-10857",
+    "url": "https://projects.sectigo.net/browse/COR-10857",
+    "status": "QA",
+    "summary": "Add additiopnal sectigo helm repositories",
+    "assignee": "Edino Moniz",
+    "due": null
+   },
+   {
+    "key": "COR-10859",
+    "url": "https://projects.sectigo.net/browse/COR-10859",
+    "status": "Done",
+    "summary": "MCR: Expose mcdpinrunk8s K8S API as a single endpoint via INLBs",
+    "assignee": "Andrey Kozudaev",
+    "due": null
+   },
+   {
+    "key": "COR-10860",
+    "url": "https://projects.sectigo.net/browse/COR-10860",
+    "status": "Done",
+    "summary": "SEC: Expose scdpinrunk8s K8S API as a single endpoint via INLBs",
+    "assignee": "Andrey Kozudaev",
+    "due": null
+   },
+   {
+    "key": "COR-10937",
+    "url": "https://projects.sectigo.net/browse/COR-10937",
+    "status": "Done",
+    "summary": "SEC: Create Spacelift private worker pool",
+    "assignee": "Andrey Kozudaev",
+    "due": null
+   },
+   {
+    "key": "COR-10961",
+    "url": "https://projects.sectigo.net/browse/COR-10961",
+    "status": "Done",
+    "summary": "SEC : Deploy Spacelift Helm Chart",
+    "assignee": "Andrey Kozudaev",
+    "due": null
+   },
+   {
+    "key": "COR-10967",
+    "url": "https://projects.sectigo.net/browse/COR-10967",
+    "status": "Done",
+    "summary": "MCR: Create Spacelift private worker pool",
+    "assignee": "Andrey Kozudaev",
+    "due": null
+   },
+   {
+    "key": "COR-11617",
+    "url": "https://projects.sectigo.net/browse/COR-11617",
+    "status": "QA",
+    "summary": "Vault Access | Key Management (Three Key Ceremony) \u2013 #TSK-3510",
+    "assignee": "Edino Moniz",
+    "due": null
+   },
+   {
+    "key": "COR-9284",
+    "url": "https://projects.sectigo.net/browse/COR-9284",
+    "status": "On Hold",
+    "summary": "Kubernetes admission controller to validate container attestations POC",
+    "assignee": "Edino Moniz",
+    "due": null
+   },
+   {
+    "key": "COR-11514",
+    "url": "https://projects.sectigo.net/browse/COR-11514",
+    "status": "Done",
+    "summary": "Story 1: Validate attestation data on real sample images",
+    "assignee": "Edino Moniz",
+    "due": null
+   },
+   {
+    "key": "COR-11516",
+    "url": "https://projects.sectigo.net/browse/COR-11516",
+    "status": "In Progress",
+    "summary": "Story 3: Implement namespace-scoped enforcement policy",
+    "assignee": "Edino Moniz",
+    "due": null
+   },
+   {
+    "key": "COR-11515",
+    "url": "https://projects.sectigo.net/browse/COR-11515",
+    "status": "QA",
+    "summary": "Story 2: Deploy Kyverno via Flux to target cluster",
+    "assignee": "Edino Moniz",
+    "due": null
+   },
+   {
+    "key": "COR-11517",
+    "url": "https://projects.sectigo.net/browse/COR-11517",
+    "status": "On Hold",
+    "summary": "Story 4: Execute admission test matrix",
+    "assignee": "Edino Moniz",
+    "due": null
+   },
+   {
+    "key": "COR-11518",
+    "url": "https://projects.sectigo.net/browse/COR-11518",
+    "status": "On Hold",
+    "summary": "Story 5: Document findings and recommendation",
+    "assignee": "Edino Moniz",
+    "due": null
+   },
+   {
+    "key": "COR-11525",
+    "url": "https://projects.sectigo.net/browse/COR-11525",
+    "status": "QA",
+    "summary": "Story 0: Provision vulnerability-manager in non-production",
+    "assignee": "Edino Moniz",
+    "due": null
+   },
+   {
+    "key": "COR-11885",
+    "url": "https://projects.sectigo.net/browse/COR-11885",
+    "status": "QA",
+    "summary": "Add static CT log targets to Prometheus/Grafana",
+    "assignee": "Andrey Shabotov",
+    "due": null
+   },
+   {
+    "key": "COR-12134",
+    "url": "https://projects.sectigo.net/browse/COR-12134",
+    "status": "QA",
+    "summary": "Stage02 permissions and gitwatch repo cleanup",
+    "assignee": "Maarten Broekman",
+    "due": null
+   },
+   {
+    "key": "COR-11946",
+    "url": "https://projects.sectigo.net/browse/COR-11946",
+    "status": "QA",
+    "summary": "Revamp the binlog management cronjob for sitelock databases",
+    "assignee": "Maarten Broekman",
+    "due": null
+   },
+   {
+    "key": "COR-11916",
+    "url": "https://projects.sectigo.net/browse/COR-11916",
+    "status": "QA",
+    "summary": "Install Hashicorp vault for Sitelock datacenter systems",
+    "assignee": "Maarten Broekman",
+    "due": null
+   },
+   {
+    "key": "COR-11797",
+    "url": "https://projects.sectigo.net/browse/COR-11797",
+    "status": "QA",
+    "summary": "Please change POC OMS to point to saspt1 service instead of sasppc",
+    "assignee": "Raymond Raiani",
+    "due": null
+   },
+   {
+    "key": "COR-8933",
+    "url": "https://projects.sectigo.net/browse/COR-8933",
+    "status": "QA",
+    "summary": "Create and Configuration two VM with OS for Oracle RAC QA",
+    "assignee": "Raymond Raiani",
+    "due": "2025-11-05"
+   },
+   {
+    "key": "COR-10819",
+    "url": "https://projects.sectigo.net/browse/COR-10819",
+    "status": "In Progress",
+    "summary": "2nd Prod group - to create servers in Production to host AVS/CertStatus/SAS DB/Operation/Service groups in Man/Sec server consolidation.",
+    "assignee": "Gabriel Rovira",
+    "due": "2026-09-29"
+   },
+   {
+    "key": "COR-11254",
+    "url": "https://projects.sectigo.net/browse/COR-11254",
+    "status": "In Progress",
+    "summary": "Create ansible role for patchmon agent deployment and management",
+    "assignee": "Alexandru Rosu",
+    "due": null
+   },
+   {
+    "key": "IOSP-1010",
+    "url": "https://projects.sectigo.net/browse/IOSP-1010",
+    "status": "In Progress",
+    "summary": "Shipment to Manchester: Plan and contracts",
+    "assignee": "Karl Witt",
+    "due": null
+   },
+   {
+    "key": "IOSP-1011",
+    "url": "https://projects.sectigo.net/browse/IOSP-1011",
+    "status": "Done",
+    "summary": "Enable and test Pure-based backup",
+    "assignee": "Earle Long",
+    "due": null
+   },
+   {
+    "key": "IOSP-1012",
+    "url": "https://projects.sectigo.net/browse/IOSP-1012",
+    "status": "To Do",
+    "summary": "Enable the RAC instance backup",
+    "assignee": "Calvin Cochran",
+    "due": null
+   },
+   {
+    "key": "IOSP-1014",
+    "url": "https://projects.sectigo.net/browse/IOSP-1014",
+    "status": "Done",
+    "summary": "Validate and Confirm Pure backup",
+    "assignee": "Calvin Cochran",
+    "due": null
+   },
+   {
+    "key": "IOSP-992",
+    "url": "https://projects.sectigo.net/browse/IOSP-992",
+    "status": "Done",
+    "summary": "Cluster Verification Utility (CVU) check env",
+    "assignee": "Aurel Antici",
+    "due": null
+   },
+   {
+    "key": "IOSP-993",
+    "url": "https://projects.sectigo.net/browse/IOSP-993",
+    "status": "Done",
+    "summary": "Oracle Software/RAC Installation completed",
+    "assignee": "Aurel Antici",
+    "due": null
+   },
+   {
+    "key": "IOSP-994",
+    "url": "https://projects.sectigo.net/browse/IOSP-994",
+    "status": "Done",
+    "summary": "DB Restored/Refreshed",
+    "assignee": "Aurel Antici",
+    "due": null
+   },
+   {
+    "key": "COR-12183",
+    "url": "https://projects.sectigo.net/browse/COR-12183",
+    "status": "QA",
+    "summary": "Restrict access to the SASP webhook endpoint",
+    "assignee": "Andrey Shabotov",
+    "due": null
+   },
+   {
+    "key": "COR-12191",
+    "url": "https://projects.sectigo.net/browse/COR-12191",
+    "status": "Backlog",
+    "summary": "[Net2.0] Finalize firewall rules",
+    "assignee": "Jaime Larsen",
+    "due": null
+   },
+   {
+    "key": "COR-12192",
+    "url": "https://projects.sectigo.net/browse/COR-12192",
+    "status": "Backlog",
+    "summary": "[Net2.0] Finalization of CloudVision",
+    "assignee": "Jaime Larsen",
+    "due": null
+   },
+   {
+    "key": "COR-12341",
+    "url": "https://projects.sectigo.net/browse/COR-12341",
+    "status": "QA",
+    "summary": "Allowlist request - SiteLock Partner",
+    "assignee": "Maarten Broekman",
+    "due": null
+   },
+   {
+    "key": "COR-12344",
+    "url": "https://projects.sectigo.net/browse/COR-12344",
+    "status": "Done",
+    "summary": "Upgrade bddpinlb2.brad.dc.comodoca.net to Debian 13",
+    "assignee": "Jeff Novick",
+    "due": null
+   },
+   {
+    "key": "COR-12345",
+    "url": "https://projects.sectigo.net/browse/COR-12345",
+    "status": "Done",
+    "summary": "Upgrade bddpinlb1.brad.dc.comodoca.net to Debian 13",
+    "assignee": "Jeff Novick",
+    "due": null
+   },
+   {
+    "key": "COR-12350",
+    "url": "https://projects.sectigo.net/browse/COR-12350",
+    "status": "Backlog",
+    "summary": "ARC self-hosted runners (arc-runners) down on SCM EU nonprod since 1-Oct after auto-upgrade to 0.15.0",
+    "assignee": "Ashwadeep Vaishnav",
+    "due": null
+   },
+   {
+    "key": "COR-12355",
+    "url": "https://projects.sectigo.net/browse/COR-12355",
+    "status": "QA",
+    "summary": "Allowlist request - SiteLock Partner",
+    "assignee": "Maarten Broekman",
+    "due": null
+   }
+  ]
+ },
+ "projects": [
+  {
+   "name": "Rubrik DR backup",
+   "tickets": [
+    {
+     "key": "IOSP-471",
+     "url": "https://projects.sectigo.net/browse/IOSP-471",
+     "name": "Disaster Recovery backup system (Rubrik)",
+     "status": "In Progress",
+     "assignee": "Igor Kulyk",
+     "start": "2026-01-08",
+     "end": null,
+     "epic": true,
+     "related": [
+      {
+       "key": "RM-1658",
+       "url": "https://projects.sectigo.net/browse/RM-1658"
+      }
+     ],
+     "updated": "2026-10-16T13:51:27.800+0100",
+     "last_comment": {
+      "author": "Gabriel Rovira",
+      "date": "2026-02-11T14:04:58.287+0000",
+      "text": "[~volodymyr.fedyna] is this target end date correct?"
+     },
+     "changes_in_window": [
+      {
+       "when": "2026-10-14T17:52:54.930+0100",
+       "who": "Igor Kulyk",
+       "field": "description",
+       "from": "Here is the DashBoard --> (Will be updated every Friday before COB) [Status Dashboard - Rubrik - Cloud Operations - Confluence|https://confluence.comodoca.net/display/CO/Status+Dashboard+-+Rubrik]\r\n\r\n\u00a0\r\n\r\nTeam: The SREO team will lead this effort with Calvin as the effort lead.\r\n\r\nAction: Phase one is to get all the oracle data and Postgres.\u00a0 Hardware purchase and software installation.\u00a0\r\n\r\nOut of Scope: All cloud base technology GCP, AWS, Azure data. Maria Database, final phase is to get VM data.\r\n\r\nTiming: 6 Month effort.\u00a0\u00a0",
+       "to": "Here is the DashBoard --> (Will be updated every Friday before COB) [Status Dashboard - Rubrik - Cloud Operations - Confluence|https://confluence.comodoca.net/display/CO/Status+Dashboard+-+Rubrik]\r\n\r\n\u00a0\r\n\r\nTeam: The SREO team will lead this effort with Calvin as the effort lead.\r\n\r\nAction: Phase one is to get all the oracle data and Postgres.\u00a0 Hardware purchase and software installation.\u00a0\r\n\r\nOut of Scope: All cloud base technology GCP, AWS, Azure data. Maria Database, final phase is to get VM data.\r\n\r\nTiming: 6 Month effort.\u00a0\u00a0\r\n\r\n\u00a0\r\n\r\n*Project objectives:*\r\n * Deploy Rubrik hardware in Secaucus and Manchester.\r\n * Onboard Oracle backups to Rubrik.\r\n * -{color:#de350b}Onboard Postgres backups to Rubrik.{color}-\r\n(Removed in September 2026 due to PostgresEDB project on-hold)\r\n * Perform full in-datacenter initial synchronization.\r\n * Successfully establish cross-datacenter sync.\r\n * Validate monthly restore using Rubrik as the source.\r\n * {color:#4c9aff}Evaluate decommission of legacy backup mechanisms.{color}\r\n{color:#4c9aff}(updated 10/14/2026){color}"
+      },
+      {
+       "when": "2026-10-14T17:53:10.912+0100",
+       "who": "Igor Kulyk",
+       "field": "description",
+       "from": "Here is the DashBoard --> (Will be updated every Friday before COB) [Status Dashboard - Rubrik - Cloud Operations - Confluence|https://confluence.comodoca.net/display/CO/Status+Dashboard+-+Rubrik]\r\n\r\n\u00a0\r\n\r\nTeam: The SREO team will lead this effort with Calvin as the effort lead.\r\n\r\nAction: Phase one is to get all the oracle data and Postgres.\u00a0 Hardware purchase and software installation.\u00a0\r\n\r\nOut of Scope: All cloud base technology GCP, AWS, Azure data. Maria Database, final phase is to get VM data.\r\n\r\nTiming: 6 Month effort.\u00a0\u00a0\r\n\r\n\u00a0\r\n\r\n*Project objectives:*\r\n * Deploy Rubrik hardware in Secaucus and Manchester.\r\n * Onboard Oracle backups to Rubrik.\r\n * -{color:#de350b}Onboard Postgres backups to Rubrik.{color}-\r\n(Removed in September 2026 due to PostgresEDB project on-hold)\r\n * Perform full in-datacenter initial synchronization.\r\n * Successfully establish cross-datacenter sync.\r\n * Validate monthly restore using Rubrik as the source.\r\n * {color:#4c9aff}Evaluate decommission of legacy backup mechanisms.{color}\r\n{color:#4c9aff}(updated 10/14/2026){color}",
+       "to": "Here is the DashBoard --> (Will be updated every Friday before COB) [Status Dashboard - Rubrik - Cloud Operations - Confluence|https://confluence.comodoca.net/display/CO/Status+Dashboard+-+Rubrik]\r\n\r\n\u00a0\r\n\r\nTeam: The SREO team will lead this effort with Calvin as the effort lead.\r\n\r\nAction: Phase one is to get all the oracle data and Postgres.\u00a0 Hardware purchase and software installation.\u00a0\r\n\r\nOut of Scope: All cloud base technology GCP, AWS, Azure data. Maria Database, final phase is to get VM data.\r\n\r\nTiming: 6 Month effort.\u00a0\u00a0\r\n\r\n\u00a0\r\n\r\n*Project objectives:*\r\n * Deploy Rubrik hardware in Secaucus and Manchester.\r\n * Onboard Oracle backups to Rubrik.\r\n * -{color:#de350b}Onboard Postgres backups to Rubrik.{color}-\r\n{color:#de350b}(Removed in September 2026 due to PostgresEDB project on-hold){color}\r\n * Perform full in-datacenter initial synchronization.\r\n * Successfully establish cross-datacenter sync.\r\n * Validate monthly restore using Rubrik as the source.\r\n * {color:#4c9aff}Evaluate decommission of legacy backup mechanisms.{color}\r\n{color:#4c9aff}(updated 10/14/2026){color}"
+      },
+      {
+       "when": "2026-10-14T17:54:53.191+0100",
+       "who": "Igor Kulyk",
+       "field": "description",
+       "from": "Here is the DashBoard --> (Will be updated every Friday before COB) [Status Dashboard - Rubrik - Cloud Operations - Confluence|https://confluence.comodoca.net/display/CO/Status+Dashboard+-+Rubrik]\r\n\r\n\u00a0\r\n\r\nTeam: The SREO team will lead this effort with Calvin as the effort lead.\r\n\r\nAction: Phase one is to get all the oracle data and Postgres.\u00a0 Hardware purchase and software installation.\u00a0\r\n\r\nOut of Scope: All cloud base technology GCP, AWS, Azure data. Maria Database, final phase is to get VM data.\r\n\r\nTiming: 6 Month effort.\u00a0\u00a0\r\n\r\n\u00a0\r\n\r\n*Project objectives:*\r\n * Deploy Rubrik hardware in Secaucus and Manchester.\r\n * Onboard Oracle backups to Rubrik.\r\n * -{color:#de350b}Onboard Postgres backups to Rubrik.{color}-\r\n{color:#de350b}(Removed in September 2026 due to PostgresEDB project on-hold){color}\r\n * Perform full in-datacenter initial synchronization.\r\n * Successfully establish cross-datacenter sync.\r\n * Validate monthly restore using Rubrik as the source.\r\n * {color:#4c9aff}Evaluate decommission of legacy backup mechanisms.{color}\r\n{color:#4c9aff}(updated 10/14/2026){color}",
+       "to": "Here is the DashBoard --> (Will be updated every Friday before COB) [Status Dashboard - Rubrik - Cloud Operations - Confluence|https://confluence.comodoca.net/display/CO/Status+Dashboard+-+Rubrik]\r\n\r\n\u00a0\r\n\r\nTeam: The SREO team will lead this effort with Calvin as the effort lead.\r\n\r\nAction: Phase one is to get all the oracle data -and Postgres- (Removed in September 2026).\u00a0 Hardware purchase and software installation.\u00a0\r\n\r\nOut of Scope: All cloud base technology GCP, AWS, Azure data. Maria Database, final phase is to get VM data.\r\n\r\nTiming: 6 Month effort.\u00a0\u00a0\r\n\r\n\u00a0\r\n\r\n*Project objectives:*\r\n * Deploy Rubrik hardware in Secaucus and Manchester.\r\n * Onboard Oracle backups to Rubrik.\r\n * -{color:#de350b}Onboard Postgres backups to Rubrik.{color}-\r\n{color:#de350b}(Removed in September 2026 due to PostgresEDB project on-hold){color}\r\n * Perform full in-datacenter initial synchronization.\r\n * Successfully establish cross-datacenter sync.\r\n * Validate monthly restore using Rubrik as the source.\r\n * {color:#4c9aff}Evaluate decommission of legacy backup mechanisms.{color}\r\n{color:#4c9aff}(updated 10/14/2026){color}"
+      },
+      {
+       "when": "2026-10-14T18:04:21.854+0100",
+       "who": "Igor Kulyk",
+       "field": "description",
+       "from": "Here is the DashBoard --> (Will be updated every Friday before COB) [Status Dashboard - Rubrik - Cloud Operations - Confluence|https://confluence.comodoca.net/display/CO/Status+Dashboard+-+Rubrik]\r\n\r\n\u00a0\r\n\r\nTeam: The SREO team will lead this effort with Calvin as the effort lead.\r\n\r\nAction: Phase one is to get all the oracle data -and Postgres- (Removed in September 2026).\u00a0 Hardware purchase and software installation.\u00a0\r\n\r\nOut of Scope: All cloud base technology GCP, AWS, Azure data. Maria Database, final phase is to get VM data.\r\n\r\nTiming: 6 Month effort.\u00a0\u00a0\r\n\r\n\u00a0\r\n\r\n*Project objectives:*\r\n * Deploy Rubrik hardware in Secaucus and Manchester.\r\n * Onboard Oracle backups to Rubrik.\r\n * -{color:#de350b}Onboard Postgres backups to Rubrik.{color}-\r\n{color:#de350b}(Removed in September 2026 due to PostgresEDB project on-hold){color}\r\n * Perform full in-datacenter initial synchronization.\r\n * Successfully establish cross-datacenter sync.\r\n * Validate monthly restore using Rubrik as the source.\r\n * {color:#4c9aff}Evaluate decommission of legacy backup mechanisms.{color}\r\n{color:#4c9aff}(updated 10/14/2026){color}",
+       "to": "Here is the DashBoard --> (Will be updated every Friday before COB) [Status Dashboard - Rubrik - Cloud Operations - Confluence|https://confluence.comodoca.net/display/CO/Status+Dashboard+-+Rubrik]\r\n\r\n\u00a0\r\n\r\nTeam: The SREO team will lead this effort with Calvin as the effort lead.\r\n\r\nAction: Phase one is to get all the oracle data -and Postgres- (Removed in September 2026).\u00a0 Hardware purchase and software installation.\u00a0\r\n\r\nOut of Scope: All cloud base technology GCP, AWS, Azure data. Maria Database, final phase is to get VM data.\r\n\r\nTiming: 6 Month effort.\u00a0\u00a0\r\n\r\n\u00a0\r\n\r\n*Project objectives:*\r\n * Deploy Rubrik hardware in Secaucus and Manchester.\r\n * Onboard Oracle backups to Rubrik.\r\n * -{color:#de350b}Onboard Postgres backups to Rubrik.{color}-\r\n{color:#de350b}(Removed in September 2026 due to PostgresEDB project on-hold){color}\r\n * Perform full in-datacenter initial synchronization.\r\n * Successfully establish cross-datacenter sync.\r\n * {color:#4c9aff}Successfully recover a Rubrik SASP backup onto bdddcanlora[3 or 5] \r\n(Added 10/14/2026){color}\r\n * Validate monthly restore using Rubrik as the source.\r\n * {color:#4c9aff}Evaluate decommission of legacy backup mechanisms.{color}\r\n{color:#4c9aff}(updated 10/14/2026){color}"
+      },
+      {
+       "when": "2026-10-14T18:05:24.049+0100",
+       "who": "Igor Kulyk",
+       "field": "description",
+       "from": "Here is the DashBoard --> (Will be updated every Friday before COB) [Status Dashboard - Rubrik - Cloud Operations - Confluence|https://confluence.comodoca.net/display/CO/Status+Dashboard+-+Rubrik]\r\n\r\n\u00a0\r\n\r\nTeam: The SREO team will lead this effort with Calvin as the effort lead.\r\n\r\nAction: Phase one is to get all the oracle data -and Postgres- (Removed in September 2026).\u00a0 Hardware purchase and software installation.\u00a0\r\n\r\nOut of Scope: All cloud base technology GCP, AWS, Azure data. Maria Database, final phase is to get VM data.\r\n\r\nTiming: 6 Month effort.\u00a0\u00a0\r\n\r\n\u00a0\r\n\r\n*Project objectives:*\r\n * Deploy Rubrik hardware in Secaucus and Manchester.\r\n * Onboard Oracle backups to Rubrik.\r\n * -{color:#de350b}Onboard Postgres backups to Rubrik.{color}-\r\n{color:#de350b}(Removed in September 2026 due to PostgresEDB project on-hold){color}\r\n * Perform full in-datacenter initial synchronization.\r\n * Successfully establish cross-datacenter sync.\r\n * {color:#4c9aff}Successfully recover a Rubrik SASP backup onto bdddcanlora[3 or 5] \r\n(Added 10/14/2026){color}\r\n * Validate monthly restore using Rubrik as the source.\r\n * {color:#4c9aff}Evaluate decommission of legacy backup mechanisms.{color}\r\n{color:#4c9aff}(updated 10/14/2026){color}",
+       "to": "Here is the DashBoard --> (Will be updated every Friday before COB) [Status Dashboard - Rubrik - Cloud Operations - Confluence|https://confluence.comodoca.net/display/CO/Status+Dashboard+-+Rubrik]\r\n\r\n\u00a0\r\n\r\nTeam: The SREO team will lead this effort with Calvin as the effort lead.\r\n\r\nAction: Phase one is to get all the oracle data -and Postgres- (Removed in September 2026).\u00a0 Hardware purchase and software installation.\u00a0\r\n\r\nOut of Scope: All cloud base technology GCP, AWS, Azure data. Maria Database, final phase is to get VM data.\r\n\r\nTiming: 6 Month effort.\u00a0\u00a0\r\n\r\n\u00a0\r\n\r\n*Project objectives:*\r\n * Deploy Rubrik hardware in Secaucus and Manchester.\r\n * Onboard Oracle backups to Rubrik.\r\n * -{color:#de350b}Onboard Postgres backups to Rubrik.{color}-\r\n{color:#de350b}(Removed in September 2026 due to PostgresEDB project on-hold){color}\r\n * Perform full in-datacenter initial synchronization.\r\n * Successfully establish cross-datacenter sync.\r\n * Validate monthly restore using Rubrik as the source.\r\n * {color:#4c9aff}Evaluate decommission of legacy backup mechanisms.{color}\r\n{color:#4c9aff}(updated 10/14/2026){color}"
+      },
+      {
+       "when": "2026-10-16T13:51:27.801+0100",
+       "who": "Igor Kulyk",
+       "field": "Link",
+       "from": null,
+       "to": "This issue relates to RM-1658"
+      }
+     ]
+    },
+    {
+     "key": "IOSP-1015",
+     "url": "https://projects.sectigo.net/browse/IOSP-1015",
+     "name": "Shipment to Manchester: International shipment process",
+     "status": "Backlog",
+     "assignee": "Calvin Cochran",
+     "start": "2026-10-27",
+     "end": null,
+     "epic": false,
+     "related": [
+      {
+       "key": "IOSP-1013",
+       "url": "https://projects.sectigo.net/browse/IOSP-1013"
+      }
+     ],
+     "updated": "2026-10-12T13:55:10.000+0100",
+     "last_comment": null,
+     "changes_in_window": [
+      {
+       "when": "2026-10-12T13:55:10.618+0100",
+       "who": "Igor Kulyk",
+       "field": "status",
+       "from": "Backlog",
+       "to": "Backlog"
+      }
+     ]
+    },
+    {
+     "key": "IOSP-1014",
+     "url": "https://projects.sectigo.net/browse/IOSP-1014",
+     "name": "Validate and Confirm Pure backup",
+     "status": "Done",
+     "assignee": "Calvin Cochran",
+     "start": "2026-10-08",
+     "end": null,
+     "epic": false,
+     "related": [],
+     "updated": "2026-10-14T16:28:08.000+0100",
+     "last_comment": {
+      "author": "Igor Kulyk",
+      "date": "2026-10-14T16:27:53.985+0100",
+      "text": "Closing ticket based on successful finishing and confirmation by [~calvin.cochran]\u00a0"
+     },
+     "changes_in_window": [
+      {
+       "when": "2026-10-12T13:55:00.973+0100",
+       "who": "Igor Kulyk",
+       "field": "status",
+       "from": "Backlog",
+       "to": "To Do"
+      },
+      {
+       "when": "2026-10-14T14:31:45.449+0100",
+       "who": "Igor Kulyk",
+       "field": "Link",
+       "from": "This issue clones IOSP-1013",
+       "to": null
+      },
+      {
+       "when": "2026-10-14T16:28:01.178+0100",
+       "who": "Igor Kulyk",
+       "field": "resolution",
+       "from": null,
+       "to": "Done"
+      },
+      {
+       "when": "2026-10-14T16:28:01.178+0100",
+       "who": "Igor Kulyk",
+       "field": "status",
+       "from": "To Do",
+       "to": "Done"
+      },
+      {
+       "when": "2026-10-14T16:28:04.741+0100",
+       "who": "Igor Kulyk",
+       "field": "status",
+       "from": "Done",
+       "to": "In Progress"
+      },
+      {
+       "when": "2026-10-14T16:28:08.172+0100",
+       "who": "Igor Kulyk",
+       "field": "status",
+       "from": "In Progress",
+       "to": "Done"
+      },
+      {
+       "when": "2026-10-14T14:20:28.130+0100",
+       "who": "Calvin Cochran",
+       "field": "comment",
+       "text": "From Earle Long on 20261013:\r\nwe have had 4 successful backups so far ... I'd like to see 2 or 3 more ideally"
+      },
+      {
+       "when": "2026-10-14T16:27:53.985+0100",
+       "who": "Igor Kulyk",
+       "field": "comment",
+       "text": "Closing ticket based on successful finishing and confirmation by [~calvin.cochran]\u00a0"
+      }
+     ]
+    },
+    {
+     "key": "IOSP-1013",
+     "url": "https://projects.sectigo.net/browse/IOSP-1013",
+     "name": "Shipment to Manchester: Prepare Rubrik appliances for shutdown",
+     "status": "To Do",
+     "assignee": "Calvin Cochran",
+     "start": "2026-10-13",
+     "end": null,
+     "epic": false,
+     "related": [
+      {
+       "key": "IOSP-1012",
+       "url": "https://projects.sectigo.net/browse/IOSP-1012"
+      },
+      {
+       "key": "IOSP-1015",
+       "url": "https://projects.sectigo.net/browse/IOSP-1015"
+      }
+     ],
+     "updated": "2026-10-16T14:22:29.000+0100",
+     "last_comment": null,
+     "changes_in_window": [
+      {
+       "when": "2026-10-12T13:54:44.730+0100",
+       "who": "Igor Kulyk",
+       "field": "status",
+       "from": "Backlog",
+       "to": "To Do"
+      },
+      {
+       "when": "2026-10-14T14:31:45.452+0100",
+       "who": "Igor Kulyk",
+       "field": "Link",
+       "from": "This issue is cloned by IOSP-1014",
+       "to": null
+      },
+      {
+       "when": "2026-10-16T14:22:29.413+0100",
+       "who": "Mike Massimino",
+       "field": "assignee",
+       "from": "Earle Long",
+       "to": "Calvin Cochran"
+      }
+     ]
+    },
+    {
+     "key": "IOSP-1012",
+     "url": "https://projects.sectigo.net/browse/IOSP-1012",
+     "name": "Enable the RAC instance backup",
+     "status": "To Do",
+     "assignee": "Calvin Cochran",
+     "start": "2026-10-08",
+     "end": null,
+     "epic": false,
+     "related": [
+      {
+       "key": "IOSP-1011",
+       "url": "https://projects.sectigo.net/browse/IOSP-1011"
+      },
+      {
+       "key": "IOSP-1013",
+       "url": "https://projects.sectigo.net/browse/IOSP-1013"
+      },
+      {
+       "key": "RM-1658",
+       "url": "https://projects.sectigo.net/browse/RM-1658"
+      }
+     ],
+     "updated": "2026-10-16T14:22:54.000+0100",
+     "last_comment": null,
+     "changes_in_window": [
+      {
+       "when": "2026-10-12T13:55:04.721+0100",
+       "who": "Igor Kulyk",
+       "field": "status",
+       "from": "Backlog",
+       "to": "To Do"
+      },
+      {
+       "when": "2026-10-14T14:22:55.433+0100",
+       "who": "Igor Kulyk",
+       "field": "description",
+       "from": "Enable the RAC instance backup after Pure validation",
+       "to": "Enable the RAC instance backup after Pure validation\r\n\r\nTarget enabling: 10/16 at 6PM UTC"
+      },
+      {
+       "when": "2026-10-14T16:28:27.851+0100",
+       "who": "Igor Kulyk",
+       "field": "status",
+       "from": "To Do",
+       "to": "Backlog"
+      },
+      {
+       "when": "2026-10-16T13:51:27.858+0100",
+       "who": "Igor Kulyk",
+       "field": "Link",
+       "from": null,
+       "to": "This issue relates to RM-1658"
+      },
+      {
+       "when": "2026-10-16T13:51:52.352+0100",
+       "who": "Igor Kulyk",
+       "field": "status",
+       "from": "Backlog",
+       "to": "To Do"
+      },
+      {
+       "when": "2026-10-16T14:20:08.323+0100",
+       "who": "Mike Massimino",
+       "field": "description",
+       "from": "Enable the RAC instance backup after Pure validation\r\n\r\nTarget enabling: 10/16 at 6PM UTC",
+       "to": "Enable the RAC instance backup after Pure validation\r\n\r\nTarget enabling: 10/18 at 6PM UTC"
+      },
+      {
+       "when": "2026-10-16T14:22:54.548+0100",
+       "who": "Mike Massimino",
+       "field": "assignee",
+       "from": "Earle Long",
+       "to": "Calvin Cochran"
+      }
+     ]
+    },
+    {
+     "key": "IOSP-1011",
+     "url": "https://projects.sectigo.net/browse/IOSP-1011",
+     "name": "Enable and test Pure-based backup",
+     "status": "Done",
+     "assignee": "Earle Long",
+     "start": "2026-10-08",
+     "end": null,
+     "epic": false,
+     "related": [
+      {
+       "key": "IOSP-1012",
+       "url": "https://projects.sectigo.net/browse/IOSP-1012"
+      }
+     ],
+     "updated": "2026-10-14T16:27:36.000+0100",
+     "last_comment": {
+      "author": "Igor Kulyk",
+      "date": "2026-10-14T16:27:25.362+0100",
+      "text": "Closing ticket based on successful finishing and confirmation by [~calvin.cochran]\u00a0"
+     },
+     "changes_in_window": [
+      {
+       "when": "2026-10-13T14:02:29.254+0100",
+       "who": "Igor Kulyk",
+       "field": "Link",
+       "from": "This issue clones IOSP-1010",
+       "to": null
+      },
+      {
+       "when": "2026-10-14T16:27:36.108+0100",
+       "who": "Igor Kulyk",
+       "field": "resolution",
+       "from": null,
+       "to": "Done"
+      },
+      {
+       "when": "2026-10-14T16:27:36.108+0100",
+       "who": "Igor Kulyk",
+       "field": "status",
+       "from": "In Progress",
+       "to": "Done"
+      },
+      {
+       "when": "2026-10-14T14:22:02.340+0100",
+       "who": "Igor Kulyk",
+       "field": "comment",
+       "text": "Enabled on Trhusday 10/8. Succesfully running (confirmed 10/13)."
+      },
+      {
+       "when": "2026-10-14T16:27:25.362+0100",
+       "who": "Igor Kulyk",
+       "field": "comment",
+       "text": "Closing ticket based on successful finishing and confirmation by [~calvin.cochran]\u00a0"
+      }
+     ]
+    },
+    {
+     "key": "IOSP-1010",
+     "url": "https://projects.sectigo.net/browse/IOSP-1010",
+     "name": "Shipment to Manchester: Plan and contracts",
+     "status": "In Progress",
+     "assignee": "Karl Witt",
+     "start": "2026-10-08",
+     "end": null,
+     "epic": false,
+     "related": [],
+     "updated": "2026-10-13T14:02:43.000+0100",
+     "last_comment": null,
+     "changes_in_window": [
+      {
+       "when": "2026-10-13T14:02:26.372+0100",
+       "who": "Igor Kulyk",
+       "field": "Link",
+       "from": "This issue clones IOSP-1009",
+       "to": null
+      },
+      {
+       "when": "2026-10-13T14:02:29.258+0100",
+       "who": "Igor Kulyk",
+       "field": "Link",
+       "from": "This issue is cloned by IOSP-1011",
+       "to": null
+      },
+      {
+       "when": "2026-10-13T14:02:43.109+0100",
+       "who": "Igor Kulyk",
+       "field": "description",
+       "from": "Prepare shipment plan and contracts with procurement and logistics team, MicroAge",
+       "to": "Prepare shipment plan and contracts with procurement and logistics team, MicroAge\r\nPer Karl: we are contracting a company to do pack and ship the gear for us, they will provide us anything we need to have signed.\u00a0"
+      }
+     ]
+    },
+    {
+     "key": "IOSP-1009",
+     "url": "https://projects.sectigo.net/browse/IOSP-1009",
+     "name": "Background DBA work",
+     "status": "Backlog",
+     "assignee": "Earle Long",
+     "start": "2026-11-01",
+     "end": null,
+     "epic": false,
+     "related": [
+      {
+       "key": "IOSP-1007",
+       "url": "https://projects.sectigo.net/browse/IOSP-1007"
+      }
+     ],
+     "updated": "2026-10-13T14:02:26.000+0100",
+     "last_comment": null,
+     "changes_in_window": [
+      {
+       "when": "2026-10-13T14:02:26.376+0100",
+       "who": "Igor Kulyk",
+       "field": "Link",
+       "from": "This issue is cloned by IOSP-1010",
+       "to": null
+      }
+     ]
+    },
+    {
+     "key": "IOSP-1008",
+     "url": "https://projects.sectigo.net/browse/IOSP-1008",
+     "name": "Close Project",
+     "status": "Backlog",
+     "assignee": "Calvin Cochran",
+     "start": "2026-12-07",
+     "end": null,
+     "epic": false,
+     "related": [],
+     "updated": "2026-10-08T11:41:08.000+0100",
+     "last_comment": null,
+     "changes_in_window": []
+    },
+    {
+     "key": "IOSP-1007",
+     "url": "https://projects.sectigo.net/browse/IOSP-1007",
+     "name": "Prod Testing In Manchester",
+     "status": "Backlog",
+     "assignee": "Calvin Cochran",
+     "start": "2026-11-16",
+     "end": null,
+     "epic": false,
+     "related": [
+      {
+       "key": "IOSP-1006",
+       "url": "https://projects.sectigo.net/browse/IOSP-1006"
+      },
+      {
+       "key": "IOSP-1009",
+       "url": "https://projects.sectigo.net/browse/IOSP-1009"
+      }
+     ],
+     "updated": "2026-10-08T11:46:54.000+0100",
+     "last_comment": null,
+     "changes_in_window": []
+    },
+    {
+     "key": "IOSP-1006",
+     "url": "https://projects.sectigo.net/browse/IOSP-1006",
+     "name": "Appliance commissioning/production-readiness work In Manchester",
+     "status": "Backlog",
+     "assignee": "Calvin Cochran",
+     "start": "2026-11-16",
+     "end": null,
+     "epic": false,
+     "related": [
+      {
+       "key": "IOSP-1005",
+       "url": "https://projects.sectigo.net/browse/IOSP-1005"
+      },
+      {
+       "key": "IOSP-1007",
+       "url": "https://projects.sectigo.net/browse/IOSP-1007"
+      }
+     ],
+     "updated": "2026-10-14T16:22:02.000+0100",
+     "last_comment": null,
+     "changes_in_window": [
+      {
+       "when": "2026-10-14T16:16:06.410+0100",
+       "who": "Igor Kulyk",
+       "field": "description",
+       "from": "Appliance commissioning/production-readiness work (repeat the same in Secaucus - grab IP address, local backups)",
+       "to": "Appliance commissioning/production-readiness work (repeat the same in Secaucus - grab IP address, local backups)\r\n\r\n10.49.128.21 scdpcarac1.sec.dc.comodoca.net scdpcarac1\r\n10.49.128.22 scdpcarac2.sec.dc.comodoca.net scdpcarac2\r\n\r\n10.49.128.23 scdpcarac1vip.sec.dc.comodoca.net scdpcarac1vip\r\n10.49.128.24 scdpcarac2vip.sec.dc.comodoca.net scdpcarac2vip"
+      },
+      {
+       "when": "2026-10-14T16:17:15.041+0100",
+       "who": "Igor Kulyk",
+       "field": "description",
+       "from": "Appliance commissioning/production-readiness work (repeat the same in Secaucus - grab IP address, local backups)\r\n\r\n10.49.128.21 scdpcarac1.sec.dc.comodoca.net scdpcarac1\r\n10.49.128.22 scdpcarac2.sec.dc.comodoca.net scdpcarac2\r\n\r\n10.49.128.23 scdpcarac1vip.sec.dc.comodoca.net scdpcarac1vip\r\n10.49.128.24 scdpcarac2vip.sec.dc.comodoca.net scdpcarac2vip",
+       "to": "Appliance commissioning/production-readiness work (repeat the same in Secaucus - grab IP address, local backups)\r\n\r\nInformation from Prajeet (10/14/2026)\r\n\r\n{color:#FF0000}10.49.137.21 scdpcarac1-priv.sec.dc.comodoca.net scdpcarac1-priv{color}\r\n10.49.128.21 scdpcarac1.sec.dc.comodoca.net scdpcarac1\r\n10.49.128.23 scdpcarac1vip.sec.dc.comodoca.net scdpcarac1vip\r\n{color:#FF0000}10.49.137.22 scdpcarac2-priv.sec.dc.comodoca.net scdpcarac2-priv{color}\r\n10.49.128.22 scdpcarac2.sec.dc.comodoca.net scdpcarac2\r\n10.49.128.24 scdpcarac2vip.sec.dc.comodoca.net scdpcarac2vip"
+      },
+      {
+       "when": "2026-10-14T16:19:54.906+0100",
+       "who": "Igor Kulyk",
+       "field": "description",
+       "from": "Appliance commissioning/production-readiness work (repeat the same in Secaucus - grab IP address, local backups)\r\n\r\nInformation from Prajeet (10/14/2026)\r\n\r\n{color:#FF0000}10.49.137.21 scdpcarac1-priv.sec.dc.comodoca.net scdpcarac1-priv{color}\r\n10.49.128.21 scdpcarac1.sec.dc.comodoca.net scdpcarac1\r\n10.49.128.23 scdpcarac1vip.sec.dc.comodoca.net scdpcarac1vip\r\n{color:#FF0000}10.49.137.22 scdpcarac2-priv.sec.dc.comodoca.net scdpcarac2-priv{color}\r\n10.49.128.22 scdpcarac2.sec.dc.comodoca.net scdpcarac2\r\n10.49.128.24 scdpcarac2vip.sec.dc.comodoca.net scdpcarac2vip",
+       "to": "Appliance commissioning/production-readiness work (repeat the same in Secaucus - grab IP address, local backups)\r\n\r\nInformation from Prajeet (10/14/2026)\r\n\r\n{color:#ff0000}10.49.137.21 scdpcarac1-priv.sec.dc.comodoca.net scdpcarac1-priv{color}\r\n10.49.128.21 scdpcarac1.sec.dc.comodoca.net scdpcarac1\r\n10.49.128.23 scdpcarac1vip.sec.dc.comodoca.net scdpcarac1vip\r\n{color:#ff0000}10.49.137.22 scdpcarac2-priv.sec.dc.comodoca.net scdpcarac2-priv{color}\r\n10.49.128.22 scdpcarac2.sec.dc.comodoca.net scdpcarac2\r\n10.49.128.24 scdpcarac2vip.sec.dc.comodoca.net scdpcarac2vip\r\n\r\n\u00a0\r\n\r\n10.49.130.33:/backup/back \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0100G \u00a0 46G \u00a0 55G \u00a046% /mnt/cabackup\r\n10.49.130.33:/backup/rman19c \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 7.4T \u00a0 14G \u00a07.4T \u00a0 1% /mnt/rman\r\n10.49.130.33:/backup/back/back2 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0100G \u00a0 46G \u00a0 55G \u00a046% /mnt/back2\r\n10.49.130.33:/backup/back/back1 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0100G \u00a0 46G \u00a0 55G \u00a046% /mnt/back1\r\n\r\n\u00a0\r\n\r\nRAC\r\n\r\n{{172.16.88.11:/rman19c\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0 118T\u00a0\u00a0 57T\u00a0\u00a0 62T\u00a0 49% /mnt/rmanfb}}"
+      },
+      {
+       "when": "2026-10-14T16:22:02.537+0100",
+       "who": "Igor Kulyk",
+       "field": "description",
+       "from": "Appliance commissioning/production-readiness work (repeat the same in Secaucus - grab IP address, local backups)\r\n\r\nInformation from Prajeet (10/14/2026)\r\n\r\n{color:#ff0000}10.49.137.21 scdpcarac1-priv.sec.dc.comodoca.net scdpcarac1-priv{color}\r\n10.49.128.21 scdpcarac1.sec.dc.comodoca.net scdpcarac1\r\n10.49.128.23 scdpcarac1vip.sec.dc.comodoca.net scdpcarac1vip\r\n{color:#ff0000}10.49.137.22 scdpcarac2-priv.sec.dc.comodoca.net scdpcarac2-priv{color}\r\n10.49.128.22 scdpcarac2.sec.dc.comodoca.net scdpcarac2\r\n10.49.128.24 scdpcarac2vip.sec.dc.comodoca.net scdpcarac2vip\r\n\r\n\u00a0\r\n\r\n10.49.130.33:/backup/back \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0100G \u00a0 46G \u00a0 55G \u00a046% /mnt/cabackup\r\n10.49.130.33:/backup/rman19c \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 7.4T \u00a0 14G \u00a07.4T \u00a0 1% /mnt/rman\r\n10.49.130.33:/backup/back/back2 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0100G \u00a0 46G \u00a0 55G \u00a046% /mnt/back2\r\n10.49.130.33:/backup/back/back1 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0100G \u00a0 46G \u00a0 55G \u00a046% /mnt/back1\r\n\r\n\u00a0\r\n\r\nRAC\r\n\r\n{{172.16.88.11:/rman19c\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0 118T\u00a0\u00a0 57T\u00a0\u00a0 62T\u00a0 49% /mnt/rmanfb}}",
+       "to": "Appliance commissioning/production-readiness work (repeat the same in Secaucus - grab IP address, local backups)\r\n\r\n\u00a0"
+      }
+     ]
+    },
+    {
+     "key": "IOSP-1005",
+     "url": "https://projects.sectigo.net/browse/IOSP-1005",
+     "name": "Rack and Stack equipment (Manchester)",
+     "status": "Backlog",
+     "assignee": "Calvin Cochran",
+     "start": "2026-11-09",
+     "end": null,
+     "epic": false,
+     "related": [
+      {
+       "key": "IOSP-881",
+       "url": "https://projects.sectigo.net/browse/IOSP-881"
+      },
+      {
+       "key": "IOSP-1006",
+       "url": "https://projects.sectigo.net/browse/IOSP-1006"
+      }
+     ],
+     "updated": "2026-10-08T11:33:36.000+0100",
+     "last_comment": {
+      "author": "Igor Kulyk",
+      "date": "2026-10-08T11:32:24.472+0100",
+      "text": "Priya and Mena will be responsible"
+     },
+     "changes_in_window": []
+    },
+    {
+     "key": "IOSP-1004",
+     "url": "https://projects.sectigo.net/browse/IOSP-1004",
+     "name": "Capacity Inventory (Space, Storage, UPS, Power, Ports) in Manchester",
+     "status": "To Do",
+     "assignee": "Calvin Cochran",
+     "start": "2026-11-02",
+     "end": null,
+     "epic": false,
+     "related": [
+      {
+       "key": "IOSP-877",
+       "url": "https://projects.sectigo.net/browse/IOSP-877"
+      }
+     ],
+     "updated": "2026-10-12T13:55:50.000+0100",
+     "last_comment": null,
+     "changes_in_window": [
+      {
+       "when": "2026-10-12T13:55:50.223+0100",
+       "who": "Igor Kulyk",
+       "field": "status",
+       "from": "Backlog",
+       "to": "To Do"
+      }
+     ]
+    },
+    {
+     "key": "IOSP-882",
+     "url": "https://projects.sectigo.net/browse/IOSP-882",
+     "name": "Documentation",
+     "status": "In Progress",
+     "assignee": "Igor Kulyk",
+     "start": "2026-11-30",
+     "end": null,
+     "epic": false,
+     "related": [],
+     "updated": "2026-10-09T14:54:22.000+0100",
+     "last_comment": {
+      "author": "Gabriel Rovira",
+      "date": "2026-10-09T14:53:55.096+0100",
+      "text": "yes, thanks"
+     },
+     "changes_in_window": []
+    },
+    {
+     "key": "IOSP-881",
+     "url": "https://projects.sectigo.net/browse/IOSP-881",
+     "name": "Capacity Inventory (Space, Storage, UPS, Power, Ports) in Secaucus",
+     "status": "Done",
+     "assignee": "Calvin Cochran",
+     "start": "2026-01-08",
+     "end": null,
+     "epic": false,
+     "related": [
+      {
+       "key": "IOSP-1005",
+       "url": "https://projects.sectigo.net/browse/IOSP-1005"
+      }
+     ],
+     "updated": "2026-10-08T11:22:28.000+0100",
+     "last_comment": {
+      "author": "Igor Kulyk",
+      "date": "2026-10-08T11:21:09.131+0100",
+      "text": "Preliminary responsible: Priya/Mena"
+     },
+     "changes_in_window": []
+    },
+    {
+     "key": "IOSP-880",
+     "url": "https://projects.sectigo.net/browse/IOSP-880",
+     "name": "Run/validate RAC backup and replication",
+     "status": "To Do",
+     "assignee": "Calvin Cochran",
+     "start": "2026-10-06",
+     "end": null,
+     "epic": false,
+     "related": [],
+     "updated": "2026-10-14T16:14:07.000+0100",
+     "last_comment": {
+      "author": "Igor Kulyk",
+      "date": "2026-10-07T16:34:46.866+0100",
+      "text": "POC finishined and testing"
+     },
+     "changes_in_window": [
+      {
+       "when": "2026-10-14T16:14:07.127+0100",
+       "who": "Igor Kulyk",
+       "field": "summary",
+       "from": "Run/validate RAC backup",
+       "to": "Run/validate RAC backup and replication"
+      }
+     ]
+    },
+    {
+     "key": "IOSP-879",
+     "url": "https://projects.sectigo.net/browse/IOSP-879",
+     "name": "Install software",
+     "status": "In Progress",
+     "assignee": "Igor Kulyk",
+     "start": "2026-03-23",
+     "end": null,
+     "epic": false,
+     "related": [],
+     "updated": "2026-10-07T18:58:00.000+0100",
+     "last_comment": {
+      "author": "Igor Kulyk",
+      "date": "2026-10-07T16:34:09.009+0100",
+      "text": "Once the new RAC machine: we should install in Manchester"
+     },
+     "changes_in_window": []
+    },
+    {
+     "key": "IOSP-878",
+     "url": "https://projects.sectigo.net/browse/IOSP-878",
+     "name": "Configure per Rubrik specifications",
+     "status": "Done",
+     "assignee": "Volodymyr Fedyna",
+     "start": "2026-03-23",
+     "end": null,
+     "epic": false,
+     "related": [],
+     "updated": "2026-10-07T16:33:29.000+0100",
+     "last_comment": {
+      "author": "Volodymyr Fedyna",
+      "date": "2026-01-20T13:57:25.035+0000",
+      "text": "++\u00a0\r\n * *Complete Pre-Installation Workbook* ({*}1 per site{*})\r\n * To assist you, we have attached a [short video tutorial|https://urldefense.com/v3/__https:/rubrik.box.com/v/ps-workbook-tutorial__;!!J5K_pWsD!wX58g4jaz82d2i3OsLxK_097ymgXe_hID6B86Hq7dRzoA9rw-GwS1ZC_gKC-BDd2Nz3EOrm1-8l3S2Wyl_QQO_mGhZ"
+     },
+     "changes_in_window": []
+    },
+    {
+     "key": "IOSP-877",
+     "url": "https://projects.sectigo.net/browse/IOSP-877",
+     "name": "Rack and Stack equipment (Secaucus)",
+     "status": "Done",
+     "assignee": "Calvin Cochran",
+     "start": "2026-03-16",
+     "end": null,
+     "epic": false,
+     "related": [
+      {
+       "key": "IOSP-1004",
+       "url": "https://projects.sectigo.net/browse/IOSP-1004"
+      }
+     ],
+     "updated": "2026-10-08T11:14:41.000+0100",
+     "last_comment": {
+      "author": "Igor Kulyk",
+      "date": "2026-10-07T16:23:24.885+0100",
+      "text": "2 in Sec - ready\r\n\r\n3 in Man - preparing to shipment"
+     },
+     "changes_in_window": []
+    },
+    {
+     "key": "IOSP-876",
+     "url": "https://projects.sectigo.net/browse/IOSP-876",
+     "name": "Equipment Inventory (SRE)",
+     "status": "Done",
+     "assignee": "Igor Kulyk",
+     "start": "2026-02-16",
+     "end": null,
+     "epic": false,
+     "related": [],
+     "updated": "2026-10-07T18:58:51.000+0100",
+     "last_comment": null,
+     "changes_in_window": []
+    },
+    {
+     "key": "IOSP-875",
+     "url": "https://projects.sectigo.net/browse/IOSP-875",
+     "name": "Purchase Request",
+     "status": "Done",
+     "assignee": "Calvin Cochran",
+     "start": "2026-01-08",
+     "end": null,
+     "epic": false,
+     "related": [],
+     "updated": "2026-10-07T16:22:23.000+0100",
+     "last_comment": null,
+     "changes_in_window": []
+    },
+    {
+     "key": "RM-1658",
+     "url": "https://projects.sectigo.net/browse/RM-1658",
+     "name": "configure CA Backup VLAN on RAC hosts (SEC)",
+     "status": "Submitted",
+     "assignee": null,
+     "start": null,
+     "end": "2026-10-18",
+     "epic": false,
+     "related": [],
+     "updated": "2026-10-16T13:51:27.000+0100",
+     "last_comment": {
+      "author": "Andrey Kozudaev",
+      "date": "2026-10-16T12:37:48.523+0100",
+      "text": "https://github.com/sectigo/ansible/pull/1229"
+     },
+     "changes_in_window": [
+      {
+       "when": "2026-10-14T22:11:36.467+0100",
+       "who": "Calvin Cochran",
+       "field": "Development approval",
+       "from": "PENDING",
+       "to": "APPROVED"
+      },
+      {
+       "when": "2026-10-14T22:11:36.759+0100",
+       "who": "sectigobot",
+       "field": "Development Approver",
+       "from": null,
+       "to": "Calvin Cochran"
+      },
+      {
+       "when": "2026-10-14T22:11:42.200+0100",
+       "who": "Calvin Cochran",
+       "field": "QA Approval",
+       "from": "PENDING",
+       "to": "NOT APPLICABLE"
+      },
+      {
+       "when": "2026-10-14T22:11:42.521+0100",
+       "who": "sectigobot",
+       "field": "QA Approver",
+       "from": null,
+       "to": "Calvin Cochran"
+      },
+      {
+       "when": "2026-10-14T22:12:51.712+0100",
+       "who": "Calvin Cochran",
+       "field": "description",
+       "from": "configure scdpcarac1.sec.dc.comodoca.net with sub-interface on VLAN 130 with ip 10.49.130.21/24\r\nconfigure scdpcarac2.sec.dc.comodoca.net with sub-interface on VLAN 130 with ip 10.49.130.22/24\r\nIf the above ip's are in conflict with another host, suitable alternates on 10.49.130.0/24 will be chosen.\r\nThis will facilitate backup of the RAC instance of Oracle by Rubrik appliances.\r\nChange to be applied during the maintenance window.",
+       "to": "configure scdpcarac1.sec.dc.comodoca.net with sub-interface on VLAN 130 with ip 10.49.130.21/24\r\nconfigure scdpcarac2.sec.dc.comodoca.net with sub-interface on VLAN 130 with ip 10.49.130.22/24\r\nIf the above ip's are in conflict with another host, suitable alternates on 10.49.130.0/24 will be chosen.\r\nAdd VLAN 130 to switch ports if necessary.\r\nThis will facilitate backup of the RAC instance of Oracle by Rubrik appliances.\r\nChange to be applied during the maintenance window."
+      },
+      {
+       "when": "2026-10-14T22:13:18.518+0100",
+       "who": "Calvin Cochran",
+       "field": "Component",
+       "from": null,
+       "to": "Networks"
+      },
+      {
+       "when": "2026-10-15T13:05:04.797+0100",
+       "who": "Israel Israilov",
+       "field": "Risk Approval 1",
+       "from": "PENDING",
+       "to": "APPROVED"
+      },
+      {
+       "when": "2026-10-15T13:05:05.065+0100",
+       "who": "sectigobot",
+       "field": "Risk Approver 1",
+       "from": null,
+       "to": "Israel Israilov"
+      },
+      {
+       "when": "2026-10-15T13:22:20.377+0100",
+       "who": "Jose Fernandez",
+       "field": "Security Approval",
+       "from": "PENDING",
+       "to": "APPROVED"
+      },
+      {
+       "when": "2026-10-15T13:22:20.671+0100",
+       "who": "sectigobot",
+       "field": "Security Approver",
+       "from": null,
+       "to": "Jose Fernandez"
+      },
+      {
+       "when": "2026-10-15T14:11:52.885+0100",
+       "who": "Calvin Cochran",
+       "field": "summary",
+       "from": "configure CA Backup VLAN on RAC hosts",
+       "to": "configure CA Backup VLAN on RAC hosts (SEC)"
+      },
+      {
+       "when": "2026-10-15T14:26:17.766+0100",
+       "who": "Martijn Katerbarg",
+       "field": "Compliance Approval",
+       "from": "PENDING",
+       "to": "APPROVED"
+      },
+      {
+       "when": "2026-10-15T14:26:18.001+0100",
+       "who": "sectigobot",
+       "field": "Compliance Approver",
+       "from": null,
+       "to": "Martijn Katerbarg"
+      },
+      {
+       "when": "2026-10-15T17:38:47.880+0100",
+       "who": "Coedy Zuercher",
+       "field": "Risk Approval 2",
+       "from": "PENDING",
+       "to": "APPROVED"
+      },
+      {
+       "when": "2026-10-15T17:38:48.157+0100",
+       "who": "sectigobot",
+       "field": "Risk Approver 2",
+       "from": null,
+       "to": "Coedy Zuercher"
+      },
+      {
+       "when": "2026-10-16T11:08:18.604+0100",
+       "who": "Edino Moniz",
+       "field": "Customer impact description",
+       "from": " change will be made during maintenance window, minimizing external impact",
+       "to": "change will be made during maintenance window, minimizing external impact"
+      },
+      {
+       "when": "2026-10-16T13:51:27.797+0100",
+       "who": "Igor Kulyk",
+       "field": "Link",
+       "from": null,
+       "to": "This issue relates to IOSP-471"
+      },
+      {
+       "when": "2026-10-16T13:51:27.854+0100",
+       "who": "Igor Kulyk",
+       "field": "Link",
+       "from": null,
+       "to": "This issue relates to IOSP-1012"
+      },
+      {
+       "when": "2026-10-14T22:11:36.638+0100",
+       "who": "sectigobot",
+       "field": "comment",
+       "text": " Development approval *APPROVED* \nby *Calvin Cochran*\nDate: 2026-10-14T22:11:36.6+0100 \n"
+      },
+      {
+       "when": "2026-10-14T22:11:42.410+0100",
+       "who": "sectigobot",
+       "field": "comment",
+       "text": " QA Approval *NOT APPLICABLE* \nby *Calvin Cochran*\nDate: 2026-10-14T22:11:42.4+0100 \n"
+      },
+      {
+       "when": "2026-10-15T13:05:04.963+0100",
+       "who": "sectigobot",
+       "field": "comment",
+       "text": " Risk Approval 1 *APPROVED* \nby *Israel Israilov*\nDate: 2026-10-15T13:05:04.9+0100 \n"
+      },
+      {
+       "when": "2026-10-15T13:22:20.577+0100",
+       "who": "sectigobot",
+       "field": "comment",
+       "text": " Security Approval *APPROVED* \nby *Jose Fernandez*\nDate: 2026-10-15T13:22:20.5+0100 \n"
+      },
+      {
+       "when": "2026-10-15T14:26:17.905+0100",
+       "who": "sectigobot",
+       "field": "comment",
+       "text": " Compliance Approval *APPROVED* \nby *Martijn Katerbarg*\nDate: 2026-10-15T14:26:17.9+0100 \n"
+      },
+      {
+       "when": "2026-10-15T17:38:48.057+0100",
+       "who": "sectigobot",
+       "field": "comment",
+       "text": " Risk Approval 2 *APPROVED* \nby *Coedy Zuercher*\nDate: 2026-10-15T17:38:48.0+0100 \n"
+      },
+      {
+       "when": "2026-10-16T12:37:48.523+0100",
+       "who": "Andrey Kozudaev",
+       "field": "comment",
+       "text": "https://github.com/sectigo/ansible/pull/1229"
+      }
+     ]
+    },
+    {
+     "key": "RM-1553",
+     "url": "https://projects.sectigo.net/browse/RM-1553",
+     "name": "configure Rubrik system for production Oracle RAC backup",
+     "status": "Submitted",
+     "assignee": null,
+     "start": null,
+     "end": "2026-09-11",
+     "epic": false,
+     "related": [],
+     "updated": "2026-09-09T16:10:02.759+0100",
+     "last_comment": {
+      "author": "sectigobot",
+      "date": "2026-08-24T14:08:11.784+0100",
+      "text": " Compliance Approval *APPROVED* \nby *Martijn Katerbarg*\nDate: 2026-08-24T14:08:11.7+0100 \n"
+     },
+     "changes_in_window": []
+    },
+    {
+     "key": "RM-1661",
+     "url": "https://projects.sectigo.net/browse/RM-1661",
+     "name": "configure Oracle Wallet on production RAC",
+     "status": "Submitted",
+     "assignee": null,
+     "start": null,
+     "end": "2026-10-18",
+     "epic": false,
+     "related": [],
+     "updated": "2026-10-15T17:39:59.227+0100",
+     "last_comment": {
+      "author": "sectigobot",
+      "date": "2026-10-15T17:39:59.144+0100",
+      "text": " Risk Approval 2 *APPROVED* \nby *Coedy Zuercher*\nDate: 2026-10-15T17:39:59.1+0100 \n"
+     },
+     "changes_in_window": [
+      {
+       "when": "2026-10-15T17:14:31.034+0100",
+       "who": "Prajeet Singh Kahlon",
+       "field": "Development approval",
+       "from": "PENDING",
+       "to": "APPROVED"
+      },
+      {
+       "when": "2026-10-15T17:14:31.450+0100",
+       "who": "sectigobot",
+       "field": "Development Approver",
+       "from": null,
+       "to": "Prajeet Singh Kahlon"
+      },
+      {
+       "when": "2026-10-15T17:14:36.374+0100",
+       "who": "Prajeet Singh Kahlon",
+       "field": "QA Approval",
+       "from": "PENDING",
+       "to": "NOT APPLICABLE"
+      },
+      {
+       "when": "2026-10-15T17:14:36.596+0100",
+       "who": "sectigobot",
+       "field": "QA Approver",
+       "from": null,
+       "to": "Prajeet Singh Kahlon"
+      },
+      {
+       "when": "2026-10-15T17:17:03.706+0100",
+       "who": "Israel Israilov",
+       "field": "Risk Approval 1",
+       "from": "PENDING",
+       "to": "APPROVED"
+      },
+      {
+       "when": "2026-10-15T17:17:03.984+0100",
+       "who": "sectigobot",
+       "field": "Risk Approver 1",
+       "from": null,
+       "to": "Israel Israilov"
+      },
+      {
+       "when": "2026-10-15T17:37:01.289+0100",
+       "who": "Tim Callan",
+       "field": "Compliance Approval",
+       "from": "PENDING",
+       "to": "APPROVED"
+      },
+      {
+       "when": "2026-10-15T17:37:07.291+0100",
+       "who": "sectigobot",
+       "field": "Compliance Approver",
+       "from": null,
+       "to": "Tim Callan"
+      },
+      {
+       "when": "2026-10-15T17:37:49.143+0100",
+       "who": "Jose Fernandez",
+       "field": "Security Approval",
+       "from": "PENDING",
+       "to": "APPROVED"
+      },
+      {
+       "when": "2026-10-15T17:37:49.562+0100",
+       "who": "sectigobot",
+       "field": "Security Approver",
+       "from": null,
+       "to": "Jose Fernandez"
+      },
+      {
+       "when": "2026-10-15T17:39:58.996+0100",
+       "who": "Coedy Zuercher",
+       "field": "Risk Approval 2",
+       "from": "PENDING",
+       "to": "APPROVED"
+      },
+      {
+       "when": "2026-10-15T17:39:59.228+0100",
+       "who": "sectigobot",
+       "field": "Risk Approver 2",
+       "from": null,
+       "to": "Coedy Zuercher"
+      },
+      {
+       "when": "2026-10-15T17:14:31.357+0100",
+       "who": "sectigobot",
+       "field": "comment",
+       "text": " Development approval *APPROVED* \nby *Prajeet Singh Kahlon*\nDate: 2026-10-15T17:14:31.3+0100 \n"
+      },
+      {
+       "when": "2026-10-15T17:14:36.506+0100",
+       "who": "sectigobot",
+       "field": "comment",
+       "text": " QA Approval *NOT APPLICABLE* \nby *Prajeet Singh Kahlon*\nDate: 2026-10-15T17:14:36.5+0100 \n"
+      },
+      {
+       "when": "2026-10-15T17:17:03.860+0100",
+       "who": "sectigobot",
+       "field": "comment",
+       "text": " Risk Approval 1 *APPROVED* \nby *Israel Israilov*\nDate: 2026-10-15T17:17:03.8+0100 \n"
+      },
+      {
+       "when": "2026-10-15T17:37:07.181+0100",
+       "who": "sectigobot",
+       "field": "comment",
+       "text": " Compliance Approval *APPROVED* \nby *Tim Callan*\nDate: 2026-10-15T17:37:07.1+0100 \n"
+      },
+      {
+       "when": "2026-10-15T17:37:49.464+0100",
+       "who": "sectigobot",
+       "field": "comment",
+       "text": " Security Approval *APPROVED* \nby *Jose Fernandez*\nDate: 2026-10-15T17:37:49.4+0100 \n"
+      },
+      {
+       "when": "2026-10-15T17:39:59.144+0100",
+       "who": "sectigobot",
+       "field": "comment",
+       "text": " Risk Approval 2 *APPROVED* \nby *Coedy Zuercher*\nDate: 2026-10-15T17:39:59.1+0100 \n"
+      }
+     ]
+    },
+    {
+     "key": "COR-11600",
+     "url": "https://projects.sectigo.net/browse/COR-11600",
+     "name": "configure Rubrik system for production Oracle RAC backup",
+     "status": "Backlog",
+     "assignee": "SriChand Myla",
+     "start": null,
+     "end": "2026-08-29",
+     "epic": false,
+     "related": [
+      {
+       "key": "RM-1553",
+       "url": "https://projects.sectigo.net/browse/RM-1553"
+      }
+     ],
+     "updated": "2026-08-21T19:12:40.691+0100",
+     "last_comment": null,
+     "changes_in_window": []
+    }
+   ],
+   "overdue": [
+    "RM-1553",
+    "COR-11600"
+   ],
+   "notes": [
+    "Dates from Start date/Target start and Due Date fields; null when empty."
+   ]
+  },
+  {
+   "name": "AVS server maintenance (dev and production)",
+   "tickets": [
+    {
+     "key": "RM-1650",
+     "url": "https://projects.sectigo.net/browse/RM-1650",
+     "name": "We have to update OS on both AVS  DB and application servers",
+     "status": "Submitted",
+     "assignee": "Maxim Kantsurov",
+     "start": null,
+     "end": "2026-10-17",
+     "epic": false,
+     "related": [],
+     "updated": "2026-10-15T17:35:30.061+0100",
+     "last_comment": {
+      "author": "sectigobot",
+      "date": "2026-10-15T17:35:29.968+0100",
+      "text": " Risk Approval 2 *APPROVED* \nby *Maarten Broekman*\nDate: 2026-10-15T17:35:29.9+0100 \n"
+     },
+     "changes_in_window": [
+      {
+       "when": "2026-10-13T13:25:34.458+0100",
+       "who": "Maxim Kantsurov",
+       "field": "Development approval",
+       "from": "PENDING",
+       "to": "APPROVED"
+      },
+      {
+       "when": "2026-10-13T13:25:34.701+0100",
+       "who": "sectigobot",
+       "field": "Development Approver",
+       "from": null,
+       "to": "Maxim Kantsurov"
+      },
+      {
+       "when": "2026-10-13T13:29:14.927+0100",
+       "who": "Maxim Kantsurov",
+       "field": "QA Approval",
+       "from": "PENDING",
+       "to": "NOT APPLICABLE"
+      },
+      {
+       "when": "2026-10-13T13:29:15.192+0100",
+       "who": "sectigobot",
+       "field": "QA Approver",
+       "from": null,
+       "to": "Maxim Kantsurov"
+      },
+      {
+       "when": "2026-10-13T13:30:09.691+0100",
+       "who": "Jose Fernandez",
+       "field": "Security Approval",
+       "from": "PENDING",
+       "to": "APPROVED"
+      },
+      {
+       "when": "2026-10-13T13:30:09.966+0100",
+       "who": "sectigobot",
+       "field": "Security Approver",
+       "from": null,
+       "to": "Jose Fernandez"
+      },
+      {
+       "when": "2026-10-13T14:15:29.296+0100",
+       "who": "Martijn Katerbarg",
+       "field": "Compliance Approval",
+       "from": "PENDING",
+       "to": "APPROVED"
+      },
+      {
+       "when": "2026-10-13T14:15:29.694+0100",
+       "who": "sectigobot",
+       "field": "Compliance Approver",
+       "from": null,
+       "to": "Martijn Katerbarg"
+      },
+      {
+       "when": "2026-10-13T14:55:24.751+0100",
+       "who": "Jay Wilson",
+       "field": "Risk Approval 1",
+       "from": "PENDING",
+       "to": "APPROVED"
+      },
+      {
+       "when": "2026-10-13T14:55:24.992+0100",
+       "who": "sectigobot",
+       "field": "Risk Approver 1",
+       "from": null,
+       "to": "Jay Wilson"
+      },
+      {
+       "when": "2026-10-15T17:35:29.789+0100",
+       "who": "Maarten Broekman",
+       "field": "Risk Approval 2",
+       "from": "PENDING",
+       "to": "APPROVED"
+      },
+      {
+       "when": "2026-10-15T17:35:30.062+0100",
+       "who": "sectigobot",
+       "field": "Risk Approver 2",
+       "from": null,
+       "to": "Maarten Broekman"
+      },
+      {
+       "when": "2026-10-13T13:25:34.593+0100",
+       "who": "sectigobot",
+       "field": "comment",
+       "text": " Development approval *APPROVED* \nby *Maxim Kantsurov*\nDate: 2026-10-13T13:25:34.5+0100 \n"
+      },
+      {
+       "when": "2026-10-13T13:29:15.068+0100",
+       "who": "sectigobot",
+       "field": "comment",
+       "text": " QA Approval *NOT APPLICABLE* \nby *Maxim Kantsurov*\nDate: 2026-10-13T13:29:15.0+0100 \n"
+      },
+      {
+       "when": "2026-10-13T13:30:09.861+0100",
+       "who": "sectigobot",
+       "field": "comment",
+       "text": " Security Approval *APPROVED* \nby *Jose Fernandez*\nDate: 2026-10-13T13:30:09.8+0100 \n"
+      },
+      {
+       "when": "2026-10-13T14:15:29.595+0100",
+       "who": "sectigobot",
+       "field": "comment",
+       "text": " Compliance Approval *APPROVED* \nby *Martijn Katerbarg*\nDate: 2026-10-13T14:15:29.5+0100 \n"
+      },
+      {
+       "when": "2026-10-13T14:55:24.899+0100",
+       "who": "sectigobot",
+       "field": "comment",
+       "text": " Risk Approval 1 *APPROVED* \nby *Jay Wilson*\nDate: 2026-10-13T14:55:24.8+0100 \n"
+      },
+      {
+       "when": "2026-10-15T17:35:29.968+0100",
+       "who": "sectigobot",
+       "field": "comment",
+       "text": " Risk Approval 2 *APPROVED* \nby *Maarten Broekman*\nDate: 2026-10-15T17:35:29.9+0100 \n"
+      }
+     ]
+    }
+   ],
+   "overdue": [],
+   "notes": []
+  },
+  {
+   "name": "I&O request intake and sprint planning",
+   "tickets": [],
+   "overdue": [],
+   "notes": [
+    "No keys supplied; no tickets returned."
+   ]
+  }
+ ],
+ "gaps": [
+  "Sprint I&O 26.42 is still active but its end date (2026-10-16) has passed; next sprint not yet started.",
+  "Epic IOSP-471 has no due date; RM-1660 not found among links."
+ ]
+}

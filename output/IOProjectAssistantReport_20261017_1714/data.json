@@ -1,0 +1,442 @@
+{
+  "generated_at": "2026-10-17T10:14:56-04:00",
+  "window": {
+    "from": "2026-10-12T00:00:00-04:00",
+    "to": "2026-10-17T10:14:56-04:00"
+  },
+  "jira_base_url": "https://projects.sectigo.net/browse/",
+  "sprint": {
+    "name": null,
+    "start": null,
+    "end": null,
+    "tickets": []
+  },
+  "projects": [
+    {
+      "name": "Rubrik DR backup",
+      "status": "Off track",
+      "progress": "Pure-based backup working; RAC backup pending the CA Backup VLAN 130 change (roadmap deck, modified 10/16).",
+      "timeline": "RAC backup ~10/18; shipment to Manchester 10/27-11/9; rack and stack 11/9-11/16; production in Europe 12/6-12/7.",
+      "dates": {
+        "start": null,
+        "end": "2026-12-07"
+      },
+      "summary": [
+        {
+          "text": "IOSP-1011 and IOSP-1014 (Pure backup) completed with several days of clean runs (10/14 SyncUp transcript and 10/14 status email).",
+          "tickets": [
+            "IOSP-1011",
+            "IOSP-1014"
+          ]
+        },
+        {
+          "text": "RAC backup (IOSP-1012) slipped from 10/16 to about Sun 10/18 13:00 UTC: rac1/rac2 have no interface on CA Backup VLAN 130, so an RM ticket (RM-1658 per the roadmap deck) and the Sunday 7 PM ET maintenance window are needed (10/14 SyncUp and chat).",
+          "tickets": [
+            "IOSP-1012"
+          ]
+        },
+        {
+          "text": "RAC backup run and Manchester replication validation (IOSP-880) planned 10/17-10/20; appliance preparation (IOSP-1013) moved to 10/21 (10/13 chat, 10/14 SyncUp).",
+          "tickets": [
+            "IOSP-880",
+            "IOSP-1013"
+          ]
+        },
+        {
+          "text": "Appliance shipment (IOSP-1015, 10/27-11/9) is gated by the procurement contract signature; Tech X ships, resold via MicroAge. Manchester space must be ready before the gear arrives (10/13 standup, 10/14 SyncUp).",
+          "tickets": [
+            "IOSP-1015",
+            "IOSP-1010"
+          ]
+        },
+        {
+          "text": "Backup network design is open: Calvin posted 5 options, Option 3 (manual cutover) is the MVP; Oracle and Rubrik support replies pending (10/14 chat).",
+          "tickets": []
+        },
+        {
+          "text": "Roadmap deck rates the project Schedule R / Overall R (High-Risk). Standalone Secaucus Oracle can be retired by the first week of November (Calvin, 10/15 chat).",
+          "tickets": []
+        }
+      ],
+      "links": {
+        "jira": [
+          {
+            "label": "IOSP-471",
+            "url": "https://projects.sectigo.net/browse/IOSP-471"
+          }
+        ],
+        "teams": [
+          {
+            "label": "Rubrik Project SyncUp chat",
+            "url": "https://teams.microsoft.com/l/chat/19:meeting_YjU0ZDdlMWEtNjc1Mi00Nzg4LTlhZjItNDBmMWEzNmExNzFl@thread.v2/conversations"
+          },
+          {
+            "label": "Rubrik Project SyncUp meeting",
+            "url": "https://teams.microsoft.com/l/meetup-join/19%3ameeting_YjU0ZDdlMWEtNjc1Mi00Nzg4LTlhZjItNDBmMWEzNmExNzFl%40thread.v2/0"
+          },
+          {
+            "label": "Daily Ops StandUp chat",
+            "url": "https://teams.microsoft.com/l/chat/19:meeting_NDAxMzEzOGEtZmUzYS00MTMxLTk3NTItODc1MGM1ZTBkZWQ2@thread.v2/conversations"
+          }
+        ],
+        "sharepoint": [
+          {
+            "label": "RUBRIK folder (inferred)",
+            "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/RUBRIK"
+          }
+        ],
+        "confluence": [
+          {
+            "label": "Rubrik (Confluence)",
+            "url": "https://confluence.comodoca.net/display/CO/Rubrik"
+          }
+        ],
+        "other": [
+          {
+            "label": "RUBRIK - Project Status (2026/10/14)",
+            "url": "https://outlook.office365.com/owa/?ItemID=AAMkADE5NzU1Nzk4LTU2YjktNDIyZS05ZTI0LWU5NTA0MmIwMDM4OABGAAAAAADfiIpf9YlRQL%2BGNBNg%2BLIwBwBkE5XVjIpUS6tjkF1Bp8f3AAAAAAEMAABkE5XVjIpUS6tjkF1Bp8f3AAHiv6dFAAA%3D&exvsurl=1&viewmodel=ReadMessageItem"
+          },
+          {
+            "label": "I&O Project Roadmap.pptx",
+            "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Presentations/I&O Project Roadmap.pptx"
+          },
+          {
+            "label": "Status Dashboard - Rubrik",
+            "url": "https://confluence.comodoca.net/display/CO/Status+Dashboard+-+Rubrik"
+          }
+        ]
+      },
+      "action_items": [
+        {
+          "text": "Confirm the log-deletion issue is resolved and continue validation through the week",
+          "owner": "Calvin Cochran",
+          "due": null
+        },
+        {
+          "text": "Research second VIP on backup VLAN for RAC (Option 1) and raise Oracle Support ticket; Prajeet to wait for response, after which Calvin creates the RM ticket",
+          "owner": "Prajeet Singh Kahlon",
+          "due": null
+        },
+        {
+          "text": "Contact Rubrik Support / research per-host backup-VLAN addressing (Option 2)",
+          "owner": "SriChand Myla",
+          "due": null
+        },
+        {
+          "text": "Create RM ticket for backup VLAN interface change on SCDPCARAC1/2 and coordinate with SREs for the maintenance window (Sunday 7 PM Eastern)",
+          "owner": "Calvin Cochran",
+          "due": "2026-10-18"
+        },
+        {
+          "text": "Enable Rubrik RAC backup (IOSP-1012); originally 10/16 18:00 UTC, now likely after maintenance window (about 2026-10-18 13:00 UTC)",
+          "owner": "Earle Long / SriChand Myla (owner differs between sources)",
+          "due": "2026-10-18"
+        },
+        {
+          "text": "Run/validate RAC backup and replication to Manchester (IOSP-880)",
+          "owner": null,
+          "due": "2026-10-20"
+        },
+        {
+          "text": "Prepare Rubrik appliances for shutdown and Manchester deployment (IOSP-1013)",
+          "owner": "SriChand Myla, Calvin Cochran",
+          "due": "2026-10-21"
+        },
+        {
+          "text": "Prepare shipment plan and contracts (IOSP-1010); procurement contract signature gates the ship date",
+          "owner": "Karl Witt, Calvin Cochran, procurement",
+          "due": null
+        },
+        {
+          "text": "Ensure Manchester space/readiness before equipment arrives; meeting with Network team next week on Manchester preparation",
+          "owner": "Karl Witt (space); SriChand Myla (network meeting)",
+          "due": null
+        },
+        {
+          "text": "Update Jira with corrected line owners (IOSP-1012) and share ticket links in chat",
+          "owner": "Igor Kulyk",
+          "due": null
+        },
+        {
+          "text": "Decide on standalone Oracle (Secaucus) decommission date",
+          "owner": null,
+          "due": "2026-11-06"
+        }
+      ],
+      "risks": [
+        "RAC Rubrik initial backup (about 16h) slipped from Friday 10/16 to after the Sunday maintenance window because rac1/rac2 lack a CA Backup VLAN 130 interface; if the change is not completed in the window, Rubrik timelines are pushed back (Calvin, 2026-10-15).",
+        "Backup network design unresolved (VIP vs per-node vs direct into CA environment); depends on Oracle and Rubrik support replies (about 24h).",
+        "Shipment (IOSP-1015, Oct 27-Nov 9) gated by procurement contract signature (Karl/Calvin) and Manchester readiness.",
+        "RAC initial backup will overlap production RMAN backups on Monday morning (low production-risk tolerance stated by Mike Massimino and Karl Witt).",
+        "Earlier history: Postgres/EDB dependency is on hold (March 2027 per 9/30 email); not rediscussed in this window."
+      ],
+      "notes": [
+        "IOSP-1011 and IOSP-1014 (Pure backup) completed with several days of clean runs (10/14 SyncUp transcript and 10/14 status email).",
+        "RAC backup (IOSP-1012) slipped from 10/16 to about Sun 10/18 13:00 UTC: rac1/rac2 have no interface on CA Backup VLAN 130, so an RM ticket (RM-1658 per the roadmap deck) and the Sunday 7 PM ET maintenance window are needed (10/14 SyncUp and chat).",
+        "RAC backup run and Manchester replication validation (IOSP-880) planned 10/17-10/20; appliance preparation (IOSP-1013) moved to 10/21 (10/13 chat, 10/14 SyncUp).",
+        "Appliance shipment (IOSP-1015, 10/27-11/9) is gated by the procurement contract signature; Tech X ships, resold via MicroAge. Manchester space must be ready before the gear arrives (10/13 standup, 10/14 SyncUp).",
+        "Backup network design is open: Calvin posted 5 options, Option 3 (manual cutover) is the MVP; Oracle and Rubrik support replies pending (10/14 chat).",
+        "Roadmap deck rates the project Schedule R / Overall R (High-Risk). Standalone Secaucus Oracle can be retired by the first week of November (Calvin, 10/15 chat)."
+      ],
+      "tickets": [],
+      "jira_updates": {
+        "change": [],
+        "create": []
+      }
+    },
+    {
+      "name": "AVS server maintenance",
+      "status": "",
+      "progress": "Dev AVS servers done; production scheduled for the weekend.",
+      "timeline": null,
+      "dates": {
+        "start": null,
+        "end": null
+      },
+      "summary": [
+        {
+          "text": "Dev AVS servers are done; production changes are scheduled for the weekend (Jeff Novick, due 10/18) with one firewall left, followed by a one-week burn-in (10/13 standup chat).",
+          "tickets": [
+            "RM-1650"
+          ]
+        }
+      ],
+      "links": {
+        "jira": [
+          {
+            "label": "RM-1650",
+            "url": "https://projects.sectigo.net/browse/RM-1650"
+          }
+        ],
+        "teams": [
+          {
+            "label": "Daily Ops StandUp message (10/13)",
+            "url": "https://teams.microsoft.com/l/message/19%3ameeting_NDAxMzEzOGEtZmUzYS00MTMxLTk3NTItODc1MGM1ZTBkZWQ2%40thread.v2/1791898348492"
+          }
+        ],
+        "sharepoint": [],
+        "confluence": []
+      },
+      "action_items": [
+        {
+          "text": "Production AVS server changes (RM-1650) over the weekend, then burn-in for a week",
+          "owner": "Jeff Novick",
+          "due": "2026-10-18"
+        }
+      ],
+      "risks": [],
+      "notes": [
+        "Dev AVS servers are done; production changes are scheduled for the weekend (Jeff Novick, due 10/18) with one firewall left, followed by a one-week burn-in (10/13 standup chat)."
+      ],
+      "tickets": [],
+      "jira_updates": {
+        "change": [],
+        "create": []
+      }
+    },
+    {
+      "name": "AI POC (UAT approach)",
+      "status": "On track",
+      "progress": "SRE AI POC agent prototype working in GCP; Phase 1 demo done (roadmap deck).",
+      "timeline": "Security review and onboarding approval by 10/22; user testing 10/22-10/29; Phase 2 re-align Nov 2026.",
+      "dates": {
+        "start": null,
+        "end": null
+      },
+      "summary": [
+        {
+          "text": "Draft UAT approach sent to Maarten, Karl and Mofei; Karl said it works. Next: send to I&O managers (Igor's chats 10/13-10/15; low confidence).",
+          "tickets": []
+        },
+        {
+          "text": "Roadmap deck row 'AI POC Observability' (COR-10291) rated G/G/G: security review and user onboarding approval by 10/22, user testing 10/22-10/29.",
+          "tickets": [
+            "COR-10291"
+          ]
+        }
+      ],
+      "links": {
+        "jira": [
+          {
+            "label": "COR-10291",
+            "url": "https://projects.sectigo.net/browse/COR-10291"
+          }
+        ],
+        "teams": [],
+        "sharepoint": [
+          {
+            "label": "POC_AI_Observability folder (inferred)",
+            "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Observability Analysis/POC_AI_Observability"
+          }
+        ],
+        "confluence": [],
+        "other": [
+          {
+            "label": "AI POC Observability Project plan.xlsx",
+            "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Observability Analysis/POC_AI_Observability/AI POC Observability Project plan.xlsx"
+          }
+        ]
+      },
+      "action_items": [
+        {
+          "text": "Send UAT approach to I&O managers",
+          "owner": "Igor Kulyk",
+          "due": null
+        }
+      ],
+      "risks": [],
+      "notes": [
+        "Draft UAT approach sent to Maarten, Karl and Mofei; Karl said it works. Next: send to I&O managers (Igor's chats 10/13-10/15; low confidence).",
+        "Roadmap deck row 'AI POC Observability' (COR-10291) rated G/G/G: security review and user onboarding approval by 10/22, user testing 10/22-10/29."
+      ],
+      "tickets": [],
+      "jira_updates": {
+        "change": [],
+        "create": []
+      }
+    },
+    {
+      "name": "I&O intake load and sprint planning",
+      "status": "",
+      "progress": null,
+      "timeline": null,
+      "dates": {
+        "start": null,
+        "end": null
+      },
+      "summary": [
+        {
+          "text": "ASAP request from Arkadii to be reviewed and sized first; 'add it to the next sprint' is the viable response (10/15 standup chat). COR is off the project and sits with Compliance (Mike, 10/14).",
+          "tickets": []
+        }
+      ],
+      "links": {
+        "jira": [
+          {
+            "label": "IOSP sprint board",
+            "url": "https://projects.sectigo.net/secure/RapidBoard.jspa?rapidView=485&projectKey=IOSP"
+          }
+        ],
+        "teams": [
+          {
+            "label": "Daily Ops StandUp chat",
+            "url": "https://teams.microsoft.com/l/chat/19:meeting_NDAxMzEzOGEtZmUzYS00MTMxLTk3NTItODc1MGM1ZTBkZWQ2@thread.v2/conversations"
+          }
+        ],
+        "sharepoint": [],
+        "confluence": [],
+        "other": [
+          {
+            "label": "I&O PMO Project governance & Intake Process",
+            "url": "https://confluence.comodoca.net/pages/viewpage.action?pageId=403538271"
+          }
+        ]
+      },
+      "action_items": [
+        {
+          "text": "Review and size the ASAP request from Arkadii before committing",
+          "owner": "Mike Massimino / Karl Witt",
+          "due": null
+        }
+      ],
+      "risks": [
+        "I&O capacity perceived as a bottleneck; short-notice ASAP requests."
+      ],
+      "notes": [
+        "ASAP request from Arkadii to be reviewed and sized first; 'add it to the next sprint' is the viable response (10/15 standup chat). COR is off the project and sits with Compliance (Mike, 10/14)."
+      ],
+      "tickets": [],
+      "jira_updates": {
+        "change": [],
+        "create": []
+      }
+    },
+    {
+      "name": "Observability project",
+      "status": "On track",
+      "progress": null,
+      "timeline": "Roadmap appendix bar shows Planning, dates TBD.",
+      "dates": {
+        "start": null,
+        "end": null
+      },
+      "summary": [
+        {
+          "text": "Igor shared the plan doc and asked Dmitry for updates from Prem (Igor's 1:1 chats 10/14-10/15; low confidence).",
+          "tickets": []
+        },
+        {
+          "text": "Shares the roadmap row 'AI POC Observability' (On-Track, G/G/G); the appendix bar shows Planning with dates TBD.",
+          "tickets": [
+            "COR-10291"
+          ]
+        }
+      ],
+      "links": {
+        "jira": [
+          {
+            "label": "COR-10291",
+            "url": "https://projects.sectigo.net/browse/COR-10291"
+          }
+        ],
+        "teams": [],
+        "sharepoint": [
+          {
+            "label": "POC_AI_Observability folder (inferred)",
+            "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Observability Analysis/POC_AI_Observability"
+          }
+        ],
+        "confluence": [
+          {
+            "label": "Sectigo Observability and Monitoring",
+            "url": "https://confluence.comodoca.net/display/CO/Sectigo+Observability+and+Monitoring"
+          }
+        ],
+        "other": [
+          {
+            "label": "Observability at Sectigo.docx",
+            "url": "https://comodoca-my.sharepoint.com/personal/dmitry_sharkov_sectigo_com/Documents/Documents/Projects/Observability/Observability Plan/Observability at Sectigo.docx"
+          }
+        ]
+      },
+      "action_items": [],
+      "risks": [],
+      "notes": [
+        "Igor shared the plan doc and asked Dmitry for updates from Prem (Igor's 1:1 chats 10/14-10/15; low confidence).",
+        "Shares the roadmap row 'AI POC Observability' (On-Track, G/G/G); the appendix bar shows Planning with dates TBD."
+      ],
+      "tickets": [],
+      "jira_updates": {
+        "change": [],
+        "create": []
+      }
+    }
+  ],
+  "gaps": [
+    "Jira: jira-collector could not be launched (error: \"Agent type 'jira-collector' not found\"). No ticket status, dates, assignees, comments or sprint data were collected. Per-project Jira ticket lists and 'Jira task updates needed' are empty because they require the current Jira state.",
+    "Teams: Daily Ops Standup transcript unavailable: organizer-only access (organizer Shane Knable); read of the 2026-10-14 occurrence returned NOT_FOUND (HTTP 404, Meeting properties are not found). Not retried; other standup dates (10/12, 10/13, 10/15, 10/16) not attempted for the same reason. Standup notes are built from the chat plus Igor's own notes-to-self summary of 10/13.",
+    "Teams: Standup chat coverage is partial: chat_message_search cannot filter by chat, and an unfiltered search is flooded by alert-bot channels. Searched per sender (Igor Kulyk, Karl Witt, Mike Massimino, Jeff Novick; Shane Knable returned nothing) and read previews only. Other participants (Maarten Broekman, Calvin Cochran, Prajeet, Gabriel, Kostiantyn, Aylin, meeting bot) were not searched for the standup chat. Most standup chat content found was informal banter; there are no standup meeting-bot summaries in the results.",
+    "Teams: Rubrik chat coverage: searched by 'Rubrik' keyword (pages 0-28) and by sender Igor Kulyk; searches by Earle Long, SriChand Myla, Prajeet Singh Kahlon, Gabriel Rovira and Karl Witt in the Rubrik chat were not run individually. Most message previews were not read in full (key messages were).",
+    "Teams: Rubrik transcript read OK (occurrence 2026-10-14 18:00 EEST/15:00 UTC; calendar start 2026-10-14T18:00 FLE). Text is speech recognition: 'Aurel/Earle', 'Sri', 'Pavel' garbled; the 10/14 transcript has Igor's speaker label correct; owners were taken from named speakers only.",
+    "Teams: Conflict (status email vs chat/transcript): the 10/14 status email still lists IOSP-1012 as 10/16 18:00 UTC with owner Sri, while the 10/13 chat lists Earle as owner and the 10/14 transcript says the RAC backup cannot start until after the Sunday maintenance window (about 10/18 13:00 UTC). The email also says Calvin will create the RM ticket after Oracle responds, whereas the transcript says no ticket until Oracle/Rubrik reply.",
+    "Teams: Conflict (email vs email): IOSP-1009 shows Nov 1-30 in the 10/8 status and Oct 23-Nov 23 in the 10/14 status; the 10/14 email is the latest.",
+    "Teams: Only one RUBRIK - Project Status email (2026/10/14) fell in the window; its body includes the quoted earlier thread (not re-reported).",
+    "Teams: The 10/17 weekend window (Friday evening and Saturday) shows only PagerDuty/alert bot traffic in the unfiltered search; no human standup messages were found after 10/16 13:09 UTC.",
+    "Teams: Non-standup, non-Rubrik content (AI POC UAT, Observability) comes from Igor's 1:1 and other group chats found incidentally via sender search; Igor's own messages only, no replies except those quoted, so treat as low confidence.",
+    "SharePoint: SHAREPOINT_PMO_FOLDER_URL, SHAREPOINT_ROADMAP_URL and SHAREPOINT_REPORT_FOLDER_URL are empty in .env.example; no .env was read. Roadmap deck located by search at site IOProjectTeam, Presentations/I&O Project Roadmap.pptx. PMO folder assumed to be the IOProjectTeam Shared Documents library.",
+    "SharePoint: AVS server maintenance (RM-1650): no roadmap row, no SharePoint folder or files found.",
+    "SharePoint: I&O intake load and sprint planning: no roadmap row, no folder or files found.",
+    "SharePoint: No start dates are given in the deck for any discussed project; only appendix quarter bars (no exact dates).",
+    "SharePoint: AI POC and Observability share one deck row (AI POC Observability); AI POC UAT-specific dates (user testing Oct 22-29) are the only separate data.",
+    "SharePoint: Rubrik overall status is inconsistent within the deck (High-Risk on portfolio page, Off Track badge on dashboard); Rubrik milestone Oct 16 has slipped to RAC backup target Oct 18.",
+    "SharePoint: Project folder URLs for Rubrik and Observability are inferred from file paths, not confirmed by a folder listing.",
+    "SharePoint: Deck dashboards on the roadmap slide are dated Oct 2; the file was modified Oct 16, so some rows (for example Network v2.0, Postgres) may be stale.",
+    "SharePoint: Search results are partial (more than 150 hits for some terms); other relevant files may exist.",
+    "Confluence: No Confluence pages found for AVS server maintenance (RM-1650) or AI POC (UAT approach).",
+    "Confluence: Intake/sprint planning has only a generic process page, nothing project-specific.",
+    "Confluence: Observability page match is by title only; status, dates and owners not extracted.",
+    "Confluence: Rubrik page has no explicit RAG status; budget approval state not confirmed.",
+    "Confluence: Core AI Platform page (ARCH, edited 2026-10-16 by Dmitry Sharkov) matched text search for Observability; relevance not verified.",
+    "Confluence: Searches were keyword-based; timezone offsets are as returned by Confluence."
+  ]
+}

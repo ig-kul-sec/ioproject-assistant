@@ -1,0 +1,51 @@
+{
+  "window": {"from": "2026-10-12T00:00:00-04:00", "to": "2026-10-17T10:59:00-04:00"},
+  "projects": [
+    {
+      "name": "Rubrik DR backup (IOSP-471)",
+      "rag": {"schedule": "R", "overall": "High-Risk (Scope G, Cost G)"},
+      "progress": "Coordinating Rubrik deployment and MCR cluster readiness; last brik/node for MCR cluster being brought online; NetOps to check NIC in DC; 1gig cross-connect resolved; Pure storage issue resolved; POC parallel run 10/2 (initial 16h, incremental 3h). Next: confirm Pure-based backup (target Oct 16), enable RAC instance backup (target Oct 16 6PM UTC).",
+      "timeline": "Pure and RAC backup validation Oct 6-27; appliance shipment to Manchester Oct 27-Nov 9; rack and stack Nov 9-16; production preparation Nov 16-Dec 6; full production in Europe Dec 6; project completion Dec 2026.",
+      "dates": {"start": null, "end": "2026-12 (December 2026)"},
+      "risks": ["Pure storage issue (listed in roadmap; progress text says resolved)"],
+      "folder": {"label": "RUBRIK (IOProjectTeam Shared Documents)", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/RUBRIK"},
+      "files": [
+        {"label": "Project Roadmap for Mark new.pptx (roadmap deck, PM Igor Kulyk, TL Calvin Cochran)", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Presentations/Project Roadmap for Mark new.pptx", "modified": "2026-10-14T13:26:31Z"},
+        {"label": "PostgreSQL_Questionnaire.docx", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/RUBRIK/PostgreSQL_Questionnaire.docx", "modified": "2026-08-29T20:38:57Z"},
+        {"label": "20260729_RubrikSession_Notes.msg", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/RUBRIK/20260729_RubrikSession_Notes.msg", "modified": "2026-07-30T10:23:36Z"},
+        {"label": "Oracle Questionnaire_UpdPrajeet.docx", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/RUBRIK/Oracle Questionnaire_UpdPrajeet.docx", "modified": "2026-07-08T15:02:00Z"},
+        {"label": "Sectigo On Prem Sizing Validation.pptx", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/RUBRIK/Sectigo On Prem Sizing Validation.pptx", "modified": "2025-10-17T15:53:45Z"}
+      ]
+    },
+    {
+      "name": "AVS server maintenance (dev and production) (RM-1650)",
+      "rag": {"schedule": null, "overall": null},
+      "progress": null,
+      "timeline": null,
+      "dates": {"start": null, "end": null},
+      "risks": [],
+      "folder": {"label": null, "url": null},
+      "files": []
+    },
+    {
+      "name": "I&O request intake and sprint planning",
+      "rag": {"schedule": null, "overall": null},
+      "progress": null,
+      "timeline": null,
+      "dates": {"start": null, "end": null},
+      "risks": [],
+      "folder": {"label": null, "url": null},
+      "files": []
+    }
+  ],
+  "pmo_folder": {"url": null},
+  "gaps": [
+    "SHAREPOINT_PMO_FOLDER_URL, SHAREPOINT_ROADMAP_URL and SHAREPOINT_REPORT_FOLDER_URL are empty in .env.example and no .env exists in the repo, so the PMO folder URL is unknown (null). A SharePoint site named PMO exists (https://comodoca.sharepoint.com/sites/PMO) but it was not confirmed as the configured PMO folder.",
+    "No file named 'I&O Project Roadmap.pptx' was found. Used the latest roadmap deck in IOProjectTeam/Presentations, 'Project Roadmap for Mark new.pptx' (modified 2026-10-14). Slides are marked 'Updated on: Oct 2' for some projects; the Rubrik slide has no per-slide update date. A DRAFT deck (Project Roadmap DRAFT CorpTemplate.pptx, personal OneDrive, modified 2026-10-08) shows the same Rubrik rating: High-Risk, Schedule R, Scope G, Cost G.",
+    "AVS server maintenance (RM-1650) is not in the roadmap deck and has no dedicated SharePoint folder or project files found. The AVS-related hits were server lists under Upgrading Gentoo to Debian, which are not project documents.",
+    "I&O request intake and sprint planning is not in the roadmap deck and has no SharePoint folder or files found.",
+    "Rubrik start date is not stated in the roadmap. The Rubrik folder URL is inferred from file paths (IOProjectTeam/Shared Documents/RUBRIK); the folder itself was not opened.",
+    "The Rubrik roadmap slide lists 'Pure storage issue' under Risks while also saying the storage issue is resolved. Both are reported as written.",
+    "The deck's 'Rubrik' RAG text reads 'R G G Schedule Scope Cost High-Risk'. The mapping to Schedule R, Scope G, Cost G follows the draft deck wording."
+  ]
+}

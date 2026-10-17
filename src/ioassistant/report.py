@@ -8,14 +8,48 @@ from zoneinfo import ZoneInfo
 from html import escape
 from pathlib import Path
 
-from . import brand
-from . import __version__
+from . import brand, spend
 
 NA = "n/a"
 
 
 def _t(value) -> str:
     return escape(str(value)) if value not in (None, "") else NA
+
+
+ISO_DATE = re.compile(r"(?<![\w/.-])\d{4}-(\d{2})-(\d{2})(?:T[\d:.]+(?:Z|[+-]\d{2}:?\d{2})?)?(?![\w-])")
+MD_DATE = re.compile(r"(?<![\w/.:-])(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])(?![\w-])")
+TICKET_IN_TEXT = re.compile(r"(?<![\w/-])((?:IOSP|RM|COR)-\d+)(?![\w-])")
+
+
+def _md(value) -> str:
+    """Date as mm/dd; ISO dates and timestamps are converted, other text is returned as is."""
+    text = str(value or "")
+    m = re.fullmatch(r"\d{4}-(\d{2})-(\d{2})(?:T.*)?", text)
+    return f"{m.group(1)}/{m.group(2)}" if m else text
+
+
+def _dated(value) -> str:
+    """Escaped text with dates shown as mm/dd (no ticket links, safe inside an anchor)."""
+    text = escape(str(value))
+    text = ISO_DATE.sub(lambda m: f"{m.group(1)}/{m.group(2)}", text)
+    return MD_DATE.sub(lambda m: f"{m.group(1)}/{m.group(2)}", text)
+
+
+def _rich(value, base: str = "") -> str:
+    """Escaped free text with dates shown as mm/dd and Jira keys (IOSP/RM/COR) turned into links."""
+    if value in (None, ""):
+        return NA
+    text = _dated(value)
+    return TICKET_IN_TEXT.sub(lambda m: _ticket_link(m.group(1), base or JIRA_BROWSE), text)
+
+
+def _date_td(value) -> str:
+    """Table cell with a date as mm/dd; the ISO value is kept for correct column sorting."""
+    text = str(value or "")
+    if re.fullmatch(r"\d{4}-\d{2}-\d{2}.*", text):
+        return f'<td data-s="{escape(text[:10], quote=True)}">{_rich(value)}</td>'
+    return f"<td>{_rich(value)}</td>"
 
 
 def _safe_url(url) -> str | None:
@@ -27,8 +61,8 @@ def _safe_url(url) -> str | None:
 def _link(label, url) -> str:
     safe = _safe_url(url)
     if not safe:
-        return _t(label or url)
-    return f'<a href="{escape(safe, quote=True)}" target="_blank" rel="noopener">{_t(label or safe)}</a>'
+        return _dated(label or url) if (label or url) else NA
+    return f'<a href="{escape(safe, quote=True)}" target="_blank" rel="noopener">{_dated(label) if label else escape(safe)}</a>'
 
 
 def _days(start, end):
@@ -77,11 +111,11 @@ def _sprint(sprint: dict) -> str:
     pct = f"{round(100 * done / len(tickets))}%" if tickets else NA
     rows = "".join(
         f"<tr><td>{_link(t.get('key'), t.get('url'))}</td><td>{_t(t.get('summary'))}</td>"
-        f"<td>{_t(t.get('status'))}</td><td>{_t(t.get('assignee'))}</td><td>{_t(t.get('due'))}</td></tr>"
+        f"<td>{_t(t.get('status'))}</td><td>{_t(t.get('assignee'))}</td>{_date_td(t.get('due'))}</tr>"
         for t in tickets
     )
     return (
-        f"<p><b>{_t(sprint.get('name'))}</b>: {_t(sprint.get('start'))} to {_t(sprint.get('end'))}"
+        f"<p><b>{_t(sprint.get('name'))}</b>: {_t(_md(sprint.get('start')))} to {_t(_md(sprint.get('end')))}"
         f" ({dur if dur is not None else NA} days). {done} of {len(tickets)} tickets done ({pct}).</p>"
         f"<details><summary>All {len(tickets)} sprint tickets</summary>"
         "<table><tr><th>Ticket</th><th>Summary</th><th>Status</th><th>Responsible</th><th>Due</th></tr>"
@@ -91,7 +125,7 @@ def _sprint(sprint: dict) -> str:
 
 def _links(links: dict) -> str:
     parts = [
-        f"{escape(source)}: {_link(it.get('label'), it.get('url'))}"
+        f"{_dated(source)}: {_link(it.get('label'), it.get('url'))}"
         for source, items in (links or {}).items()
         for it in items or []
     ]
@@ -102,8 +136,6 @@ def _ul(items: list[str]) -> str:
     return "<ul>" + "".join(items) + "</ul>" if items else f"<p>{NA}</p>"
 
 
-AUTHOR_EMAIL = "igor.kulyk@sectigo.com"
-REPO_URL = "https://github.com/ig-kul-sec/ioproject-assistant"
 JIRA_BROWSE = "https://projects.sectigo.net/browse/"
 KEY_RE = re.compile(r"^[A-Z][A-Z0-9]+-\d+$")
 SOURCE_TYPES = ("teams", "sharepoint", "confluence", "jira")
@@ -125,8 +157,8 @@ def _is_done(ticket: dict) -> bool:
     return any(w in str(ticket.get("status") or "").lower() for w in DONE_WORDS)
 
 
-def _h(n: int, text: str) -> str:
-    return f'<h4 class="sec"><span>{n}</span> {escape(text)}</h4>'
+def _sec(n: int, text: str, body: str) -> str:
+    return f'<details class="sub" open><summary class="sec"><span>{n}</span> {escape(text)}</summary>{body}</details>'
 
 
 def _link_list(items) -> str:
@@ -142,8 +174,8 @@ def _summary(p: dict, base: str) -> str:
     for it in items:
         it = it if isinstance(it, dict) else {"text": it}
         refs = ", ".join(_ticket_link(k, base) for k in it.get("tickets") or [])
-        out.append(f"<li>{_t(it.get('text'))}" + (f" <span class='refs'>({refs})</span>" if refs else "") + "</li>")
-    risks = [f"<li>{_t(r)}</li>" for r in p.get("risks", [])]
+        out.append(f"<li>{_rich(it.get('text'), base)}" + (f" <span class='refs'>({refs})</span>" if refs else "") + "</li>")
+    risks = [f"<li>{_rich(r, base)}</li>" for r in p.get("risks", [])]
     return _ul(out) + (f"<p class='lbl'>Risks</p>{_ul(risks)}" if risks else "")
 
 
@@ -154,18 +186,21 @@ def _jira_updates(p: dict, base: str) -> str:
         return "<p>No Jira updates identified.</p>"
     html = ""
     if change:
+        names = {str(t.get("key")): t.get("name") or t.get("summary") for t in p.get("tickets") or []}
         rows = "".join(
-            f"<tr><td>{_ticket_link(c, base)}</td><td>{_t(c.get('type'))}</td><td>{_t(c.get('detail'))}</td></tr>"
+            f"<tr><td>{_ticket_link(c, base)}</td>"
+            f"<td>{_rich(c.get('name') or c.get('summary') or names.get(str(c.get('key'))), base)}</td>"
+            f"<td>{_t(c.get('type'))}</td><td>{_rich(c.get('detail'), base)}</td></tr>"
             for c in change
         )
         html += (
             "<p class='lbl'>Existing tickets to change</p>"
-            "<table><tr><th>Ticket</th><th>Change</th><th>What to do</th></tr>" + rows + "</table>"
+            "<table><tr><th>Ticket</th><th>Ticket name</th><th>Change</th><th>What to do</th></tr>" + rows + "</table>"
         )
     if create:
         rows = "".join(
-            f"<tr><td>{_t(c.get('name'))}</td><td>{_t(c.get('description'))}</td><td>{_t(c.get('start'))}</td>"
-            f"<td>{_t(c.get('end'))}</td><td>{_t(c.get('owner'))}</td></tr>"
+            f"<tr><td>{_rich(c.get('name'), base)}</td><td>{_rich(c.get('description'), base)}</td>"
+            f"{_date_td(c.get('start'))}{_date_td(c.get('end'))}<td>{_t(c.get('owner'))}</td></tr>"
             for c in create
         )
         html += (
@@ -178,9 +213,9 @@ def _jira_updates(p: dict, base: str) -> str:
 
 def _sources(p: dict) -> str:
     links = p.get("links") or {}
-    counts = ", ".join(f"{escape(k)} ({len(v)})" for k, v in links.items() if v)
+    counts = ", ".join(f"{_dated(k)} ({len(v)})" for k, v in links.items() if v)
     other = [
-        f"<li>{escape(k)}: {_link(it.get('label'), it.get('url'))}</li>"
+        f"<li>{_dated(k)}: {_link(it.get('label'), it.get('url'))}</li>"
         for k, v in links.items() if k not in SOURCE_TYPES for it in v or []
     ]
     return f"<p>Sources used: {counts or NA}.</p>" + (_ul(other) if other else "")
@@ -192,8 +227,8 @@ def _tickets(p: dict, base: str) -> str:
         return f"<p>{NA}</p>"
     rows = "".join(
         f"<tr class=\"{'done' if _is_done(t) else 'active'}\"><td>{_ticket_link(t, base)}</td>"
-        f"<td>{_t(t.get('name') or t.get('summary'))}</td><td>{_t(t.get('status'))}</td>"
-        f"<td>{_t(t.get('assignee'))}</td><td>{_t(t.get('start'))}</td><td>{_t(t.get('end') or t.get('due'))}</td>"
+        f"<td>{_rich(t.get('name') or t.get('summary'), base)}</td><td>{_t(t.get('status'))}</td>"
+        f"<td>{_t(t.get('assignee'))}</td>{_date_td(t.get('start'))}{_date_td(t.get('end') or t.get('due'))}"
         f"<td>{', '.join(_ticket_link(r, base) for r in t.get('related') or []) or NA}</td></tr>"
         for t in ts
     )
@@ -203,18 +238,26 @@ def _tickets(p: dict, base: str) -> str:
     )
 
 
+def _people(p: dict) -> str:
+    return (
+        f"Project Manager: <b>{_t(p.get('project_manager'))}</b> &nbsp;|&nbsp; "
+        f"Technical Lead: <b>{_t(p.get('technical_lead'))}</b>"
+    )
+
+
 def _project(p: dict, base: str = JIRA_BROWSE) -> str:
     links = p.get("links") or {}
     return (
-        f'<section class="card" id="{_anchor(p.get("name"))}">'
-        f'<div class="card-h"><h3>{_t(p.get("name"))}</h3>{_pill(p)}</div>'
-        f"{_h(1, 'Project updates (summary)')}{_summary(p, base)}"
-        f"{_h(2, 'Jira task updates needed')}{_jira_updates(p, base)}"
-        f"{_h(3, 'Project sources')}{_sources(p)}"
-        f"{_h(4, 'Project meeting chats')}{_link_list(links.get('teams'))}"
-        f"{_h(5, 'Project SharePoint folder')}{_link_list(links.get('sharepoint'))}"
-        f"{_h(6, 'Project Confluence page')}{_link_list(links.get('confluence'))}"
-        f"{_h(7, 'Jira tickets for this project')}{_tickets(p, base)}</section>"
+        f'<details class="card" id="{_anchor(p.get("name"))}" open>'
+        f'<summary class="card-h"><div><h3>{_t(p.get("name"))}</h3><div class="meta">{_people(p)}</div></div>'
+        f"{_pill(p)}</summary>"
+        f"{_sec(1, 'Project updates (summary)', _summary(p, base))}"
+        f"{_sec(2, 'Jira task updates needed', _jira_updates(p, base))}"
+        f"{_sec(3, 'Project sources', _sources(p))}"
+        f"{_sec(4, 'Project meeting chats', _link_list(links.get('teams')))}"
+        f"{_sec(5, 'Project SharePoint folder', _link_list(links.get('sharepoint')))}"
+        f"{_sec(6, 'Project Confluence page', _link_list(links.get('confluence')))}"
+        f"{_sec(7, 'Jira tickets for this project', _tickets(p, base))}</details>"
     )
 
 
@@ -229,11 +272,14 @@ EXTRA_CSS = """
 .pill.off{background:var(--coral);color:var(--off-black)}
 .pill.na{border:1px solid var(--off-black);color:var(--off-black)}
 .card{background:var(--off-white);border:1px solid var(--forest);border-radius:12px;padding:20px 24px;margin:20px 0}
-.card-h{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.card h3{font-size:22px}.meta{margin:.5rem 0 0;font-size:13px}
+.card-h{display:flex;justify-content:space-between;align-items:center;gap:12px;list-style:none;cursor:pointer}
+.card-h::-webkit-details-marker,summary.sec::-webkit-details-marker{display:none}
+.card-h::before{content:'\\25BE';color:var(--forest);font-size:18px}.card:not([open])>.card-h::before{content:'\\25B8'}
+.card-h>div{flex:1}
+.card h3{font-size:22px}.meta{margin:.35rem 0 0;font-size:13px;font-weight:400}
 .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
-h4.sec{display:flex;align-items:center;gap:8px;margin:1.4rem 0 .4rem;font-size:15px;border-bottom:1px solid var(--forest);padding-bottom:4px}
-h4.sec span{background:var(--forest);color:var(--spearmint);border-radius:50%;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;font-size:12px}
+summary.sec{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;margin:1.4rem 0 .4rem;font-size:15px;border-bottom:1px solid var(--forest);padding-bottom:4px}
+summary.sec span{background:var(--forest);color:var(--spearmint);border-radius:50%;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;font-size:12px}
 .lbl{font-weight:600;margin:.6rem 0 .2rem}.refs{font-size:13px}
 table.tix tr.done td{opacity:.6}
 ul{margin:.25rem 0;padding-left:1.2rem}
@@ -245,28 +291,33 @@ details{margin:.5rem 0}summary{cursor:pointer;color:var(--forest);font-weight:60
 REPORT_TZ = "America/New_York"
 
 
-def _range(window) -> str:
-    """'Analysis range: from yyyy.mm.dd till yyyy.mm.dd hh:mm EST (24h)'; the zone label is EST or EDT as in force."""
+def _local(value):
     try:
-        tz = ZoneInfo(REPORT_TZ)
-        start = datetime.fromisoformat(str(window["from"]).replace("Z", "+00:00")).astimezone(tz)
-        end = datetime.fromisoformat(str(window["to"]).replace("Z", "+00:00")).astimezone(tz)
-    except (TypeError, KeyError, ValueError):
-        return f"Analysis range: {NA}"
-    return f"Analysis range: from {start:%Y.%m.%d} till {end:%Y.%m.%d %H:%M} {end.tzname()} (24h)"
+        dt = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    except (TypeError, ValueError):
+        return None
+    tz = ZoneInfo(REPORT_TZ)
+    return dt.replace(tzinfo=tz) if dt.tzinfo is None else dt.astimezone(tz)
 
 
-def _footer() -> str:
-    return (
-        "<footer><p><b>IO Project Assistant</b> &nbsp;|&nbsp; "
-        f"Version: {escape(__version__)} &nbsp;|&nbsp; Author: "
-        f'<a href="mailto:{AUTHOR_EMAIL}">{AUTHOR_EMAIL}</a> &nbsp;|&nbsp; '
-        f'GitHub: <a href="{REPO_URL}" target="_blank" rel="noopener">{REPO_URL}</a></p>'
-        "<p>sectigo.com &nbsp;|&nbsp; Sectigo&copy; 2026. All rights reserved.</p></footer>"
-    )
+def _range(window) -> str:
+    """'Analysis period: yyyy.mm.dd - yyyy.mm.dd hh:mm EDT'; the zone label is EST or EDT as in force."""
+    try:
+        start, end = _local(window["from"]), _local(window["to"])
+    except (TypeError, KeyError):
+        start = end = None
+    if not start or not end:
+        return f"Analysis period: {NA}"
+    return f"Analysis period: {start:%Y.%m.%d} - {end:%Y.%m.%d %H:%M} {end.tzname()}"
 
 
-def render(data: dict, title: str) -> str:
+def _stamp(value) -> str:
+    """'yyyy.mm.dd hh:mm EDT' (America/New_York, 24h) for a timestamp."""
+    dt = _local(value)
+    return f"{dt:%Y.%m.%d %H:%M} {dt.tzname()}" if dt else NA
+
+
+def render(data: dict, title: str, compact: bool = False) -> str:
     base = str(data.get("jira_base_url") or JIRA_BROWSE)
     projects = data.get("projects", [])
     gaps = data.get("gaps", [])
@@ -287,35 +338,38 @@ def render(data: dict, title: str) -> str:
     )
     glance = "".join(
         f'<tr><td><a href="#{_anchor(p.get("name"))}">{_t(p.get("name"))}</a></td><td>{_pill(p)}</td>'
-        f'<td>{_t(p.get("progress"))}</td><td>{_t(p.get("timeline"))}</td>'
-        f'<td>{_t((p.get("risks") or [None])[0])}</td></tr>'
+        f'<td>{_rich(p.get("progress"), base)}</td><td>{_rich(p.get("timeline"), base)}</td>'
+        f'<td>{_rich((p.get("risks") or [None])[0], base)}</td></tr>'
         for p in projects
     )
     gap_html = (
         f"<h2>Data gaps</h2><details><summary>{len(gaps)} gaps in this run</summary>"
-        + _ul([f"<li>{_t(g)}</li>" for g in gaps]) + "</details>"
+        + _ul([f"<li>{_rich(g, base)}</li>" for g in gaps]) + "</details>"
         if gaps else ""
     )
     return (
-        brand.head(title, EXTRA_CSS)
+        brand.head(title, EXTRA_CSS, fonts=not compact)
         + "<body>"
-        + brand.banner("I&O project status report", f"{title}  |  Generated {data.get('generated_at') or NA}",
-                       _range(data.get("window")))
+        + brand.banner("I&O project status report", f"{title}  |  Generated: {_stamp(data.get('generated_at'))}",
+                       _range(data.get("window")), compact=compact,
+                       note_html=brand.sharepoint_note(f"{title}.html"))
         + "<main class='wrap'>"
         f"<h2>Summary</h2><div class='kpis'>{kpis}</div>"
         "<h2>Projects at a glance</h2>"
         "<table><tr><th>Project</th><th>Status</th><th>Progress</th><th>Timeline</th><th>Top risk</th></tr>"
         f"{glance}</table>"
-        f"<h2>Project status</h2>{''.join(_project(p, base) for p in projects)}"
+        "<h2>Project status</h2><p><button class='tool' id='collapse-all'>Collapse all</button>"
+        "<button class='tool' id='expand-all'>Expand all</button></p>"
+        f"{''.join(_project(p, base) for p in projects)}"
         f"<h2>Sprint status</h2>{_sprint(sprint)}"
-        f"{gap_html}{_footer()}"
-        "</main></body></html>"
+        f"{gap_html}{brand.footer()}"
+        "</main>" + brand.foot()
     )
 
 
-def build(data_path: Path) -> Path:
+def build(data_path: Path, compact: bool = False) -> Path:
     data = json.loads(data_path.read_text(encoding="utf-8"))
     run_id = data_path.parent.name
-    out = data_path.parent / f"{run_id}.html"
-    out.write_text(render(data, run_id), encoding="utf-8")
+    out = spend._out_path(data_path.parent, f"{run_id}.html", compact)
+    out.write_bytes(render(data, run_id, compact).encode("utf-8"))  # LF endings: bytes match what is uploaded
     return out
