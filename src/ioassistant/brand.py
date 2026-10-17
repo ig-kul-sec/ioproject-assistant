@@ -87,22 +87,26 @@ def head(title: str, extra_css: str = "", fonts: bool = True) -> str:
     )
 
 
-def banner(title: str, subtitle: str, range_line: str = "", compact: bool = False, note_html: str = "") -> str:
+def banner(title: str, subtitle: str, range_line: str = "", compact: bool = False, note_html: str = "",
+           subtitle_last: bool = False) -> str:
+    """Header band. subtitle_last puts the subtitle (e.g. the Generated line) after the range and link lines."""
     # wordmark for the Forest band. Compact builds (connector upload, text only) carry no logo: a model cannot
     # retype the base64 faithfully, and an approximated logo would break the brand rules.
     logo = "" if compact else _data_uri("sectigo-logo-light.png", "image/png")
     img = f"<img src='{logo}' alt='Sectigo'>" if logo else ""
     return (
         f"<header class='top'><div class='wrap'>{img}<h1>{escape(title)}</h1>"
-        f"<p>{escape(subtitle)}</p>"
+        + ("" if subtitle_last else f"<p>{escape(subtitle)}</p>")
         + (f"<p class='range'>{escape(range_line)}</p>" if range_line else "")
         + (f"<p class='store'>{note_html}</p>" if note_html else "")
+        + (f"<p>{escape(subtitle)}</p>" if subtitle_last else "")
         + "</div></header>"
     )
 
 
 AUTHOR_EMAIL = "igor.kulyk@sectigo.com"
 REPO_URL = "https://github.com/ig-kul-sec/ioproject-assistant"
+CONFLUENCE_PARENT_URL = "https://confluence.comodoca.net/display/CO/ITSM+Freshservice"
 REPORT_FOLDER_URL = (
     "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared%20Documents/"
     "ITSM%20Freshservice/Archive/AI%20Test%20SharePoint%20Folder"
@@ -128,6 +132,14 @@ def sharepoint_file_url(filename: str) -> str:
     """URL of a report file in that folder (the folder URL itself when it has a query string and cannot be extended)."""
     folder = sharepoint_folder_url()
     return folder if "?" in folder else folder.rstrip("/") + "/" + filename
+
+
+def header_links() -> str:
+    """Raw HTML links line for the status report header."""
+    return (
+        f'<a href="{escape(sharepoint_folder_url(), quote=True)}" target="_blank" rel="noopener">SharePoint Report Archive Link</a>'
+        f' &nbsp;|&nbsp; <a href="{CONFLUENCE_PARENT_URL}" target="_blank" rel="noopener">Confluence ITSM Parent Page</a>'
+    )
 
 
 def sharepoint_note(filename: str) -> str:

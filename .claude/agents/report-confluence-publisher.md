@@ -1,6 +1,6 @@
 ---
 name: report-confluence-publisher
-description: 'Creates a Confluence subpage under ITSM Freshservice (space CO) with the latest IO Project Assistant status report, titled "<report name> (Draft)", with the SharePoint folder link and the standard footer block.'
+description: 'Creates a Confluence subpage under ITSM Freshservice (space CO) with the latest IO Project Assistant status report, titled "TEST: <report name> (Draft)", with the same content as the Outlook draft (SharePoint links and the standard footer block).'
 tools: Read, Write, Skill, Bash
 model: sonnet
 ---

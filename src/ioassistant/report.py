@@ -350,9 +350,9 @@ def render(data: dict, title: str, compact: bool = False) -> str:
     return (
         brand.head(title, EXTRA_CSS, fonts=not compact)
         + "<body>"
-        + brand.banner("I&O project status report", f"{title}  |  Generated: {_stamp(data.get('generated_at'))}",
-                       _range(data.get("window")), compact=compact,
-                       note_html=brand.sharepoint_note(f"{title}.html"))
+        + brand.banner("I&O PROJECT STATUS REPORT", f"Generated: {_stamp(data.get('generated_at'))}",
+                       _range(data.get("window")), compact=compact, note_html=brand.header_links(),
+                       subtitle_last=True)
         + "<main class='wrap'>"
         f"<h2>Summary</h2><div class='kpis'>{kpis}</div>"
         "<h2>Projects at a glance</h2>"

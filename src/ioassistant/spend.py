@@ -36,13 +36,13 @@ def render(rows: list[dict], pricing: dict, title: str, compact: bool = False) -
         body += (
             f"<tr><td>{escape(r['agent'])}</td><td>{escape(r['model'])}</td>"
             f"<td>{r['input_tokens'] + r['output_tokens']:,}</td><td>{r['seconds']:.1f}</td>"
-            f"<td>{'n/a' if c is None else f'${c:.4f}'}</td></tr>"
+            f"<td>{'n/a' if c is None else f'{c:.2f}$'}</td></tr>"
         )
     priced = any(cost(r, pricing) is not None for r in rows)
     if not priced:
         total_txt = "n/a (no model prices configured)"
     else:
-        total_txt = f"${total:.4f}" + (" (partial: some models have no price)" if unpriced else "")
+        total_txt = f"{total:.2f}$" + (" (partial: some models have no price)" if unpriced else "")
     return (
         brand.head(f"{title} spending", fonts=not compact)
         + "<body>"

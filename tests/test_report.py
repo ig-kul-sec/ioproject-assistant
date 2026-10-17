@@ -100,7 +100,11 @@ def test_report_features(tmp_path):
     assert "Project Manager: <b>Pat</b>" in html and "Technical Lead: <b>Lee</b>" in html
     assert "Generated: 2026.10.17 11:16 EDT" in html
     assert "id='collapse-all'" in html and '<details class="card"' in html and "th.sortable" in html
-    assert "Stored in SharePoint:" in html and "R_3.html" in html
+    assert "I&amp;O PROJECT STATUS REPORT" in html
+    assert "SharePoint Report Archive Link</a>" in html and "Confluence ITSM Parent Page</a>" in html
+    assert "display/CO/ITSM+Freshservice" in html
+    head = html[html.index("<header"):html.index("</header>")]
+    assert head.index("Analysis period") < head.index("SharePoint Report Archive") < head.index("Generated:")
     assert "2026-09-11T" not in html
 
 
@@ -131,9 +135,11 @@ def test_confluence_body_and_email_draft(tmp_path):
     (run / "data.json").write_text(json.dumps(data), encoding="utf-8")
     body = confluence.build(run / "data.json").read_text(encoding="utf-8")
     minidom.parseString(f"<r>{body}</r>")  # well-formed XML
-    assert "Rubrik &lt;DR&gt;" in body and "due 09/11" in body and "Technical Lead: <strong>n/a" in body
+    assert "Rubrik" not in body  # same content as the email, not the per-project report
+    assert "The latest I&amp;O project status report is on SharePoint:" in body
     assert "Version: " in body and "github.com/ig-kul-sec/ioproject-assistant" in body
-    assert confluence.title_for(run.name) == "IO Project Assistant Report 20261017 1759 (Draft)"
+    assert "Sectigo© 2026. All rights reserved." in body
+    assert confluence.title_for(run.name) == "TEST: IO Project Assistant Report 20261017 1759 (Draft)"
     mail = emaildraft.build(run / "data.json").read_text(encoding="utf-8")
     assert "AI%20Test%20SharePoint%20Folder/IOProjectAssistantReport_20261017_1759.html" in mail
     assert "Sectigo\u00a9 2026. All rights reserved." in mail and "<span" not in mail and "<img" not in mail
