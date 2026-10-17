@@ -20,6 +20,8 @@ For each discussed project (by key from the Teams collector, otherwise by epic/n
 **Always-included epics** (reviewed every run, in addition to whatever the Teams collector reports; never replace the discussed-project list):
 - **Rubrik DR backup: IOSP-471** (https://projects.sectigo.net/browse/IOSP-471). Fetch the epic itself (summary, status, description/objectives, assignee, dates) and all child issues (`"Epic Link" = IOSP-471`, plus issue links to RM and COR tickets such as RM-1658, RM-1660). Apply steps 1 and 2 to it. Report it as the project "Rubrik DR backup".
 
+Return every project's tickets as the structured `tickets` list in the output JSON: the epic itself (`epic: true`) plus all child tickets, including closed ones, with `start`/`end` from the start-date and due-date fields (null when empty), the assignee's display name, and `related` from issue links and linked RM/COR tickets (key + browse URL).
+
 Use read-only REST calls (`/rest/api/2/search`, `/rest/agile/1.0/board/{id}/sprint`). If the API is unreachable, fall back to the connector/browser if available, else record a gap.
 
 ## Output JSON
@@ -28,7 +30,9 @@ Use read-only REST calls (`/rest/api/2/search`, `/rest/agile/1.0/board/{id}/spri
 {
   "sprint": {"name": "", "start": "YYYY-MM-DD", "end": "YYYY-MM-DD", "tickets": [
     {"key": "", "url": "", "summary": "", "status": "", "assignee": "", "due": null}]},
-  "projects": [{"name": "", "tickets": [], "changes_24h": [{"key": "", "who": "", "when": "", "text": ""}]}],
+  "projects": [{"name": "", "changes_24h": [{"key": "", "who": "", "when": "", "text": ""}],
+    "tickets": [{"key": "", "url": "", "name": "", "status": "", "assignee": "", "start": null, "end": null,
+                 "epic": false, "related": [{"key": "", "url": ""}]}]}],
   "gaps": []
 }
 ```

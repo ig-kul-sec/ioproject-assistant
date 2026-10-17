@@ -1,0 +1,1156 @@
+{
+  "generated_at": "2026-10-17T14:53:47+03:00",
+  "sprint": {
+    "name": "I&O 26.42",
+    "start": "2026-10-12",
+    "end": "2026-10-16",
+    "tickets": [
+      {
+        "key": "COR-7997",
+        "url": "https://projects.sectigo.net/browse/COR-7997",
+        "summary": "Please add bdddcarac1 and bdddcarac2 to Grafana",
+        "status": "Done",
+        "assignee": "Akhil Kumar",
+        "due": null
+      },
+      {
+        "key": "COR-9967",
+        "url": "https://projects.sectigo.net/browse/COR-9967",
+        "summary": "ts_api_stage.pl cannot open https connection to the auth server",
+        "status": "Rejected",
+        "assignee": "Maarten Broekman",
+        "due": null
+      },
+      {
+        "key": "COR-11471",
+        "url": "https://projects.sectigo.net/browse/COR-11471",
+        "summary": "Elastic API access",
+        "status": "QA",
+        "assignee": "Ashwadeep Vaishnav",
+        "due": null
+      },
+      {
+        "key": "COR-12004",
+        "url": "https://projects.sectigo.net/browse/COR-12004",
+        "summary": "Upgrade bddpinlb1.brad.dc.comodoca.net to Debian 12",
+        "status": "Done",
+        "assignee": "Jeff Novick",
+        "due": null
+      },
+      {
+        "key": "COR-12005",
+        "url": "https://projects.sectigo.net/browse/COR-12005",
+        "summary": "Upgrade bddpinlb2.brad.dc.comodoca.net to Debian 12",
+        "status": "Done",
+        "assignee": "Jeff Novick",
+        "due": null
+      },
+      {
+        "key": "COR-12006",
+        "url": "https://projects.sectigo.net/browse/COR-12006",
+        "summary": "Upgrade bddscaavsapp1.brad.dc.comodoca.net to Debian 12",
+        "status": "Done",
+        "assignee": "Jeff Novick",
+        "due": null
+      },
+      {
+        "key": "COR-12019",
+        "url": "https://projects.sectigo.net/browse/COR-12019",
+        "summary": "Upgrade mcdpcaavsapp.mcr.dc.comodoca.net to Debian 12",
+        "status": "In Progress",
+        "assignee": "Jeff Novick",
+        "due": null
+      },
+      {
+        "key": "COR-12021",
+        "url": "https://projects.sectigo.net/browse/COR-12021",
+        "summary": "Upgrade scdpcaavsapp.sec.dc.comodoca.net to Debian 12",
+        "status": "In Progress",
+        "assignee": "Jeff Novick",
+        "due": null
+      },
+      {
+        "key": "COR-12333",
+        "url": "https://projects.sectigo.net/browse/COR-12333",
+        "summary": "Upgrade mcdpcaavspsql.mcr.dc.comodoca.net to Debian 12",
+        "status": "In Progress",
+        "assignee": "Jeff Novick",
+        "due": null
+      },
+      {
+        "key": "COR-12334",
+        "url": "https://projects.sectigo.net/browse/COR-12334",
+        "summary": "Upgrade scdpcaavspsql.sec.dc.comodoca.net to Debian 12",
+        "status": "In Progress",
+        "assignee": "Jeff Novick",
+        "due": null
+      },
+      {
+        "key": "COR-11041",
+        "url": "https://projects.sectigo.net/browse/COR-11041",
+        "summary": "[iSCSI] Identify the encryption details",
+        "status": "Done",
+        "assignee": "Andrey Kozudaev",
+        "due": null
+      },
+      {
+        "key": "COR-11042",
+        "url": "https://projects.sectigo.net/browse/COR-11042",
+        "summary": "[iSCSI] Figured out the configuration",
+        "status": "Done",
+        "assignee": "Andrey Kozudaev",
+        "due": null
+      },
+      {
+        "key": "COR-11036",
+        "url": "https://projects.sectigo.net/browse/COR-11036",
+        "summary": "[iSCSI] Figured out the consumers",
+        "status": "In Progress",
+        "assignee": "Andrey Kozudaev",
+        "due": null
+      },
+      {
+        "key": "COR-10998",
+        "url": "https://projects.sectigo.net/browse/COR-10998",
+        "summary": "[Post Failover2] Fix CAFW and INRT access prerequisites before failover day",
+        "status": "QA",
+        "assignee": "Andrey Kozudaev",
+        "due": null
+      },
+      {
+        "key": "COR-11005",
+        "url": "https://projects.sectigo.net/browse/COR-11005",
+        "summary": "[Post Failover2] Document dr.yaml UI flow and remove main-branch push dependency",
+        "status": "QA",
+        "assignee": "Andrey Kozudaev",
+        "due": null
+      },
+      {
+        "key": "COR-11015",
+        "url": "https://projects.sectigo.net/browse/COR-11015",
+        "summary": "[Post Failover2] Add step to run puppet on a standby DR to make backup servers works",
+        "status": "QA",
+        "assignee": "Andrey Kozudaev",
+        "due": null
+      },
+      {
+        "key": "COR-11729",
+        "url": "https://projects.sectigo.net/browse/COR-11729",
+        "summary": "Need a VM on GCP for Golden Gate",
+        "status": "In Progress",
+        "assignee": "Ashwadeep Vaishnav",
+        "due": null
+      },
+      {
+        "key": "COR-7664",
+        "url": "https://projects.sectigo.net/browse/COR-7664",
+        "summary": "Set Up IAM-Based Authentication for CloudSQL Databases in GCP",
+        "status": "On Hold",
+        "assignee": "Ashwadeep Vaishnav",
+        "due": null
+      },
+      {
+        "key": "COR-11752",
+        "url": "https://projects.sectigo.net/browse/COR-11752",
+        "summary": "Automate AWS IAM Identity Center Access Report Publishing to SharePoint",
+        "status": "On Hold",
+        "assignee": "Ashwadeep Vaishnav",
+        "due": null
+      },
+      {
+        "key": "COR-11501",
+        "url": "https://projects.sectigo.net/browse/COR-11501",
+        "summary": "Implement AWS IAM Identity Center SCIM Token Expiry Alerting",
+        "status": "QA",
+        "assignee": "Ashwadeep Vaishnav",
+        "due": null
+      },
+      {
+        "key": "COR-10708",
+        "url": "https://projects.sectigo.net/browse/COR-10708",
+        "summary": "Production Task 0.5: Deploy Spacelift runners",
+        "status": "QA",
+        "assignee": "Edino Moniz",
+        "due": null
+      },
+      {
+        "key": "COR-10768",
+        "url": "https://projects.sectigo.net/browse/COR-10768",
+        "summary": "MCR : Provision runner VMs via Ansible IaC",
+        "status": "Done",
+        "assignee": "Edino Moniz",
+        "due": null
+      },
+      {
+        "key": "COR-10769",
+        "url": "https://projects.sectigo.net/browse/COR-10769",
+        "summary": "MCR : Prep nodes by running ansible site.yaml",
+        "status": "Done",
+        "assignee": "Andrey Kozudaev",
+        "due": null
+      },
+      {
+        "key": "COR-10770",
+        "url": "https://projects.sectigo.net/browse/COR-10770",
+        "summary": "MCR : Bootstrap Cluster with Kubespray",
+        "status": "Done",
+        "assignee": "Andrey Kozudaev",
+        "due": null
+      },
+      {
+        "key": "COR-10774",
+        "url": "https://projects.sectigo.net/browse/COR-10774",
+        "summary": "MCR : Set up crowdstrike to runner cluster",
+        "status": "Done",
+        "assignee": "Edino Moniz",
+        "due": null
+      },
+      {
+        "key": "COR-10775",
+        "url": "https://projects.sectigo.net/browse/COR-10775",
+        "summary": "MCR : KubeState Metrics to runner's cluster",
+        "status": "Done",
+        "assignee": "Edino Moniz",
+        "due": null
+      },
+      {
+        "key": "COR-10776",
+        "url": "https://projects.sectigo.net/browse/COR-10776",
+        "summary": "MCR : Set up elastic agent",
+        "status": "QA",
+        "assignee": "Priya Muttum",
+        "due": null
+      },
+      {
+        "key": "COR-10777",
+        "url": "https://projects.sectigo.net/browse/COR-10777",
+        "summary": "MCR : set up externalSecret Operator",
+        "status": "Done",
+        "assignee": "Andrey Kozudaev",
+        "due": null
+      },
+      {
+        "key": "COR-10778",
+        "url": "https://projects.sectigo.net/browse/COR-10778",
+        "summary": "MCR : Deploy Spacelift Helm Chart",
+        "status": "Done",
+        "assignee": "Andrey Kozudaev",
+        "due": null
+      },
+      {
+        "key": "COR-10780",
+        "url": "https://projects.sectigo.net/browse/COR-10780",
+        "summary": "Deprecation of ingress-nginx for sectigo-kubespray",
+        "status": "Done",
+        "assignee": "Edino Moniz",
+        "due": null
+      },
+      {
+        "key": "COR-10827",
+        "url": "https://projects.sectigo.net/browse/COR-10827",
+        "summary": "MCR: Apply rbac roles from k8s-rbac",
+        "status": "Done",
+        "assignee": "Edino Moniz",
+        "due": null
+      },
+      {
+        "key": "COR-10828",
+        "url": "https://projects.sectigo.net/browse/COR-10828",
+        "summary": "SEC: Apply rbac roles from k8s-rbac",
+        "status": "Done",
+        "assignee": "Edino Moniz",
+        "due": null
+      },
+      {
+        "key": "COR-10832",
+        "url": "https://projects.sectigo.net/browse/COR-10832",
+        "summary": "MCR: Set up flux operator on the cluster",
+        "status": "Done",
+        "assignee": "Edino Moniz",
+        "due": null
+      },
+      {
+        "key": "COR-10833",
+        "url": "https://projects.sectigo.net/browse/COR-10833",
+        "summary": "SEC: Set up flux operator on the cluster",
+        "status": "Done",
+        "assignee": "Edino Moniz",
+        "due": null
+      },
+      {
+        "key": "COR-10850",
+        "url": "https://projects.sectigo.net/browse/COR-10850",
+        "summary": "SEC : Bootstrap Cluster with Kubespray",
+        "status": "Done",
+        "assignee": "Andrey Kozudaev",
+        "due": null
+      },
+      {
+        "key": "COR-10851",
+        "url": "https://projects.sectigo.net/browse/COR-10851",
+        "summary": "Adding git workflows",
+        "status": "Done",
+        "assignee": "Edino Moniz",
+        "due": null
+      },
+      {
+        "key": "COR-10853",
+        "url": "https://projects.sectigo.net/browse/COR-10853",
+        "summary": "SEC : Set up crowdstrike to runner cluster",
+        "status": "Done",
+        "assignee": "Edino Moniz",
+        "due": null
+      },
+      {
+        "key": "COR-10854",
+        "url": "https://projects.sectigo.net/browse/COR-10854",
+        "summary": "SEC : KubeState Metrics to runner's cluster",
+        "status": "Done",
+        "assignee": "Edino Moniz",
+        "due": null
+      },
+      {
+        "key": "COR-10855",
+        "url": "https://projects.sectigo.net/browse/COR-10855",
+        "summary": "SEC : set up externalSecret Operator",
+        "status": "Done",
+        "assignee": "Andrey Kozudaev",
+        "due": null
+      },
+      {
+        "key": "COR-10856",
+        "url": "https://projects.sectigo.net/browse/COR-10856",
+        "summary": "SEC : Set up elastic agent",
+        "status": "QA",
+        "assignee": "Priya Muttum",
+        "due": null
+      },
+      {
+        "key": "COR-10857",
+        "url": "https://projects.sectigo.net/browse/COR-10857",
+        "summary": "Add additiopnal sectigo helm repositories",
+        "status": "QA",
+        "assignee": "Edino Moniz",
+        "due": null
+      },
+      {
+        "key": "COR-10859",
+        "url": "https://projects.sectigo.net/browse/COR-10859",
+        "summary": "MCR: Expose mcdpinrunk8s K8S API as a single endpoint via INLBs",
+        "status": "Done",
+        "assignee": "Andrey Kozudaev",
+        "due": null
+      },
+      {
+        "key": "COR-10860",
+        "url": "https://projects.sectigo.net/browse/COR-10860",
+        "summary": "SEC: Expose scdpinrunk8s K8S API as a single endpoint via INLBs",
+        "status": "Done",
+        "assignee": "Andrey Kozudaev",
+        "due": null
+      },
+      {
+        "key": "COR-10937",
+        "url": "https://projects.sectigo.net/browse/COR-10937",
+        "summary": "SEC: Create Spacelift private worker pool",
+        "status": "Done",
+        "assignee": "Andrey Kozudaev",
+        "due": null
+      },
+      {
+        "key": "COR-10961",
+        "url": "https://projects.sectigo.net/browse/COR-10961",
+        "summary": "SEC : Deploy Spacelift Helm Chart",
+        "status": "Done",
+        "assignee": "Andrey Kozudaev",
+        "due": null
+      },
+      {
+        "key": "COR-10967",
+        "url": "https://projects.sectigo.net/browse/COR-10967",
+        "summary": "MCR: Create Spacelift private worker pool",
+        "status": "Done",
+        "assignee": "Andrey Kozudaev",
+        "due": null
+      },
+      {
+        "key": "COR-11617",
+        "url": "https://projects.sectigo.net/browse/COR-11617",
+        "summary": "Vault Access | Key Management (Three Key Ceremony) – #TSK-3510",
+        "status": "QA",
+        "assignee": "Edino Moniz",
+        "due": null
+      },
+      {
+        "key": "COR-9284",
+        "url": "https://projects.sectigo.net/browse/COR-9284",
+        "summary": "Kubernetes admission controller to validate container attestations POC",
+        "status": "On Hold",
+        "assignee": "Edino Moniz",
+        "due": null
+      },
+      {
+        "key": "COR-11514",
+        "url": "https://projects.sectigo.net/browse/COR-11514",
+        "summary": "Story 1: Validate attestation data on real sample images",
+        "status": "Done",
+        "assignee": "Edino Moniz",
+        "due": null
+      },
+      {
+        "key": "COR-11516",
+        "url": "https://projects.sectigo.net/browse/COR-11516",
+        "summary": "Story 3: Implement namespace-scoped enforcement policy",
+        "status": "In Progress",
+        "assignee": "Edino Moniz",
+        "due": null
+      },
+      {
+        "key": "COR-11515",
+        "url": "https://projects.sectigo.net/browse/COR-11515",
+        "summary": "Story 2: Deploy Kyverno via Flux to target cluster",
+        "status": "QA",
+        "assignee": "Edino Moniz",
+        "due": null
+      },
+      {
+        "key": "COR-11517",
+        "url": "https://projects.sectigo.net/browse/COR-11517",
+        "summary": "Story 4: Execute admission test matrix",
+        "status": "On Hold",
+        "assignee": "Edino Moniz",
+        "due": null
+      },
+      {
+        "key": "COR-11518",
+        "url": "https://projects.sectigo.net/browse/COR-11518",
+        "summary": "Story 5: Document findings and recommendation",
+        "status": "On Hold",
+        "assignee": "Edino Moniz",
+        "due": null
+      },
+      {
+        "key": "COR-11525",
+        "url": "https://projects.sectigo.net/browse/COR-11525",
+        "summary": "Story 0: Provision vulnerability-manager in non-production",
+        "status": "QA",
+        "assignee": "Edino Moniz",
+        "due": null
+      },
+      {
+        "key": "COR-11885",
+        "url": "https://projects.sectigo.net/browse/COR-11885",
+        "summary": "Add static CT log targets to Prometheus/Grafana",
+        "status": "QA",
+        "assignee": "Andrey Shabotov",
+        "due": null
+      },
+      {
+        "key": "COR-12134",
+        "url": "https://projects.sectigo.net/browse/COR-12134",
+        "summary": "Stage02 permissions and gitwatch repo cleanup",
+        "status": "QA",
+        "assignee": "Maarten Broekman",
+        "due": null
+      },
+      {
+        "key": "COR-11946",
+        "url": "https://projects.sectigo.net/browse/COR-11946",
+        "summary": "Revamp the binlog management cronjob for sitelock databases",
+        "status": "QA",
+        "assignee": "Maarten Broekman",
+        "due": null
+      },
+      {
+        "key": "COR-11916",
+        "url": "https://projects.sectigo.net/browse/COR-11916",
+        "summary": "Install Hashicorp vault for Sitelock datacenter systems",
+        "status": "QA",
+        "assignee": "Maarten Broekman",
+        "due": null
+      },
+      {
+        "key": "COR-11797",
+        "url": "https://projects.sectigo.net/browse/COR-11797",
+        "summary": "Please change POC OMS to point to saspt1 service instead of sasppc",
+        "status": "QA",
+        "assignee": "Raymond Raiani",
+        "due": null
+      },
+      {
+        "key": "COR-8933",
+        "url": "https://projects.sectigo.net/browse/COR-8933",
+        "summary": "Create and Configuration two VM with OS for Oracle RAC QA",
+        "status": "QA",
+        "assignee": "Raymond Raiani",
+        "due": "2025-11-05"
+      },
+      {
+        "key": "COR-10819",
+        "url": "https://projects.sectigo.net/browse/COR-10819",
+        "summary": "2nd Prod group - to create servers in Production to host AVS/CertStatus/SAS DB/Operation/Service groups in Man/Sec server consolidation.",
+        "status": "In Progress",
+        "assignee": "Gabriel Rovira",
+        "due": "2026-09-29"
+      },
+      {
+        "key": "COR-11254",
+        "url": "https://projects.sectigo.net/browse/COR-11254",
+        "summary": "Create ansible role for patchmon agent deployment and management",
+        "status": "In Progress",
+        "assignee": "Alexandru Rosu",
+        "due": null
+      },
+      {
+        "key": "IOSP-1010",
+        "url": "https://projects.sectigo.net/browse/IOSP-1010",
+        "summary": "Shipment to Manchester: Plan and contracts",
+        "status": "In Progress",
+        "assignee": "Karl Witt",
+        "due": null
+      },
+      {
+        "key": "IOSP-1011",
+        "url": "https://projects.sectigo.net/browse/IOSP-1011",
+        "summary": "Enable and test Pure-based backup",
+        "status": "Done",
+        "assignee": "Earle Long",
+        "due": null
+      },
+      {
+        "key": "IOSP-1012",
+        "url": "https://projects.sectigo.net/browse/IOSP-1012",
+        "summary": "Enable the RAC instance backup",
+        "status": "To Do",
+        "assignee": "Calvin Cochran",
+        "due": null
+      },
+      {
+        "key": "IOSP-1014",
+        "url": "https://projects.sectigo.net/browse/IOSP-1014",
+        "summary": "Validate and Confirm Pure backup",
+        "status": "Done",
+        "assignee": "Calvin Cochran",
+        "due": null
+      },
+      {
+        "key": "IOSP-992",
+        "url": "https://projects.sectigo.net/browse/IOSP-992",
+        "summary": "Cluster Verification Utility (CVU) check env",
+        "status": "In Progress",
+        "assignee": "Aurel Antici",
+        "due": null
+      },
+      {
+        "key": "IOSP-993",
+        "url": "https://projects.sectigo.net/browse/IOSP-993",
+        "summary": "Oracle Software/RAC Installation completed",
+        "status": "Done",
+        "assignee": "Aurel Antici",
+        "due": null
+      },
+      {
+        "key": "IOSP-994",
+        "url": "https://projects.sectigo.net/browse/IOSP-994",
+        "summary": "DB Restored/Refreshed",
+        "status": "Done",
+        "assignee": "Aurel Antici",
+        "due": null
+      },
+      {
+        "key": "IOSP-1205",
+        "url": "https://projects.sectigo.net/browse/IOSP-1205",
+        "summary": "[104-NP2Wave] Cutover and test from PGv13 to 16 of Certstatus/SCM/AVS/SC/SAS/cmpsql",
+        "status": "In Progress",
+        "assignee": "Mohammed Shaik",
+        "due": null
+      },
+      {
+        "key": "COR-12183",
+        "url": "https://projects.sectigo.net/browse/COR-12183",
+        "summary": "Restrict access to the SASP webhook endpoint",
+        "status": "QA",
+        "assignee": "Andrey Shabotov",
+        "due": null
+      },
+      {
+        "key": "IOSP-1337",
+        "url": "https://projects.sectigo.net/browse/IOSP-1337",
+        "summary": "Provide Arch Design Information to EDB",
+        "status": "In Progress",
+        "assignee": "Mohammed Shaik",
+        "due": null
+      },
+      {
+        "key": "COR-12191",
+        "url": "https://projects.sectigo.net/browse/COR-12191",
+        "summary": "[Net2.0] Finalize firewall rules",
+        "status": "Backlog",
+        "assignee": "Jaime Larsen",
+        "due": null
+      },
+      {
+        "key": "COR-12192",
+        "url": "https://projects.sectigo.net/browse/COR-12192",
+        "summary": "[Net2.0] Finalization of CloudVision",
+        "status": "Backlog",
+        "assignee": "Jaime Larsen",
+        "due": null
+      },
+      {
+        "key": "COR-12341",
+        "url": "https://projects.sectigo.net/browse/COR-12341",
+        "summary": "Allowlist request - SiteLock Partner",
+        "status": "QA",
+        "assignee": "Maarten Broekman",
+        "due": null
+      },
+      {
+        "key": "COR-12344",
+        "url": "https://projects.sectigo.net/browse/COR-12344",
+        "summary": "Upgrade bddpinlb2.brad.dc.comodoca.net to Debian 13",
+        "status": "Done",
+        "assignee": "Jeff Novick",
+        "due": null
+      },
+      {
+        "key": "COR-12345",
+        "url": "https://projects.sectigo.net/browse/COR-12345",
+        "summary": "Upgrade bddpinlb1.brad.dc.comodoca.net to Debian 13",
+        "status": "Done",
+        "assignee": "Jeff Novick",
+        "due": null
+      },
+      {
+        "key": "COR-12350",
+        "url": "https://projects.sectigo.net/browse/COR-12350",
+        "summary": "ARC self-hosted runners (arc-runners) down on SCM EU nonprod since 1-Oct after auto-upgrade to 0.15.0",
+        "status": "Backlog",
+        "assignee": "Ashwadeep Vaishnav",
+        "due": null
+      },
+      {
+        "key": "COR-12355",
+        "url": "https://projects.sectigo.net/browse/COR-12355",
+        "summary": "Allowlist request - SiteLock Partner",
+        "status": "QA",
+        "assignee": "Maarten Broekman",
+        "due": null
+      }
+    ]
+  },
+  "projects": [
+    {
+      "name": "Rubrik DR backup",
+      "notes": [
+        "[Teams] [status email 2026/10/14] Overall status ON-TRACK. Completed: IOSP-1011 (Pure-based backup enabled, ran several days, Earle) and IOSP-1014 (Pure backup confirmed working, Calvin).",
+        "[Teams] [rubrik transcript 2026-10-14] Earle and Calvin agreed the Pure backup has run several days without issues, so IOSP-1011/IOSP-1014 are passed. Plan was to enable the Rubrik RAC backup Friday 10/16 6 PM UTC.",
+        "[Teams] [rubrik transcript 2026-10-14] Problem found: Rubrik is only plumbed on the CA backup VLANs (VLAN 130 and 2988), but the RAC nodes only have production/RAC-interconnect addresses (no CA backup VLAN interface on the RAC instance in Secaucus). Agreed the right approach is CA Backup VLAN addressing on the RAC nodes, which requires an RM ticket and a maintenance window on scdpcarac1 (primary production).",
+        "[Teams] [rubrik transcript 2026-10-14] Revised timing: the VLAN interface change is done in the weekend maintenance (starts 7 PM Eastern / midnight UK, about 30 min), so the Rubrik RAC initial backup moves to Sunday 10/18, proposed start 1 PM UTC (16-hour initial run). Earle expects the interface can be added without a VM restart; Tier 2 secondary on-call Ramana Chowdary expected to assist.",
+        "[Teams] [rubrik transcript 2026-10-14] Open design question: Rubrik should ideally connect via the RAC SCAN name/VIPs for HA, but those are not on the backup VLAN and Oracle Clusterware does not manage a second VIP. Calvin will not create the RM yet until Oracle and Rubrik replies arrive. Prajeet to raise an Oracle Support ticket; SriChand and Calvin to ask Rubrik Support.",
+        "[Teams] [rubrik transcript 2026-10-14] Existing RMAN backups on the primary run in parallel with the Rubrik initial run; Earle and Prajeet agreed to let them run together (weekend, low Rubrik channel count). RAC is one shared database with two instances; one host add in Rubrik should be sufficient, to be confirmed with Rubrik docs.",
+        "[Teams] [rubrik transcript 2026-10-14] Shipment: Calvin pinged Karl on contract status; contract signature by procurement is the gating item. Hardware is resold via MicroAge but work is done by TechX; two Sectigo people needed in the cage. Appliance prep (new IP per node, shut down, about a dozen nodes) targeted 10/21 (IOSP-1013). Earle: background DBA work (IOSP-1009) could start as early as next week (by 10/23); standby now running in Manchester.",
+        "[Teams] [status email 2026/10/14] Timeline: Oct 6-27 prep until appliances ready for pickup (IOSP-1012 RAC backup enable 10/16 6PM UTC Sri; IOSP-880 validate RAC backup/replication 10/17-10/20; IOSP-1013 appliance prep 10/21 Sri/Calvin; IOSP-1010 shipment plan/contracts 10/21-TBD Karl/Calvin/procurement); Oct 27-Nov 9 international shipment (IOSP-1015); Oct 23-Nov 23 background DBA work (IOSP-1009, Earle); Nov 9-16 rack/cable/validate in Manchester (IOSP-1004/1005); Nov 16-Dec 6 commissioning (IOSP-1006); Nov 30-Dec 6 production testing (IOSP-1007); Dec 7 fully production in Europe (IOSP-1008).",
+        "[Teams] [status email 2026/10/14] Meeting with Network team planned next week to prepare for Rubrik in Manchester.",
+        "[Teams] [rubrik chat 2026-10-15] Calvin: standalone Oracle in SEC is only still alive to support the Rubrik POC, so it can be retired no later than the 1st (Nov 1); Earle: Prajeet agreed to do the work during a SASP maintenance window.",
+        "[Teams] [rubrik chat 2026-10-16] Earle noted for the weekend patching: when patching is done, ask Ramana whether the CA backup interfaces are up and post in the Rubrik chat so SriChand can try adding the hosts in Rubrik. Backup will not start until the maintenance window completes, but connectivity can be confirmed during it. Calvin asked when the maintenance window is and whether Oracle will be down; Calvin has another commitment and will watch for updates from Sri.",
+        "[Teams] [rubrik chat 2026-10-17] Prajeet: Oracle part is done; pending items are the backup VLAN and Rubrik validation. Also (earlier 10/17 thread) Prajeet doubts Rubrik should need the DB user password, since that defeats the Oracle Credentials Wallet purpose.",
+        "[Teams] [rubrik chat 2026-10-14/15] Prajeet: Rubrik/RAC backup IPs do not need to be registered with Oracle Clusterware; node-list ordering and RAC node eligibility handled by Rubrik per docs.rubrik.com 8.0 Oracle backing_up_databases. Calvin confirmed the restore-to-bdddcanlora[3 or 5] approach is supported by Rubrik. Igor asked about Postgres backup onboarding objectives.",
+        "[JIRA] IOSP-471 [In Progress] Igor Kulyk: Disaster Recovery backup system (Rubrik) (target 2026-01-08 to 2026-12-31, due None)",
+        "[JIRA] COR-11600 [Backlog] SriChand Myla: configure Rubrik system for production Oracle RAC backup (target None to None, due 2026-08-29)",
+        "[JIRA] IOSP-1004 [To Do] Calvin Cochran: Capacity Inventory (Space, Storage, UPS, Power, Ports) in Manchester (target 2026-11-02 to 2026-11-09, due None)",
+        "[JIRA] IOSP-1005 [Backlog] Calvin Cochran: Rack and Stack equipment (Manchester) (target 2026-11-09 to 2026-11-16, due None)",
+        "[JIRA] IOSP-1006 [Backlog] Calvin Cochran: Appliance commissioning/production-readiness work In Manchester (target 2026-11-16 to 2026-12-06, due None)",
+        "[JIRA] IOSP-1007 [Backlog] Calvin Cochran: Prod Testing In Manchester (target 2026-11-16 to 2026-12-06, due None)",
+        "[JIRA] IOSP-1008 [Backlog] Calvin Cochran: Close Project (target 2026-12-07 to 2026-12-11, due None)",
+        "[JIRA] IOSP-1009 [Backlog] Earle Long: Background DBA work (target 2026-11-01 to 2026-11-30, due None)",
+        "[JIRA] IOSP-1010 [In Progress] Karl Witt: Shipment to Manchester: Plan and contracts (target 2026-10-08 to 2026-10-15, due None)",
+        "[JIRA] IOSP-1011 [Done] Earle Long: Enable and test Pure-based backup (target 2026-10-08 to 2026-10-15, due None)",
+        "[JIRA] IOSP-1012 [To Do] Calvin Cochran: Enable the RAC instance backup (target 2026-10-08 to 2026-10-15, due None)",
+        "[JIRA] IOSP-1013 [To Do] Calvin Cochran: Shipment to Manchester: Prepare Rubrik appliances for shutdown (target 2026-10-13 to 2026-10-27, due None)",
+        "[JIRA] IOSP-1014 [Done] Calvin Cochran: Validate and Confirm Pure backup (target 2026-10-08 to 2026-10-15, due None)",
+        "[JIRA] IOSP-1015 [Backlog] Calvin Cochran: Shipment to Manchester: International shipment process (target 2026-10-27 to 2026-11-09, due None)",
+        "[JIRA] IOSP-875 [Done] Calvin Cochran: Purchase Request (target 2026-01-08 to 2026-02-13, due None)",
+        "[JIRA] IOSP-876 [Done] Igor Kulyk: Equipment Inventory (SRE) (target 2026-02-16 to 2026-03-20, due None)",
+        "[JIRA] IOSP-877 [Done] Calvin Cochran: Rack and Stack equipment (Secaucus) (target 2026-03-16 to 2026-03-20, due None)",
+        "[JIRA] IOSP-878 [Done] Volodymyr Fedyna: Configure per Rubrik specifications (target 2026-03-23 to 2026-03-27, due None)",
+        "[JIRA] IOSP-879 [In Progress] Igor Kulyk: Install software (target 2026-03-23 to 2026-03-27, due None)",
+        "[JIRA] IOSP-880 [To Do] Calvin Cochran: Run/validate RAC backup and replication (target 2026-10-06 to 2026-10-27, due None)",
+        "[JIRA] IOSP-881 [Done] Calvin Cochran: Capacity Inventory (Space, Storage, UPS, Power, Ports) in Secaucus (target 2026-01-08 to 2026-04-24, due None)",
+        "[JIRA] IOSP-882 [In Progress] Igor Kulyk: Documentation (target 2026-11-30 to 2026-12-07, due None)",
+        "[JIRA] RM-1553 [Submitted] None: configure Rubrik system for production Oracle RAC backup (target None to None, due 2026-09-11)",
+        "[JIRA] Last 24h: IOSP-1012 target enabling of RAC instance backup moved from 10/16 6PM UTC to 10/18 6PM UTC (Mike Massimino, 2026-10-16 14:20); IOSP-1012 and IOSP-1013 reassigned Earle Long -> Calvin Cochran (2026-10-16 14:22). No new comments in last 24h.",
+        "[Confluence] Project page 'Rubrik' last edited 2026-10-14 by Igor Kulyk. Initiator Calvin Cochran; PMO manager Volodymyr Fedyna; sponsor Brion Peck; Jira IOSP-471.",
+        "[Confluence] Scope: on-prem Rubrik appliances, Oracle and Postgres backup onboarding, cross-DC sync, immutable backup repository with IOC scanning. Procurement via MicroAge.",
+        "[Confluence] Status Dashboard - Rubrik (last edited 2026-04-21 by Volodymyr Fedyna): blocked until final cabling, DC preparation and Rubrik cluster installation are complete. Open items: confirm devices installed, schedule KT, test and PROD backup status, Manchester device shipping and install.",
+        "[Confluence] Older dashboard 'Status Dashboard DR Backup & Recovery --ON HOLD--' (2025-05-28, Gabriel Rovira). Deployment plan page 2026-01-23 notes hardware not yet delivered.",
+        "[SharePoint roadmap] Roadmap deck (I&O Project Roadmap.pptx, modified 2026-10-16): PM Igor Kulyk, TL Calvin Cochran, Jira IOSP-471. Status badge High-Risk on the portfolio slide and Off Track on the project slide; Schedule R, Scope G, Cost G.",
+        "[SharePoint roadmap] Accomplishments: team coordinating Rubrik deployment and MCR cluster readiness; last brik/node for the MCR cluster being brought online; NetOps to check NIC in the data center; 1gig cross connect network resolved; storage issue (tracked in Teams subchannel) resolved; POC parallel run 10/2 (initial finished in 16 hours, incremental 3 hours); Pure-based backup successful.",
+        "[SharePoint roadmap] Next: configure CA Backup VLAN on RAC (RM-1658, Oct 17); enable RAC instance backup (target Oct 18); appliance shipment to Manchester (Oct 27 - Nov 9); rack and stack in Manchester (Nov 9 - 16); production preparation (Nov 16 - Dec 6).",
+        "[SharePoint roadmap] Milestones: next milestone Oct 16 (enable Rubrik RAC backup), which is past due versus the RAC backup target of Oct 18; production implementation Dec 6 (full production in Europe); project completion December 2026.",
+        "[SharePoint roadmap] Roadmap appendix timeline shows Rubrik as Executing.",
+        "[SharePoint roadmap] An earlier draft of the deck (Project Roadmap DRAFT CorpTemplate.pptx, 2026-10-08) had next milestone Oct 6-27 (Pure and RAC backup validation); the 2026-10-16 deck supersedes it.",
+        "[Merge] Dates differ by source: JIRA start=2026-01-08, end=2026-12-31; Confluence start=2025-12, end=2026-05 (deadline, per charter); SharePoint roadmap start=n/a, end=2026-12-06. Shown dates use JIRA first, then SharePoint roadmap, then Confluence."
+      ],
+      "progress": "JIRA: Epic IOSP-471 In Progress (Igor Kulyk). Done: purchase, Secaucus rack/stack, config, Pure backup enable and validation (IOSP-1011, IOSP-1014). In progress: Manchester shipment planning (IOSP-1010), install software (IOSP-879), documentation (IOSP-882). To Do: enable RAC backup (IOSP-1012), run/validate RAC backup and replication (IOSP-880), shutdown prep (IOSP-1013). Manchester phases in Backlog. | Confluence: Blocked on hardware installation and DC preparation (per 2026-04-21 dashboard). Dashboard may be stale, so check the Teams and Jira sources. | SharePoint roadmap: Pure-based backup successful; RAC backup enablement in progress (target Oct 18); Manchester appliance shipment from Oct 27",
+      "timeline": "JIRA: Epic target 2026-01-08 to 2026-12-31. Manchester rack/stack 2026-11-09 to 11-16; prod testing 2026-11-16 to 12-06; close project 2026-12-07 to 12-11. | SharePoint roadmap: Next milestone Oct 16 (enable RAC backup); Manchester shipment Oct 27 - Nov 9; rack and stack Nov 9-16; production prep Nov 16 - Dec 6; full production Dec 6; completion Dec 2026",
+      "dates": {
+        "start": "2026-01-08",
+        "end": "2026-12-31"
+      },
+      "action_items": [
+        {
+          "text": "[Teams] Raise Oracle Support ticket on how Rubrik can back up the RAC via a backup-VLAN VIP/SCAN (Clusterware does not manage a second VIP)",
+          "owner": "Prajeet Singh Kahlon",
+          "due": null
+        },
+        {
+          "text": "[Teams] Ask Rubrik Support how to register RAC hosts reachable only on backup VLANs (VLAN 130/2988); agree the question with Calvin first",
+          "owner": "SriChand Myla",
+          "due": null
+        },
+        {
+          "text": "[Teams] Create RM ticket for CA Backup VLAN interface on scdpcarac1 once Oracle and Rubrik replies arrive; share ticket in the Rubrik chat",
+          "owner": "Calvin Cochran",
+          "due": null
+        },
+        {
+          "text": "[Teams] Confirm CA backup interfaces are up after weekend patching (ask Ramana) and post in Rubrik chat so hosts can be added in Rubrik",
+          "owner": "Earle Long",
+          "due": "2026-10-18"
+        },
+        {
+          "text": "[Teams] Hold off lighting up the Rubrik RAC initial backup until the maintenance window completes (proposed start Sunday 2026-10-18 13:00 UTC)",
+          "owner": "SriChand Myla",
+          "due": "2026-10-18"
+        },
+        {
+          "text": "[Teams] Confirm shipment contracts with procurement/MicroAge (TechX does the work); prepare shipment plan (IOSP-1010)",
+          "owner": "Karl Witt / Calvin Cochran",
+          "due": null
+        },
+        {
+          "text": "[Teams] Prepare Rubrik appliances for shutdown and Manchester deployment incl. network/IP prep (IOSP-1013)",
+          "owner": "SriChand Myla / Calvin Cochran",
+          "due": "2026-10-21"
+        },
+        {
+          "text": "[Teams] Run/validate Rubrik RAC backup and replication to Manchester (IOSP-880); dates likely slip after the VLAN/maintenance dependency",
+          "owner": null,
+          "due": "2026-10-20"
+        },
+        {
+          "text": "[Teams] Meeting with Network team to prepare Rubrik connectivity in Manchester",
+          "owner": "SriChand Myla",
+          "due": "week of 2026-10-19"
+        },
+        {
+          "text": "[Teams] Background DBA work (IOSP-1009): change jobs to RAC server, housekeeping/cron, OEM monitoring",
+          "owner": "Earle Long",
+          "due": "2026-11-23"
+        },
+        {
+          "text": "[Teams] Update Jira with owner change (Sri instead of Earle for IOSP-1012) and VLAN information",
+          "owner": "Igor Kulyk",
+          "due": null
+        },
+        {
+          "text": "[Teams] Retire standalone Oracle (SEC) used for the Rubrik POC during a SASP maintenance window",
+          "owner": "Prajeet Singh Kahlon",
+          "due": "2026-11-01"
+        },
+        {
+          "text": "[JIRA] IOSP-1012 enable RAC instance backup, target 2026-10-18 18:00 UTC (Calvin Cochran)",
+          "owner": null,
+          "due": null
+        },
+        {
+          "text": "[JIRA] IOSP-880 run/validate RAC backup and replication, target end 2026-10-27",
+          "owner": null,
+          "due": null
+        },
+        {
+          "text": "[JIRA] IOSP-1010 Manchester shipment plan and contracts, target end was 2026-10-15 and is still In Progress",
+          "owner": null,
+          "due": null
+        }
+      ],
+      "risks": [
+        "[Teams] Schedule slip: Rubrik RAC initial backup (IOSP-1012, planned 10/16 6PM UTC) pushed to about Sunday 10/18 after weekend maintenance; downstream IOSP-880 validation (10/17-10/20) and IOSP-1013 appliance prep (10/21) at risk.",
+        "[Teams] Backup VLAN gap: RAC nodes have no CA Backup VLAN interface; Oracle Clusterware will not manage a backup-VLAN VIP; architecture still unresolved pending Oracle and Rubrik support responses.",
+        "[Teams] Production change on scdpcarac1 must occur inside a maintenance window and needs an RM; weekend dependency on SRE availability (Ramana, Adam, Andrey).",
+        "[Teams] Shipment gated on procurement signing contracts (Karl); Oct 27 pickup could slip; Calvin will not move the date up without signed contract.",
+        "[Teams] 16-hour initial Rubrik backup may overlap with RMAN backups on the primary (up to roughly 6 AM Monday); RMAN backups have grown from 4 to 6 hours.",
+        "[Teams] Single-node dependency: if RAC node 1 is the only registered host and goes down, Rubrik backups stop until reconfigured (same as existing RMAN cron on node 1).",
+        "[Teams] Rubrik DB credential handling may conflict with the Oracle Credentials Wallet approach (Prajeet, 10/17).",
+        "[JIRA] RAC backup enable slipped from 10/16 to 10/18 (IOSP-1012)",
+        "[JIRA] IOSP-1010, IOSP-1011..1014 and IOSP-1012 target end 2026-10-15 passed, 1012 and 1010 not complete",
+        "[JIRA] RM-1553 (due 2026-09-11, Submitted, unassigned) and COR-11600 (due 2026-08-29, Backlog) are overdue",
+        "[Confluence] Hardware cabling, DC readiness and cluster installation are not complete, so the next stage is blocked.",
+        "[Confluence] Knowledge transfer from Rubrik is not yet scheduled.",
+        "[Confluence] The 2026-05 deadline appears past, and the status dashboard has not been updated since April.",
+        "[SharePoint roadmap] Pure storage issue",
+        "[SharePoint roadmap] RAC backup milestone (Oct 16) slipped to target Oct 18"
+      ],
+      "links": {
+        "jira": [
+          {
+            "label": "IOSP-471 Disaster Recovery backup system (Rubrik)",
+            "url": "https://projects.sectigo.net/browse/IOSP-471"
+          },
+          {
+            "label": "COR-11600 configure Rubrik system for production Oracle RAC backup",
+            "url": "https://projects.sectigo.net/browse/COR-11600"
+          },
+          {
+            "label": "IOSP-1004 Capacity Inventory (Space, Storage, UPS, Power, Ports) in Ma",
+            "url": "https://projects.sectigo.net/browse/IOSP-1004"
+          },
+          {
+            "label": "IOSP-1005 Rack and Stack equipment (Manchester)",
+            "url": "https://projects.sectigo.net/browse/IOSP-1005"
+          },
+          {
+            "label": "IOSP-1006 Appliance commissioning/production-readiness work In Manches",
+            "url": "https://projects.sectigo.net/browse/IOSP-1006"
+          },
+          {
+            "label": "IOSP-1007 Prod Testing In Manchester",
+            "url": "https://projects.sectigo.net/browse/IOSP-1007"
+          },
+          {
+            "label": "IOSP-1008 Close Project",
+            "url": "https://projects.sectigo.net/browse/IOSP-1008"
+          },
+          {
+            "label": "IOSP-1009 Background DBA work",
+            "url": "https://projects.sectigo.net/browse/IOSP-1009"
+          },
+          {
+            "label": "IOSP-1010 Shipment to Manchester: Plan and contracts",
+            "url": "https://projects.sectigo.net/browse/IOSP-1010"
+          },
+          {
+            "label": "IOSP-1011 Enable and test Pure-based backup",
+            "url": "https://projects.sectigo.net/browse/IOSP-1011"
+          },
+          {
+            "label": "IOSP-1012 Enable the RAC instance backup",
+            "url": "https://projects.sectigo.net/browse/IOSP-1012"
+          },
+          {
+            "label": "IOSP-1013 Shipment to Manchester: Prepare Rubrik appliances for shutdo",
+            "url": "https://projects.sectigo.net/browse/IOSP-1013"
+          },
+          {
+            "label": "IOSP-1014 Validate and Confirm Pure backup",
+            "url": "https://projects.sectigo.net/browse/IOSP-1014"
+          },
+          {
+            "label": "IOSP-1015 Shipment to Manchester: International shipment process",
+            "url": "https://projects.sectigo.net/browse/IOSP-1015"
+          },
+          {
+            "label": "IOSP-875 Purchase Request",
+            "url": "https://projects.sectigo.net/browse/IOSP-875"
+          },
+          {
+            "label": "IOSP-876 Equipment Inventory (SRE)",
+            "url": "https://projects.sectigo.net/browse/IOSP-876"
+          },
+          {
+            "label": "IOSP-877 Rack and Stack equipment (Secaucus)",
+            "url": "https://projects.sectigo.net/browse/IOSP-877"
+          },
+          {
+            "label": "IOSP-878 Configure per Rubrik specifications",
+            "url": "https://projects.sectigo.net/browse/IOSP-878"
+          },
+          {
+            "label": "IOSP-879 Install software",
+            "url": "https://projects.sectigo.net/browse/IOSP-879"
+          },
+          {
+            "label": "IOSP-880 Run/validate RAC backup and replication",
+            "url": "https://projects.sectigo.net/browse/IOSP-880"
+          },
+          {
+            "label": "IOSP-881 Capacity Inventory (Space, Storage, UPS, Power, Ports) in Se",
+            "url": "https://projects.sectigo.net/browse/IOSP-881"
+          },
+          {
+            "label": "IOSP-882 Documentation",
+            "url": "https://projects.sectigo.net/browse/IOSP-882"
+          },
+          {
+            "label": "RM-1553 configure Rubrik system for production Oracle RAC backup",
+            "url": "https://projects.sectigo.net/browse/RM-1553"
+          }
+        ],
+        "teams": [
+          {
+            "label": "Rubrik Project SyncUp chat (thread)",
+            "url": "https://teams.microsoft.com/l/chat/19:meeting_YjU0ZDdlMWEtNjc1Mi00Nzg4LTlhZjItNDBmMWEzNmExNzFl@thread.v2/conversations"
+          },
+          {
+            "label": "Rubrik chat: Prajeet - Oracle part done, pending backup VLAN and Rubrik validation (2026-10-17)",
+            "url": "https://teams.microsoft.com/l/message/19%3ameeting_YjU0ZDdlMWEtNjc1Mi00Nzg4LTlhZjItNDBmMWEzNmExNzFl%40thread.v2/1792224061194?context=%7B%22contextType%22:%22chat%22%7D"
+          },
+          {
+            "label": "Rubrik chat: Earle - weekend patching/CA backup interface notes (2026-10-16)",
+            "url": "https://teams.microsoft.com/l/message/19%3ameeting_YjU0ZDdlMWEtNjc1Mi00Nzg4LTlhZjItNDBmMWEzNmExNzFl%40thread.v2/1792176423458?context=%7B%22contextType%22:%22chat%22%7D"
+          },
+          {
+            "label": "Rubrik chat: Calvin - plan once CA backup interfaces are up (2026-10-16)",
+            "url": "https://teams.microsoft.com/l/message/19%3ameeting_YjU0ZDdlMWEtNjc1Mi00Nzg4LTlhZjItNDBmMWEzNmExNzFl%40thread.v2/1792175606514?context=%7B%22contextType%22:%22chat%22%7D"
+          },
+          {
+            "label": "Rubrik chat: Calvin/Earle - standalone Oracle retirement (2026-10-15)",
+            "url": "https://teams.microsoft.com/l/message/19%3ameeting_YjU0ZDdlMWEtNjc1Mi00Nzg4LTlhZjItNDBmMWEzNmExNzFl%40thread.v2/1792090840368?context=%7B%22contextType%22:%22chat%22%7D"
+          },
+          {
+            "label": "Rubrik chat: Prajeet - RAC backup IPs/Clusterware (2026-10-15)",
+            "url": "https://teams.microsoft.com/l/message/19%3ameeting_YjU0ZDdlMWEtNjc1Mi00Nzg4LTlhZjItNDBmMWEzNmExNzFl%40thread.v2/1792035704761?context=%7B%22contextType%22:%22chat%22%7D"
+          },
+          {
+            "label": "Rubrik chat: Calvin - VLAN 130 options (2026-10-14)",
+            "url": "https://teams.microsoft.com/l/message/19%3ameeting_YjU0ZDdlMWEtNjc1Mi00Nzg4LTlhZjItNDBmMWEzNmExNzFl%40thread.v2/1792000492920?context=%7B%22contextType%22:%22chat%22%7D"
+          },
+          {
+            "label": "Rubrik Project SyncUp meeting 2026-10-14 (join link)",
+            "url": "https://teams.microsoft.com/l/meetup-join/19%3ameeting_YjU0ZDdlMWEtNjc1Mi00Nzg4LTlhZjItNDBmMWEzNmExNzFl%40thread.v2/0?context=%7b%22Tid%22%3a%220e9c4894-6caa-465d-9660-4b6968b49fb7%22%2c%22Oid%22%3a%22c3c29712-7dcd-4d11-9ec5-7ce1f0ffe6fd%22%7d"
+          },
+          {
+            "label": "Rubrik Project SyncUp transcript 2026-10-14 (connector URI)",
+            "url": "meeting-transcript:///events/aHR0cHM6Ly90ZWFtcy5taWNyb3NvZnQuY29tL2wvbWVldHVwLWpvaW4vMTklM2FtZWV0aW5nX1lqVTBaRGRsTVdFdE5qYzFNaTAwTnpnNExUbGhaakl0TkRCbU1XRXpObUV4TnpGbCU0MHRocmVhZC52Mi8wP2NvbnRleHQ9JTdiJTIyVGlkJTIyJTNhJTIyMGU5YzQ4OTQtNmNhYS00NjVkLTk2NjAtNGI2OTY4YjQ5ZmI3JTIyJTJjJTIyT2lkJTIyJTNhJTIyYzNjMjk3MTItN2RjZC00ZDExLTllYzUtN2NlMWYwZmZlNmZkJTIyJTdk?start=2026-10-14T15%3A00%3A00.000Z&end=2026-10-14T15%3A20%3A00.000Z"
+          },
+          {
+            "label": "Status email: RUBRIK - Project Status (2026/10/14)",
+            "url": "https://outlook.office365.com/owa/?ItemID=AAMkADE5NzU1Nzk4LTU2YjktNDIyZS05ZTI0LWU5NTA0MmIwMDM4OABGAAAAAADfiIpf9YlRQL%2BGNBNg%2BLIwBwBkE5XVjIpUS6tjkF1Bp8f3AAAAAAEMAABkE5XVjIpUS6tjkF1Bp8f3AAHiv6dFAAA%3D&exvsurl=1&viewmodel=ReadMessageItem"
+          }
+        ],
+        "sharepoint": [
+          {
+            "label": "I&O Project Roadmap.pptx",
+            "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Presentations/I&O Project Roadmap.pptx"
+          },
+          {
+            "label": "RUBRIK Project Plan.xlsx",
+            "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/RUBRIK/RUBRIK Project Plan.xlsx"
+          },
+          {
+            "label": "Rubrik_Project_Change_Order_CO-001.docx",
+            "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/RUBRIK/Rubrik_Project_Change_Order_CO-001.docx"
+          },
+          {
+            "label": "Sectigo On Prem Sizing Validation.pptx",
+            "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/RUBRIK/Sectigo On Prem Sizing Validation.pptx"
+          },
+          {
+            "label": "20260729_RubrikSession_Notes.msg",
+            "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/RUBRIK/20260729_RubrikSession_Notes.msg"
+          },
+          {
+            "label": "Oracle Questionnaire_UpdPrajeet.docx",
+            "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/RUBRIK/Oracle Questionnaire_UpdPrajeet.docx"
+          },
+          {
+            "label": "PostgreSQL_Questionnaire.docx",
+            "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/RUBRIK/PostgreSQL_Questionnaire.docx"
+          },
+          {
+            "label": "SLA_Policy_OracleProductionDatabases.docx",
+            "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/RUBRIK/SLA_Policy_OracleProductionDatabases.docx"
+          }
+        ],
+        "confluence": [
+          {
+            "label": "Rubrik",
+            "url": "https://confluence.comodoca.net/display/CO/Rubrik"
+          },
+          {
+            "label": "Status Dashboard - Rubrik",
+            "url": "https://confluence.comodoca.net/display/CO/Status+Dashboard+-+Rubrik"
+          },
+          {
+            "label": "Rubrik Schedule - 2026",
+            "url": "https://confluence.comodoca.net/display/CO/Rubrik+Schedule+-+2026"
+          },
+          {
+            "label": "Rubrik deployment plan (High-Level)",
+            "url": "https://confluence.comodoca.net/pages/viewpage.action?pageId=402956647"
+          },
+          {
+            "label": "MM - Rubrik Timelines & Resources Discussion - Dec 22-2025",
+            "url": "https://confluence.comodoca.net/pages/viewpage.action?pageId=402955963"
+          },
+          {
+            "label": "MM - Rubrik project status updates/sync - Nov 19, 2025",
+            "url": "https://confluence.comodoca.net/pages/viewpage.action?pageId=402955960"
+          },
+          {
+            "label": "Status Dashboard DR Backup & Recovery (ON HOLD)",
+            "url": "https://confluence.comodoca.net/pages/viewpage.action?pageId=404161312"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EDB servers (COR-10818)",
+      "notes": [
+        "[Teams] [standup chat 2026-10-16 13:34Z, just before the 24h window start] Maarten Broekman: RAC work took priority and so no substantial progress was made on the EDB servers (COR-10818).",
+        "[JIRA] COR-10818 [In Progress] Raymond Raiani: 1st Prod group - Create servers in Production to host new EDB PGv16  (due 2026-10-23). Last 24h: Maarten Broekman moved sprint I&O 26.42 -> I&O 26.43 (2026-10-16 15:15). No comments in 24h.",
+        "[Confluence] Status Dashboard Postgres Migration to EDB (last edited 2026-09-22 by Gabriel Rovira), report period Sept 21-25. PM Gabriel E Rovira; sponsor Brion Peck; Jira IOSP-955. COR-10818 is not mentioned in the pages found.",
+        "[Confluence] Done: group definition, server design, PO, InfoSec design approval, NON-PROD servers created. Pending: PEM configuration in Secaucus (Aug 15). This week and next: cut-over to new EDB servers in NON-PROD, then completion of PROD servers.",
+        "[Confluence] Team allocation: Prajeet 10%, Jeff N 5%, Calvin 5%, Raymond 10%, Nkafu 15%, Mihai 5%.",
+        "[Confluence] Related pages: Project Charter PostgreSQL (2026-06-03), EDB Postgres working (2026-08-04), Install Livecompare in EDB (2026-08-04).",
+        "[SharePoint roadmap] Roadmap deck tracks this as 'Postgres DB' (Jira IOSP-955 Postgres EDB; COR-10818 not named in the deck). PM Gabriel E Rovira, TL Prajeet Singh Kahlon. Status On-Track; Schedule G, Scope Y, Cost.",
+        "[SharePoint roadmap] Accomplishments: PoC Ops group created (Harbor and Vault NON-PROD); NON-PROD TPA server configuration.",
+        "[SharePoint roadmap] Next: cut over applications to new EDB env (NON-PROD); decom servers with migrated EDB; data replication on NON-PROD servers (subscription, live_compare, PEM, BARMAN) 90%; PEM and BARMAN configuration (recurring).",
+        "[SharePoint roadmap] Milestones: Non-Prod Migration Wave 2 originally Sept 15, now Oct 30; production implementation Feb 1; completion originally Dec 30, latest thinking Feb 1 / March 1 2027.",
+        "[SharePoint roadmap] Dependencies: Manchester and Secaucus servers (Proxmox).",
+        "[SharePoint roadmap] Roadmap appendix timeline shows Postgres EDB Upgrade as Planning.",
+        "[SharePoint roadmap] Note: the deck rates Postgres On-Track while Wave 2 slipped about six weeks and completion moved to 2027.",
+        "[Merge] Dates differ by source: JIRA start=n/a, end=2026-10-23; Confluence start=2026-04-01, end=n/a; SharePoint roadmap start=n/a, end=2027-03-01. Shown dates use JIRA first, then SharePoint roadmap, then Confluence."
+      ],
+      "progress": "JIRA: COR-10818 In Progress; carried over to sprint I&O 26.43. | Confluence: NON-PROD cut-over in progress. PROD servers are next. | SharePoint roadmap: NON-PROD replication about 90%; NON-PROD cut-over pending",
+      "timeline": "JIRA: Due 2026-10-23 (original plan was Aug 20). | SharePoint roadmap: Non-Prod Wave 2 Oct 30 (was Sept 15); production Feb 1 2027; completion Feb 1 / Mar 1 2027 (was Dec 30)",
+      "dates": {
+        "start": "2026-04-01",
+        "end": "2026-10-23"
+      },
+      "action_items": [],
+      "risks": [
+        "[Teams] EDB server work delayed by Oracle RAC priority. Per 2026-09-30 Rubrik status email, the overall EDB/Postgres project is on hold with completion looking like March 2027.",
+        "[JIRA] Original Aug 20 target missed; now due 2026-10-23",
+        "[Confluence] The PEM server in Secaucus was still pending, with a due date of Aug 15 that has passed.",
+        "[Confluence] PROD server completion is still to come.",
+        "[SharePoint roadmap] Resource priorities (keeping the lights on vs project work)",
+        "[SharePoint roadmap] Delays in NON-PROD cut-over to new EDB servers"
+      ],
+      "links": {
+        "jira": [
+          {
+            "label": "COR-10818 1st Prod group - Create servers in Production to host new ED",
+            "url": "https://projects.sectigo.net/browse/COR-10818"
+          }
+        ],
+        "teams": [
+          {
+            "label": "Standup chat: Maarten Broekman on COR-10818 (2026-10-16)",
+            "url": "https://teams.microsoft.com/l/message/19%3ameeting_NDAxMzEzOGEtZmUzYS00MTMxLTk3NTItODc1MGM1ZTBkZWQ2%40thread.v2/1792157650366?context=%7B%22contextType%22:%22chat%22%7D"
+          }
+        ],
+        "sharepoint": [
+          {
+            "label": "I&O Project Roadmap.pptx",
+            "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Presentations/I&O Project Roadmap.pptx"
+          },
+          {
+            "label": "Postgres Decision Memorandum.docx",
+            "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Postgres DB Project/Postgres Decision Memorandum.docx"
+          },
+          {
+            "label": "IOSP_Postgres_Parallel_Jira New.csv",
+            "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Postgres DB Project/IOSP_Postgres_Parallel_Jira New.csv"
+          },
+          {
+            "label": "IOSP_Postgres_Parallel_Jira_New-delta.csv",
+            "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Postgres DB Project/IOSP_Postgres_Parallel_Jira_New-delta.csv"
+          },
+          {
+            "label": "Postgres Grouping and migration SP.pdf",
+            "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/MS Project Plan/Postgres Grouping and migration SP.pdf"
+          }
+        ],
+        "confluence": [
+          {
+            "label": "Status Dashboard Postgres Migration to EDB",
+            "url": "https://confluence.comodoca.net/display/CO/Status+Dashboard+Postgres+Migration+to+EDB"
+          },
+          {
+            "label": "Project Charter PostgreSQL",
+            "url": "https://confluence.comodoca.net/display/CO/Project+Charter+PostgreSQL"
+          },
+          {
+            "label": "EDB Postgres working",
+            "url": "https://confluence.comodoca.net/display/DT/EDB+Postgres+working"
+          },
+          {
+            "label": "Install Livecompare in EDB",
+            "url": "https://confluence.comodoca.net/display/DT/Install+Livecompare+in+EDB"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ccmqa mail flood / bdddcmmail1 disk full",
+      "notes": [
+        "[Teams] [teams channel, not the standup chat] 2026-10-17: bdddcmmail1 received hundreds of millions of messages to local mailboxes for ccmqa.com (about 200 recipients), filling /home and then root. Svetlana Chapskaya deactivated a misconfigured 'RA Certificates Expiration' notification (365 days before expiry, 182 recipients) on ccmqa.com. Maarten asked Adam and Ramana to follow up so the flood stops and disk can be cleaned. PagerDuty NodeFilesystem alerts for bdddcmmail1 resolved by 11:38Z. Included as context only; source is a channel, not the Daily Ops StandUp chat.",
+        "[JIRA] No JIRA ticket found for mail flood or bdddcmmail1 disk full (searches on ccmqa/bdddcmmail1 returned only certificate expiry, QA email account COR-12179 and closed DO-2216 clean-up tickets).",
+        "[Confluence] No Confluence pages found for bdddcmmail1 or ccmqa mail.",
+        "[SharePoint roadmap] No project page, file or roadmap entry found for 'ccmqa mail flood' or 'bdddcmmail1' in SharePoint.",
+        "[SharePoint roadmap] Closest related roadmap content: Gentoo migration appendix lists 'BDD Email', 8 hosts, in progress (part of Migrate out from Gentoo, 110 items). Not confirmed to be the same work as bdddcmmail1."
+      ],
+      "progress": null,
+      "timeline": null,
+      "dates": {
+        "start": null,
+        "end": null
+      },
+      "action_items": [
+        {
+          "text": "[Teams] Look into Svetlana's request to stop the flood to bdddcmmail1 and clean up the disk",
+          "owner": "Adam Theis / Ramana Chowdary",
+          "due": null
+        }
+      ],
+      "risks": [
+        "[Teams] Recurrence of the notification flood until the cause is fully fixed; one open gap noted in Maarten's write-up."
+      ],
+      "links": {
+        "jira": [],
+        "teams": [
+          {
+            "label": "Channel: Svetlana - deactivated RA Certificates Expiration notification",
+            "url": "https://teams.microsoft.com/l/message/19%3a231552bec76f4164bc69d4ab093d39d1%40thread.tacv2/1792233943437"
+          },
+          {
+            "label": "Channel: Maarten - ccmqa mail is blowing up",
+            "url": "https://teams.microsoft.com/l/message/19%3a231552bec76f4164bc69d4ab093d39d1%40thread.tacv2/1792196540649"
+          }
+        ],
+        "sharepoint": [
+          {
+            "label": "I&O Project Roadmap.pptx (Gentoo disposition detail, BDD Email)",
+            "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Presentations/I&O Project Roadmap.pptx"
+          }
+        ],
+        "confluence": []
+      }
+    }
+  ],
+  "gaps": [
+    "[Teams] Daily Ops StandUp transcript unavailable: organizer-only access (organizer Shane Knable); read_resource returned NOT_FOUND (HTTP 404, Meeting properties are not found). Not retried. Standup notes built from chat only.",
+    "[Teams] Daily Ops StandUp chat coverage is thin: the 2026-10-16 standup ran 13:00-13:30Z, which is before the 24h window start (2026-10-16T14:39Z). Only a few standup-chat messages (Karl Witt, Maarten Broekman, around 13:03-13:34Z) were found, mostly small talk, plus one COR-10818 status line, so the standup project list is incomplete. The wildcard search could not be filtered by chat and returned mostly PagerDuty/Workflows alert noise; wildcard paging stopped after the first 50 results, and per-sender searches were run only for Shane Knable, Igor Kulyk, Karl Witt, Calvin Cochran, Maarten Broekman and Jeff Novick (later pages for Karl Witt, Calvin Cochran and Maarten Broekman were not fully followed).",
+    "[Teams] Rubrik chat coverage: searches used the keyword Rubrik and a per-sender query for Calvin Cochran only; keyword paging stopped at the first 25 results (reaching back to 2026-10-13), and other senders (Earle Long, Prajeet Singh Kahlon, SriChand Myla, Karl Witt, Gabriel Rovira) were not separately paged. Message previews were read in full only for two Earle messages.",
+    "[Teams] Rubrik transcript covers only the 2026-10-14 occurrence (the only occurrence in the 7-day window). Speech-recognition names are garbled in places (for example Aurel, Pavel, Olu, Ray); owners above are taken only where clearly attributable.",
+    "[Teams] Conflict (status email vs transcript/chat): the 2026/10/14 status email lists overall ON-TRACK with IOSP-1012 Rubrik RAC backup enable on 10/16 6PM UTC (owner Sri) and IOSP-880 10/17-10/20. The transcript and 10/16-10/17 chat show the RAC backup start moved to about Sunday 10/18 13:00 UTC pending the CA backup VLAN interface and an RM. The 10/08 email named Earle as owner of IOSP-1012; the 10/14 email names Sri. Both kept as reported.",
+    "[Teams] Conflict on DBA work dates: status email gives IOSP-1009 as Oct 23 - Nov 23 (the 10/08 email said Nov 1-30); Earle in the transcript said it might start earlier, certainly by end of next week (10/23). Kept as reported.",
+    "[Teams] Scope note: Rubrik content from other chats (a SASP/Oracle wallet chat with Prajeet 2026-10-15 and a chat with Martijn Katerbarg about IP approval pushing back Rubrik timelines 2026-10-15) appeared in keyword search but was not part of the specified Rubrik Project SyncUp chat and was not ingested.",
+    "[JIRA] No JIRA ticket found for ccmqa mail flood / bdddcmmail1 disk full.",
+    "[JIRA] Sprint I&O 26.42 ended 2026-10-16 but is still active; 26.43 sprint not yet active so tickets moved to it are not in the list.",
+    "[JIRA] Start date fields are empty in JIRA; Target start used where available.",
+    "[Confluence] ccmqa mail flood / bdddcmmail1: CQL search returned 0 pages.",
+    "[Confluence] EDB servers: COR-10818 not referenced in the pages found, and the end date is unknown.",
+    "[Confluence] Rubrik: the status dashboard was last edited 2026-04-21 and may be stale. Rubrik Schedule - 2026 body was effectively empty.",
+    "[SharePoint roadmap] ccmqa mail flood / bdddcmmail1: no SharePoint file or roadmap slide found (searches for 'bdddcmmail1' and 'mail flood ccmqa' returned only unrelated files).",
+    "[SharePoint roadmap] EDB servers: COR-10818 is not referenced in the roadmap deck; project is tracked there as 'Postgres DB' (IOSP-955). Matched by topic.",
+    "[SharePoint roadmap] .env does not exist (only .env.example, with empty SHAREPOINT_* values), so the configured PMO and report folder URLs could not be read. PMO folder was inferred as site IOProjectTeam, Shared Documents.",
+    "[SharePoint roadmap] Folder 'Postgres DB Project' could not be listed directly (Graph 400); its files were found via search only. Folder listing of the whole PMO library was not performed, so some matching files may be missing.",
+    "[SharePoint roadmap] Report upload folder 'ITSM Freshservice/Archive/AI Test SharePoint Folder' (from the skill) was not found by folder search; the upload URL must be confirmed.",
+    "[SharePoint roadmap] Roadmap deck contains no explicit project start dates; start is null for all projects. Deck read as text only (no visual check of RAG colours).",
+    "[Pipeline] SharePoint report-upload folder is not configured (.env missing; SHAREPOINT_REPORT_FOLDER_URL empty) and the folder 'ITSM Freshservice/Archive/AI Test SharePoint Folder' was not found in read mode. The upload may fail.",
+    "[Pipeline] Subagent token usage is reported only as a total (no input/output split), so per-model cost in the spending report is approximate or n/a."
+  ]
+}

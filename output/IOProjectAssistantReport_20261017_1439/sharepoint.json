@@ -1,0 +1,80 @@
+{
+  "projects": [
+    {
+      "name": "Rubrik DR backup",
+      "notes": [
+        "Roadmap deck (I&O Project Roadmap.pptx, modified 2026-10-16): PM Igor Kulyk, TL Calvin Cochran, Jira IOSP-471. Status badge High-Risk on the portfolio slide and Off Track on the project slide; Schedule R, Scope G, Cost G.",
+        "Accomplishments: team coordinating Rubrik deployment and MCR cluster readiness; last brik/node for the MCR cluster being brought online; NetOps to check NIC in the data center; 1gig cross connect network resolved; storage issue (tracked in Teams subchannel) resolved; POC parallel run 10/2 (initial finished in 16 hours, incremental 3 hours); Pure-based backup successful.",
+        "Next: configure CA Backup VLAN on RAC (RM-1658, Oct 17); enable RAC instance backup (target Oct 18); appliance shipment to Manchester (Oct 27 - Nov 9); rack and stack in Manchester (Nov 9 - 16); production preparation (Nov 16 - Dec 6).",
+        "Milestones: next milestone Oct 16 (enable Rubrik RAC backup), which is past due versus the RAC backup target of Oct 18; production implementation Dec 6 (full production in Europe); project completion December 2026.",
+        "Roadmap appendix timeline shows Rubrik as Executing.",
+        "An earlier draft of the deck (Project Roadmap DRAFT CorpTemplate.pptx, 2026-10-08) had next milestone Oct 6-27 (Pure and RAC backup validation); the 2026-10-16 deck supersedes it."
+      ],
+      "progress": "Pure-based backup successful; RAC backup enablement in progress (target Oct 18); Manchester appliance shipment from Oct 27",
+      "timeline": "Next milestone Oct 16 (enable RAC backup); Manchester shipment Oct 27 - Nov 9; rack and stack Nov 9-16; production prep Nov 16 - Dec 6; full production Dec 6; completion Dec 2026",
+      "dates": { "start": null, "end": "2026-12-06" },
+      "risks": ["Pure storage issue", "RAC backup milestone (Oct 16) slipped to target Oct 18"],
+      "links": {
+        "sharepoint": [
+          { "label": "I&O Project Roadmap.pptx", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Presentations/I&O Project Roadmap.pptx" },
+          { "label": "RUBRIK Project Plan.xlsx", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/RUBRIK/RUBRIK Project Plan.xlsx" },
+          { "label": "Rubrik_Project_Change_Order_CO-001.docx", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/RUBRIK/Rubrik_Project_Change_Order_CO-001.docx" },
+          { "label": "Sectigo On Prem Sizing Validation.pptx", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/RUBRIK/Sectigo On Prem Sizing Validation.pptx" },
+          { "label": "20260729_RubrikSession_Notes.msg", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/RUBRIK/20260729_RubrikSession_Notes.msg" },
+          { "label": "Oracle Questionnaire_UpdPrajeet.docx", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/RUBRIK/Oracle Questionnaire_UpdPrajeet.docx" },
+          { "label": "PostgreSQL_Questionnaire.docx", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/RUBRIK/PostgreSQL_Questionnaire.docx" },
+          { "label": "SLA_Policy_OracleProductionDatabases.docx", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/RUBRIK/SLA_Policy_OracleProductionDatabases.docx" }
+        ]
+      }
+    },
+    {
+      "name": "EDB servers",
+      "notes": [
+        "Roadmap deck tracks this as 'Postgres DB' (Jira IOSP-955 Postgres EDB; COR-10818 not named in the deck). PM Gabriel E Rovira, TL Prajeet Singh Kahlon. Status On-Track; Schedule G, Scope Y, Cost.",
+        "Accomplishments: PoC Ops group created (Harbor and Vault NON-PROD); NON-PROD TPA server configuration.",
+        "Next: cut over applications to new EDB env (NON-PROD); decom servers with migrated EDB; data replication on NON-PROD servers (subscription, live_compare, PEM, BARMAN) 90%; PEM and BARMAN configuration (recurring).",
+        "Milestones: Non-Prod Migration Wave 2 originally Sept 15, now Oct 30; production implementation Feb 1; completion originally Dec 30, latest thinking Feb 1 / March 1 2027.",
+        "Dependencies: Manchester and Secaucus servers (Proxmox).",
+        "Roadmap appendix timeline shows Postgres EDB Upgrade as Planning.",
+        "Note: the deck rates Postgres On-Track while Wave 2 slipped about six weeks and completion moved to 2027."
+      ],
+      "progress": "NON-PROD replication about 90%; NON-PROD cut-over pending",
+      "timeline": "Non-Prod Wave 2 Oct 30 (was Sept 15); production Feb 1 2027; completion Feb 1 / Mar 1 2027 (was Dec 30)",
+      "dates": { "start": null, "end": "2027-03-01" },
+      "risks": ["Resource priorities (keeping the lights on vs project work)", "Delays in NON-PROD cut-over to new EDB servers"],
+      "links": {
+        "sharepoint": [
+          { "label": "I&O Project Roadmap.pptx", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Presentations/I&O Project Roadmap.pptx" },
+          { "label": "Postgres Decision Memorandum.docx", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Postgres DB Project/Postgres Decision Memorandum.docx" },
+          { "label": "IOSP_Postgres_Parallel_Jira New.csv", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Postgres DB Project/IOSP_Postgres_Parallel_Jira New.csv" },
+          { "label": "IOSP_Postgres_Parallel_Jira_New-delta.csv", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Postgres DB Project/IOSP_Postgres_Parallel_Jira_New-delta.csv" },
+          { "label": "Postgres Grouping and migration SP.pdf", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/MS Project Plan/Postgres Grouping and migration SP.pdf" }
+        ]
+      }
+    },
+    {
+      "name": "ccmqa mail flood / bdddcmmail1",
+      "notes": [
+        "No project page, file or roadmap entry found for 'ccmqa mail flood' or 'bdddcmmail1' in SharePoint.",
+        "Closest related roadmap content: Gentoo migration appendix lists 'BDD Email', 8 hosts, in progress (part of Migrate out from Gentoo, 110 items). Not confirmed to be the same work as bdddcmmail1."
+      ],
+      "progress": null,
+      "timeline": null,
+      "dates": { "start": null, "end": null },
+      "risks": [],
+      "links": {
+        "sharepoint": [
+          { "label": "I&O Project Roadmap.pptx (Gentoo disposition detail, BDD Email)", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Presentations/I&O Project Roadmap.pptx" }
+        ]
+      }
+    }
+  ],
+  "gaps": [
+    "ccmqa mail flood / bdddcmmail1: no SharePoint file or roadmap slide found (searches for 'bdddcmmail1' and 'mail flood ccmqa' returned only unrelated files).",
+    "EDB servers: COR-10818 is not referenced in the roadmap deck; project is tracked there as 'Postgres DB' (IOSP-955). Matched by topic.",
+    ".env does not exist (only .env.example, with empty SHAREPOINT_* values), so the configured PMO and report folder URLs could not be read. PMO folder was inferred as site IOProjectTeam, Shared Documents.",
+    "Folder 'Postgres DB Project' could not be listed directly (Graph 400); its files were found via search only. Folder listing of the whole PMO library was not performed, so some matching files may be missing.",
+    "Report upload folder 'ITSM Freshservice/Archive/AI Test SharePoint Folder' (from the skill) was not found by folder search; the upload URL must be confirmed.",
+    "Roadmap deck contains no explicit project start dates; start is null for all projects. Deck read as text only (no visual check of RAG colours)."
+  ]
+}

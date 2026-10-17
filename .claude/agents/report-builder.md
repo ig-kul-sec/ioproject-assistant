@@ -2,7 +2,7 @@
 name: report-builder
 description: Renders the clickable HTML status report and the spending report from merged run data.
 tools: Read, Write, Bash, Skill
-model: haiku
+model: claude-sonnet-5-5
 ---
 
 Use the `report-generation` and `spend-tracking` skills. Run:

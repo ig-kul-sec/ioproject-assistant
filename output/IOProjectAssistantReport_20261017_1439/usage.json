@@ -1,0 +1,58 @@
+[
+ {
+  "agent": "teams-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 280980,
+  "output_tokens": 0,
+  "seconds": 249.3,
+  "note": "Usage block reports only total tokens; total recorded in input_tokens, output_tokens=0."
+ },
+ {
+  "agent": "jira-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 37535,
+  "output_tokens": 0,
+  "seconds": 516.7,
+  "note": "Usage block reports only total tokens; total recorded in input_tokens, output_tokens=0."
+ },
+ {
+  "agent": "confluence-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 29430,
+  "output_tokens": 0,
+  "seconds": 496.2,
+  "note": "Usage block reports only total tokens; total recorded in input_tokens, output_tokens=0."
+ },
+ {
+  "agent": "sharepoint-collector (read)",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 67953,
+  "output_tokens": 0,
+  "seconds": 130.1,
+  "note": "Usage block reports only total tokens; total recorded in input_tokens, output_tokens=0."
+ },
+ {
+  "agent": "report-builder",
+  "model": "claude-haiku-5-5",
+  "input_tokens": 28896,
+  "output_tokens": 0,
+  "seconds": 80.0,
+  "note": "Usage block reports only total tokens; total recorded in input_tokens, output_tokens=0."
+ },
+ {
+  "agent": "sharepoint-collector (upload)",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 101705,
+  "output_tokens": 0,
+  "seconds": 184.7,
+  "note": "Total tokens only (in input_tokens). Recorded after upload, so not included in the uploaded spending report."
+ },
+ {
+  "agent": "orchestrator",
+  "model": "claude-opus-5-5",
+  "input_tokens": 57808,
+  "output_tokens": 0,
+  "seconds": 1276.2,
+  "note": "Total tokens only (in input_tokens), taken from the usage block of the Agent call that launched the orchestrator; seconds = that call's duration."
+ }
+]

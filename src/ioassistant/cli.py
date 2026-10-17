@@ -11,8 +11,12 @@ def main(argv=None) -> None:
     ap = argparse.ArgumentParser(prog="ioassistant")
     ap.add_argument("command", choices=["report", "spend"])
     ap.add_argument("path", type=Path)
+    ap.add_argument("--no-fonts", action="store_true", help="spend only: skip embedded brand fonts (small file)")
     args = ap.parse_args(argv)
-    out = (report.build if args.command == "report" else spend.build)(args.path)
+    if args.command == "spend":
+        out = spend.build(args.path, fonts=not args.no_fonts)
+    else:
+        out = report.build(args.path)
     print(out)
 
 
