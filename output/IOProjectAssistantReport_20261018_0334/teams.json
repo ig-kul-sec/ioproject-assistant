@@ -1,0 +1,148 @@
+{
+  "window": {"from": "2026-10-12T00:00:00-04:00", "to": "2026-10-17T20:34:00-04:00"},
+  "sources": {
+    "chat_url": "https://teams.microsoft.com/l/chat/19:meeting_NDAxMzEzOGEtZmUzYS00MTMxLTk3NTItODc1MGM1ZTBkZWQ2@thread.v2/conversations",
+    "transcript_url": null,
+    "rubrik_chat_url": "https://teams.microsoft.com/l/chat/19:meeting_YjU0ZDdlMWEtNjc1Mi00Nzg4LTlhZjItNDBmMWEzNmExNzFl@thread.v2/conversations",
+    "rubrik_transcript_url": "meeting-transcript:///events/aHR0cHM6Ly90ZWFtcy5taWNyb3NvZnQuY29tL2wvbWVldHVwLWpvaW4vMTklM2FtZWV0aW5nX1lqVTBaRGRsTVdFdE5qYzFNaTAwTnpnNExUbGhaakl0TkRCbU1XRXpObUV4TnpGbCU0MHRocmVhZC52Mi8wP2NvbnRleHQ9JTdiJTIyVGlkJTIyJTNhJTIyMGU5YzQ4OTQtNmNhYS00NjVkLTk2NjAtNGI2OTY4YjQ5ZmI3JTIyJTJjJTIyT2lkJTIyJTNhJTIyYzNjMjk3MTItN2RjZC00ZDExLTllYzUtN2NlMWYwZmZlNmZkJTIyJTdk?start=2026-10-14T15%3A00%3A00.000Z&end=2026-10-14T15%3A20%3A00.000Z",
+    "rubrik_status_emails": [
+      {"subject": "RUBRIK - Project Status (2026/10/14)", "received": "2026-10-14T15:48:43Z", "url": "https://outlook.office365.com/owa/?ItemID=AAMkADE5NzU1Nzk4LTU2YjktNDIyZS05ZTI0LWU5NTA0MmIwMDM4OABGAAAAAADfiIpf9YlRQL%2BGNBNg%2BLIwBwBkE5XVjIpUS6tjkF1Bp8f3AAAAAAEMAABkE5XVjIpUS6tjkF1Bp8f3AAHiv6dFAAA%3D&exvsurl=1&viewmodel=ReadMessageItem"}
+    ],
+    "standup_recording_2026-10-16": "https://comodoca-my.sharepoint.com/:v:/g/personal/karlw_comodoca_net/IQDUDN9z2UiSSqKaDOyfhxj3AXve2oHPte9Sme-TxW47jfk",
+    "standup_chat_messages": {
+      "2026-10-16 bot midpoint summary": "https://teams.microsoft.com/l/message/19%3Ameeting_NDAxMzEzOGEtZmUzYS00MTMxLTk3NTItODc1MGM1ZTBkZWQ2%40thread.v2/1792156533779",
+      "2026-10-16 bot 6-min warning": "https://teams.microsoft.com/l/message/19%3Ameeting_NDAxMzEzOGEtZmUzYS00MTMxLTk3NTItODc1MGM1ZTBkZWQ2%40thread.v2/1792157052232",
+      "2026-10-16 bot follow-up topics": "https://teams.microsoft.com/l/message/19%3Ameeting_NDAxMzEzOGEtZmUzYS00MTMxLTk3NTItODc1MGM1ZTBkZWQ2%40thread.v2/1792157769665",
+      "2026-10-16 Gabriel Postgres update": "https://teams.microsoft.com/l/message/19%3Ameeting_NDAxMzEzOGEtZmUzYS00MTMxLTk3NTItODc1MGM1ZTBkZWQ2%40thread.v2/1792156899266",
+      "2026-10-16 Maarten COR-10818": "https://teams.microsoft.com/l/message/19%3Ameeting_NDAxMzEzOGEtZmUzYS00MTMxLTk3NTItODc1MGM1ZTBkZWQ2%40thread.v2/1792157650366"
+    }
+  },
+  "projects": [
+    {
+      "name": "Rubrik DR backup",
+      "jira_keys": ["IOSP-471", "IOSP-880", "IOSP-1004", "IOSP-1005", "IOSP-1006", "IOSP-1007", "IOSP-1008", "IOSP-1009", "IOSP-1010", "IOSP-1011", "IOSP-1012", "IOSP-1013", "IOSP-1014", "IOSP-1015", "RM-1553", "RM-1658", "COR-11600"],
+      "notes": [
+        "2026-10-14 [status email, Igor] Overall status ON-TRACK. IOSP-1011 (enable Pure-based backup and let it run several days, Earle) and IOSP-1014 (confirm Pure backup works, Calvin) reported Completed.",
+        "2026-10-14 [rubrik transcript] Earle and Calvin: Pure-based backup has run OK for several days with no issues, so IOSP-1011/1014 considered passed.",
+        "2026-10-14 [status email] Timeline under IOSP-471: IOSP-1012 enable Rubrik RAC instance backup 10/16 18:00 UTC (Sri); IOSP-880 run/validate RAC backup and replication 10/17-10/20; IOSP-1013 prepare appliances for shutdown and Manchester deployment incl. network/IP 10/21 (Sri, Calvin); IOSP-1010 shipment plan and contracts 10/21-TBD (Karl/Calvin, procurement); IOSP-1015 international shipment Oct 27-Nov 9 (logistics team); IOSP-1009 background DBA work Oct 23-Nov 23 (Earle); IOSP-1004/1005 rack, cable, power up in Manchester Nov 9-16 (Priya/Mena); IOSP-1006 commissioning Nov 16-Dec 6 (Calvin, Sri); IOSP-1007 production testing in Manchester Nov 30-Dec 6 (Calvin, Sri); IOSP-1008 fully production in Europe Dec 7.",
+        "2026-10-14 [rubrik transcript] Igor updated IOSP-1013 target to 10/21 (Calvin: prep is a quick task, about a dozen nodes, a couple of hours; node IP change then shutdown). Original shipment plan was 10/27; Calvin will not move it earlier without procurement signing the contract. Hardware shipment is performed by Tech X, resold through MicroAge (already an approved vendor); two Sectigo people needed on site at the cage (Olu, plus one coordinated with Jamie).",
+        "2026-10-14 [rubrik transcript] Earle: DBA background work (IOSP-1009) may start earlier than November; Manchester standby now running and catching up; Earle said end of next week (10/23) he would be well in.",
+        "2026-10-14 [rubrik transcript] Calvin: validate Rubrik RAC backup AND replication to Manchester is the fundamental gate before shutdown and shipment (to be explicit in IOSP-880).",
+        "2026-10-14 [rubrik transcript] SriChand set up a meeting next week with Net Ops so everything is ready to connect the Rubrik appliances going to Manchester. Gabriel Rovira had no update on the AD project.",
+        "2026-10-14 [rubrik transcript] Gap found: the Oracle RAC nodes (scdpcarac1/2) have no interface on the CA Backup VLAN (130), where Rubrik is configured to talk (VLANs 130 and 2988). Prajeet and Calvin agreed the right approach is dedicated backup-VLAN addressing. Earle: change to scdpcarac1 (primary production) can only happen in a maintenance window (Sat 7pm ET); the RM is therefore required and the first Rubrik RAC backup slips from Fri 10/16 to after the maintenance (Sunday).",
+        "2026-10-14 [rubrik transcript] Earle proposed starting the initial 16-hour Rubrik backup Sunday 10/18 13:00 UTC so it ends about 05:00 UTC Monday; Prajeet accepted running Rubrik and the existing RMAN backup concurrently (RMAN not paused), Rubrik uses few channels; backup on primary goes to Flash Blade. Prajeet noted backup times grew from 4 to 6 hours.",
+        "2026-10-14 [rubrik transcript] Open design problem: Rubrik should reach the RAC via the SCAN hostname (HA-safe) but that name is not on the backup VLANs; Oracle Clusterware only manages registered VIPs. Calvin and SriChand will sync after the call and open a Rubrik Support question; Prajeet will raise an Oracle Support ticket (response hoped within 24h). Calvin will hold off creating tickets until replies arrive.",
+        "2026-10-15 [rubrik chat] Prajeet: backup IPs do not need to be registered with Oracle Clusterware, it is handled by Rubrik itself. Calvin put in the RM for CA backup VLAN config (posted 2026-10-14 23:45 ET). Prajeet agreed to do the work in a SASP maintenance window and will create an RM for the standalone Oracle decommission prerequisites (redo routes, Data Guard) .",
+        "2026-10-15 [rubrik chat] Calvin: standalone Oracle in SEC is only alive to support the Rubrik POC, so its decommission can be scheduled; Earle: Prajeet agreed to do the work during a SASP maintenance window.",
+        "2026-10-15 [rubrik chat] Earle warned Calvin that Jeff Novick is doing firewall work during the weekend maintenance window.",
+        "2026-10-13 [rubrik chat] Karl Witt: Sectigo is contracting a company to pack and ship the gear and they will supply anything that needs to be signed.",
+        "2026-10-16 [rubrik chat] Maintenance window confirmed Saturday 10/17 7pm-9pm Eastern. Calvin's checklist: after patching, ask Ramana whether CA backup interfaces are up and post a note in the Rubrik chat as soon as they are, so SriChand can try adding the hosts in Rubrik; backup not kicked off until the window is complete. Calvin will not join live; no recording; SASP Teams conversation used for the maintenance.",
+        "2026-10-17 [rubrik chat] Prajeet: created Oracle Credentials Wallet on both RAC nodes and tested (connect strings cdbsasp11/cdbsasp12, backup user C##BACKUP_USER, SCAN name scdpcaracscan.sec.dc.comodoca.net). Prajeet: Oracle part done; pending items are backup VLAN and Rubrik validation. Prajeet argued Rubrik should not need the DB user password (wallet purpose). SASP maintenance still in progress at 23:21Z; SriChand joined the maintenance call. Earle forwarded a note from Andrey Kozudaev about RM-1658 (content truncated, not read).",
+        "2026-10-16 [standup chat, bot summary] Rubrik: approvals and playbook reviews progressing, two sprint tickets expected next week."
+      ],
+      "action_items": [
+        {"text": "Confirm CA backup VLAN interfaces up on RAC node(s) after patching and post in Rubrik chat; then add hosts in Rubrik", "owner": "Earle Long (ask Ramana), then SriChand Myla", "due": "2026-10-17 maintenance window (Sat 7-9pm ET)"},
+        {"text": "Start initial Rubrik RAC backup (16h run) after maintenance (IOSP-1012)", "owner": "SriChand Myla", "due": "2026-10-18 13:00 UTC (proposed by Earle in transcript, not confirmed)"},
+        {"text": "Open Oracle Support ticket on routing Rubrik backups to RAC via backup VLAN/SCAN", "owner": "Prajeet Singh Kahlon", "due": null},
+        {"text": "Pose question to Rubrik Support on VIP/SCAN access over backup VLANs", "owner": "SriChand Myla with Calvin Cochran", "due": null},
+        {"text": "Create RM for RAC CA backup VLAN config (reported created in chat 10/14) and track to approval", "owner": "Calvin Cochran", "due": null},
+        {"text": "Create RM for standalone Oracle decommission prerequisites (redo routes, Data Guard)", "owner": "Prajeet Singh Kahlon", "due": null},
+        {"text": "Run/validate Rubrik RAC backup and replication to Manchester (IOSP-880)", "owner": "SriChand Myla / Calvin Cochran (owner not stated in source)", "due": "2026-10-20 (per status email window 10/17-10/20)"},
+        {"text": "Prepare appliances for shutdown and Manchester deployment, incl. network/IP (IOSP-1013)", "owner": "SriChand Myla, Calvin Cochran", "due": "2026-10-21"},
+        {"text": "Shipment plan and contracts with procurement/MicroAge/Tech X (IOSP-1010)", "owner": "Karl Witt, Calvin Cochran", "due": "2026-10-21 start, end TBD"},
+        {"text": "Meet Net Ops to prepare Manchester connectivity for Rubrik", "owner": "SriChand Myla", "due": "week of 2026-10-19"},
+        {"text": "DBA background work (IOSP-1009)", "owner": "Earle Long", "due": "2026-10-23 start, Nov 23 end (per status email)"},
+        {"text": "Share RM ticket link in Rubrik chat once created", "owner": "Calvin Cochran", "due": null}
+      ],
+      "risks": [
+        "First Rubrik RAC backup slipped from Fri 10/16 to Sunday 10/18 or later because RAC nodes lack CA backup VLAN interfaces and prod changes require a maintenance window; IOSP-880 validation window (10/17-10/20) and IOSP-1013 (10/21) now tight.",
+        "Unresolved design: RAC reachable only via SCAN/VIPs not on backup VLANs; may require crossing the CA environment boundary; dependent on Oracle and Rubrik support replies (about 24h or more).",
+        "Rubrik initial 16h run overlaps the existing RMAN backup (Monday morning) on a production database; backup duration on primary grew 4h to 6h and next backup may double.",
+        "Shipment (IOSP-1010/1015) gated on procurement contract signature and Karl; target Oct 27-Nov 9; VAT/tax handling earlier flagged (9/23, 9/30).",
+        "Weekend maintenance 10/17 also includes firewall work by Jeff Novick and patching, risk of collateral impact on connectivity.",
+        "Rubrik restore into Bradford requires non-direct sync design (Bradford cannot connect to prod network); automated and continuously available solution needed (status 10/08 email).",
+        "Postgres/EDB dependency: EDB project on hold, completion looks like March 2027; Rubrik Postgres onboarding postponed (status 9/30 email, outside window but still open)."
+      ]
+    },
+    {
+      "name": "Oracle RAC (SASP) completion and legacy decommission",
+      "jira_keys": ["IOSP-1009", "COR-10818"],
+      "notes": [
+        "2026-10-16 [standup chat, bot summary] Oracle RAC largely complete; corruption fixed and primary/standby synchronized; disk replacement and housekeeping remain.",
+        "2026-10-16 [standup chat, bot summary] Decommissioning timeline inconsistent: dates mentioned range from Oct 23 and end of October to mid/end November; some work not in the plan. Gabriel Rovira stated the plan has completion on Nov 23 (per the GSR, 'it is, on the following sprints').",
+        "2026-10-16 [standup chat] Maarten Broekman on COR-10818: RAC work took priority so no substantial progress on the EDB servers.",
+        "2026-10-14 [rubrik transcript] Earle: standby now running in Manchester and catching up; a few maintenance tasks remain."
+      ],
+      "action_items": [
+        {"text": "Agree realistic RAC completion date, list remaining work (disk replacement, housekeeping) and update plan/JIRA", "owner": "not assigned in source (bot flagged, no volunteer)", "due": null},
+        {"text": "Confirm Monday owners and deliverables for disk replacement, housekeeping and outstanding JIRA items", "owner": "not assigned in source", "due": "2026-10-19 (Monday)"}
+      ],
+      "risks": [
+        "Conflicting completion dates (Oct 23 vs end Oct vs Nov 23) and work not reflected in plan.",
+        "RAC work is displacing EDB server progress (COR-10818)."
+      ]
+    },
+    {
+      "name": "Postgres non-prod cutover (Service Core, AVS, SCM Demo)",
+      "jira_keys": ["COR-10818"],
+      "notes": [
+        "2026-10-16 [standup chat] Gabriel Rovira: Service Core NON-PROD Postgres cutover finished (credit to Raymond and Mohammed). Next week AVS and SCM Demo (NON-PROD), working meeting on Wednesday (10/21); with prechecks each server takes 5-10 min.",
+        "2026-10-16 [standup chat] Gabriel: the DBA team is moving ahead of schedule; the schedule keeps buffer days because of built-in uncertainty.",
+        "2026-10-13 [standup chat] Mike Massimino asked whether an item was only for production AVS; Karl Witt asked if the items were the last P0s (context not captured)."
+      ],
+      "action_items": [
+        {"text": "Working session to cut over AVS and SCM Demo (non-prod)", "owner": "Gabriel Rovira / DBA team", "due": "2026-10-21 (Wednesday)"}
+      ],
+      "risks": []
+    },
+    {
+      "name": "Sprint tracking and process cadence (IOSP board)",
+      "jira_keys": [],
+      "notes": [
+        "2026-10-16 [standup chat] Gabriel Rovira: sprint changes needed; this week's sprint is active and tasks must be closed or documented before moving to the following sprint. Agreed cadence: Monday sets the sprint, Friday closes it (confirmed to Mike Massimino). Gabriel said he will update the active sprint.",
+        "2026-10-16 [standup chat, bot] Follow-up topics: Oracle RAC timeline and project work tracking/sprint review cadence; bot asked if someone wants to schedule a meeting.",
+        "2026-10-15 [standup chat] Karl Witt and Mike Massimino discussed inbound urgent ticket requests (ticket created minutes earlier, 'ASAP'); Karl asked if 'add it to the next sprint' is a viable answer; Mike agreed and noted it may fuel an 'I&O is a bottleneck' argument. Mike posted the IOSP RapidBoard link (rapidView=485) and said he could ask Nik for the real priority; Nik was out of office, Karl to speak to him after 3pm."
+      ],
+      "action_items": [
+        {"text": "Update the active sprint and close or document tasks to move to next sprint", "owner": "Gabriel Rovira", "due": "2026-10-16 (Friday sprint closure)"},
+        {"text": "Schedule a meeting on Oracle RAC timeline and sprint review cadence", "owner": "not assigned in source (bot asked for a volunteer)", "due": null}
+      ],
+      "risks": [
+        "Perception of I&O as bottleneck when urgent requests are deferred to next sprint; unclear priority of inbound requests (Karl/Mike, 10/15)."
+      ]
+    },
+    {
+      "name": "Manchester network plan",
+      "jira_keys": [],
+      "notes": [
+        "2026-10-16 [standup chat, bot] Discrepancy to resolve: reconcile current Manchester network task list with prior version and identify which added tasks and dates are valid. No resolution captured in chat.",
+        "2026-10-14 [rubrik transcript] SriChand arranged a Net Ops meeting the following week on Rubrik connectivity to Manchester."
+      ],
+      "action_items": [
+        {"text": "Reconcile Manchester network task list versus prior version and validate added tasks and dates", "owner": "not assigned in source", "due": null}
+      ],
+      "risks": ["Unreconciled task list and dates for Manchester network plan."]
+    },
+    {
+      "name": "Operational health and other standup items",
+      "jira_keys": [],
+      "notes": [
+        "2026-10-16 [standup chat, bot] Infrastructure, databases and environments reported stable with no active fires; HSM unchanged (Gabriel said status was sent the day before).",
+        "2026-10-16 [standup chat] Side thread on daylight saving time (Prajeet, Karl, Maarten), no work item.",
+        "2026-10-14 [standup chat] Mike Massimino: an item is something Sectigo would be audited on; COR is off this project and it sits with Compliance (item not identified)."
+      ],
+      "action_items": [],
+      "risks": []
+    }
+  ],
+  "gaps": [
+    "Transcript unavailable for Daily Ops Standup: organizer-only access (NOT_FOUND 404 on 2026-10-16 occurrence; the other four occurrences 10/12-10/15 not retried per instructions); chat and meeting-bot summaries used instead. A recording exists for 10/16 (link in sources) but was not accessible as text.",
+    "Daily Ops Standup chat coverage is partial: the generic search returned mostly other channels and alert bots; the 50-message read covered 10/15 evening to 10/16, and per-sender search was done only for Karl Witt and Mike Massimino. Standup messages for 10/12-10/14 are sparse and bot summaries were found only for 10/16. Other participants (Jeff Novick, Maarten Broekman, Prajeet, Calvin, Jaime Larsen, Eric Sambraus, etc.) were not searched per sender.",
+    "Rubrik chat: read via the 50-most-recently-updated messages (covers 10/15 03:41Z to 10/17 23:22Z) plus a Karl Witt search; messages from 10/12-10/14 evening mostly not retrieved (the 10/14 call itself is covered by the transcript). Per-sender searches for Calvin, Earle, Prajeet, SriChand, Gabriel and Igor were not run. Earle's forwarded RM-1658 note from Andrey Kozudaev (10/17) and the 10/16 Calvin message with empty body were not read in full.",
+    "Rubrik transcript is speech recognition: garbled names (e.g. 'Pavel', 'Aurel', 'Ola', 'Sri'/'Ill'); owners taken only where unambiguous. The 'Earle' who is to enable RAC backup in the 10/08 email appears as 'Sri' in the 10/14 email, matching the transcript correction (Prajeet: change the name from Earle to Sri on line C).",
+    "CONFLICT status email vs transcript/chat: email (10/14 15:48Z) lists IOSP-1012 at 10/16 6PM UTC and IOSP-880 at 10/17-10/20, but the 10/14 call (after the email) established the first RAC backup cannot run until after the Sat 10/17 maintenance (Earle proposed Sun 10/18 13:00 UTC). Email also states Calvin will create the RM after Oracle's response, while chat shows Calvin created the RM for CA backup VLAN on the evening of 10/14.",
+    "CONFLICT within sources on Oracle RAC / DBA dates: email IOSP-1009 Oct 23-Nov 23; transcript Earle said possibly starting earlier than November (end of next week 10/23); standup bot summary says decommission dates range from Oct 23 to mid/end November; Gabriel says Nov 23. Not reconciled.",
+    "As of the end of the window (10/17 20:34 ET) the outcome of the Saturday 10/17 maintenance (CA backup interfaces, hosts added in Rubrik, start of the initial RAC backup) is unknown; chat shows only that the maintenance was still in progress.",
+    "Jira keys come from the status email and chat links only; not verified in Jira (RM ticket number for the CA backup VLAN change was not stated; RM-1658 relevance unconfirmed)."
+  ]
+}

@@ -99,13 +99,33 @@ def test_report_features(tmp_path):
     assert 'data-s="2026-09-11">09/11</td>' in html
     assert "Project Manager: <b>Pat</b>" in html and "Technical Lead: <b>Lee</b>" in html
     assert "Generated: 2026.10.17 11:16 EDT" in html
+    assert "id='expand-projects'" in html and html.count("<svg viewBox='0 0 24 24'") == 3 and "Expand Proj+SubItems" in html
+    assert html.index("class='kpis'") < html.index("id='collapse-all'") < html.index("Projects at a glance")
+    head = html[html.index("<header"):html.index("</header>")]
+    assert "Sectigo&copy;" not in head  # both lines are at the end
+    assert html.rindex("IO Project Assistant</b>") > html.rindex("Sprint status")
+    assert html.rindex("Sectigo&copy; 2026") > html.rindex("Version: ") and html.count("<footer>") == 1
+    assert "class='about'" not in html  # same plain footer as the spending report
+    assert '<details class="top fold" open><summary class="top"><h2>Projects at a glance</h2>' in html
+    assert '<details class="top" open><summary class="top"><h2>Sprint status</h2>' in html
     assert "id='collapse-all'" in html and '<details class="card"' in html and "th.sortable" in html
     assert "I&amp;O PROJECT STATUS REPORT" in html
     assert "SharePoint Report Archive Link</a>" in html and "Confluence ITSM Parent Page</a>" in html
     assert "display/CO/ITSM+Freshservice" in html
+    assert "JIRA ScrumBoard</a>" in html and html.count("rapidView=485&amp;projectKey=IOSP") == 2
+    assert "Sprint status</h2></summary><p><a " in html and "JIRA ScrumBoard Link</a>" in html
     head = html[html.index("<header"):html.index("</header>")]
     assert head.index("Analysis period") < head.index("SharePoint Report Archive") < head.index("Generated:")
     assert "2026-09-11T" not in html
+
+
+def test_compact_build_is_smaller_and_restores_links(tmp_path):
+    data = {"projects": [{"name": "P", "summary": [{"text": "see IOSP-9 and https://x.test", "tickets": ["IOSP-9"]}]}]}
+    full = report.render(data, "R", compact=False)
+    small = report.render(data, "R", compact=True)
+    assert len(small) < len(full) and '<a class="j">IOSP-9</a>' in small
+    assert 'target="_blank"' not in small and "a.j" in small and "browse/IOSP-9" in full
+    assert "var JB='https://projects.sectigo.net/browse/'" in small
 
 
 def test_spending_report_footer_and_sharepoint(tmp_path):

@@ -5,7 +5,7 @@ import json
 import re
 from datetime import date, datetime
 from zoneinfo import ZoneInfo
-from html import escape
+from html import escape, unescape
 from pathlib import Path
 
 from . import brand, spend
@@ -103,8 +103,9 @@ def _card(label, value, sub="") -> str:
 
 
 def _sprint(sprint: dict) -> str:
+    board = _link("JIRA ScrumBoard Link", brand.JIRA_BOARD_URL)
     if not sprint:
-        return "<p>No sprint data.</p>"
+        return f"<p>{board}</p><p>No sprint data.</p>"
     dur = _days(sprint.get("start"), sprint.get("end"))
     tickets = sprint.get("tickets", [])
     done = sum(1 for t in tickets if any(w in str(t.get("status") or "").lower() for w in DONE_WORDS))
@@ -115,9 +116,10 @@ def _sprint(sprint: dict) -> str:
         for t in tickets
     )
     return (
+        f"<p>{board}</p>"
         f"<p><b>{_t(sprint.get('name'))}</b>: {_t(_md(sprint.get('start')))} to {_t(_md(sprint.get('end')))}"
         f" ({dur if dur is not None else NA} days). {done} of {len(tickets)} tickets done ({pct}).</p>"
-        f"<details><summary>All {len(tickets)} sprint tickets</summary>"
+        f"<details class=\"sub\"><summary>All {len(tickets)} sprint tickets</summary>"
         "<table><tr><th>Ticket</th><th>Summary</th><th>Status</th><th>Responsible</th><th>Due</th></tr>"
         f"{rows}</table></details>"
     )
@@ -238,6 +240,23 @@ def _tickets(p: dict, base: str) -> str:
     )
 
 
+# line icons (brand 6.3: single-weight stroke, rounded, currentColor)
+ICON_COLLAPSE = "<path d='M7 4l5 5 5-5'/><path d='M7 20l5-5 5 5'/>"
+ICON_EXPAND = "<path d='M7 9l5-5 5 5'/><path d='M7 15l5 5 5-5'/>"
+ICON_TREE = "<path d='M3 6h18'/><path d='M7 12h14'/><path d='M11 18h10'/>"
+
+
+def _tool(ident: str, label: str, icon: str) -> str:
+    return (f"<button class='tool' id='{ident}'><svg viewBox='0 0 24 24' aria-hidden='true'>{icon}</svg>"
+            f"{escape(label)}</button>")
+
+
+def _top(title: str, body: str, fold: bool = False) -> str:
+    """Top-level report section that the Collapse all / Expand buttons also control.
+    fold=True: "Expand Proj+SubItems" closes it (the project view hides the overview and the gap list)."""
+    return f'<details class="top{" fold" if fold else ""}" open><summary class="top"><h2>{escape(title)}</h2></summary>{body}</details>'
+
+
 def _people(p: dict) -> str:
     return (
         f"Project Manager: <b>{_t(p.get('project_manager'))}</b> &nbsp;|&nbsp; "
@@ -262,6 +281,7 @@ def _project(p: dict, base: str = JIRA_BROWSE) -> str:
 
 
 EXTRA_CSS = """
+p.tools{margin:20px 0 0}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px}
 .kpi{background:var(--forest);color:var(--off-white);border-radius:12px;padding:18px 20px}
 .kpi-v{font:700 36px/1 'Urbanist',Arial,sans-serif;color:var(--spearmint)}
@@ -276,6 +296,9 @@ EXTRA_CSS = """
 .card-h::-webkit-details-marker,summary.sec::-webkit-details-marker{display:none}
 .card-h::before{content:'\\25BE';color:var(--forest);font-size:18px}.card:not([open])>.card-h::before{content:'\\25B8'}
 .card-h>div{flex:1}
+summary.top{list-style:none;display:flex;align-items:center;gap:8px;cursor:pointer}
+summary.top::-webkit-details-marker{display:none}
+summary.top::before{content:'\\25BE';color:var(--forest);font-size:18px}details.top:not([open])>summary.top::before{content:'\\25B8'}
 .card h3{font-size:22px}.meta{margin:.35rem 0 0;font-size:13px;font-weight:400}
 .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
 summary.sec{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;margin:1.4rem 0 .4rem;font-size:15px;border-bottom:1px solid var(--forest);padding-bottom:4px}
@@ -317,7 +340,44 @@ def _stamp(value) -> str:
     return f"{dt:%Y.%m.%d %H:%M} {dt.tzname()}" if dt else NA
 
 
+LINK_ATTRS = ' target="_blank" rel="noopener"'
+
+
+def _shrink(html: str, base: str) -> str:
+    """Compact build: drop repeated link attributes and Jira hrefs; the page script restores them on load."""
+    pattern = (
+        r'<a href="' + re.escape(escape(base, quote=True)) + r'([A-Z][A-Z0-9]+-\d+)"'
+        + re.escape(LINK_ATTRS) + r'>\1</a>'
+    )
+    html = re.sub(pattern, r'<a class="j">\1</a>', html)
+    # an apostrophe needs no escaping in text or inside double-quoted attributes; the entity form is easy to
+    # "correct" when the file is pasted into the upload call
+    html = html.replace(LINK_ATTRS, "").replace("&#x27;", "'")
+    # plain-ASCII look-alikes for characters that get altered in transit (no-break space, en dash)
+    html = html.replace("&nbsp;", " ").replace("–", "-")
+    return _unentity(html)
+
+
+def _unentity(html: str) -> str:
+    """Write & and " as plain characters (text) and & (inside tags) instead of entities, so the file survives
+    being pasted into the upload call unchanged. Kept only when the parsed text is identical."""
+    parts = re.split(r"(<[^>]*>)", html)
+    out = []
+    for part in parts:
+        if part.startswith("<") and part.endswith(">"):
+            out.append(part.replace("&amp;", "&"))
+        else:
+            out.append(part.replace("&amp;", "&").replace("&quot;", '"'))
+    plain = "".join(out)
+    return plain if unescape(plain) == unescape(html) else html
+
+
 def render(data: dict, title: str, compact: bool = False) -> str:
+    html = _render(data, title, compact)
+    return _shrink(html, str(data.get("jira_base_url") or JIRA_BROWSE)) if compact else html
+
+
+def _render(data: dict, title: str, compact: bool) -> str:
     base = str(data.get("jira_base_url") or JIRA_BROWSE)
     projects = data.get("projects", [])
     gaps = data.get("gaps", [])
@@ -343,8 +403,7 @@ def render(data: dict, title: str, compact: bool = False) -> str:
         for p in projects
     )
     gap_html = (
-        f"<h2>Data gaps</h2><details><summary>{len(gaps)} gaps in this run</summary>"
-        + _ul([f"<li>{_rich(g, base)}</li>" for g in gaps]) + "</details>"
+        _top("Data gaps", f"<p>{len(gaps)} gaps in this run</p>" + _ul([f"<li>{_rich(g, base)}</li>" for g in gaps]), fold=True)
         if gaps else ""
     )
     return (
@@ -355,15 +414,20 @@ def render(data: dict, title: str, compact: bool = False) -> str:
                        subtitle_last=True)
         + "<main class='wrap'>"
         f"<h2>Summary</h2><div class='kpis'>{kpis}</div>"
-        "<h2>Projects at a glance</h2>"
-        "<table><tr><th>Project</th><th>Status</th><th>Progress</th><th>Timeline</th><th>Top risk</th></tr>"
-        f"{glance}</table>"
-        "<h2>Project status</h2><p><button class='tool' id='collapse-all'>Collapse all</button>"
-        "<button class='tool' id='expand-all'>Expand all</button></p>"
+        "<p class='tools'>"
+        + _tool("collapse-all", "Collapse all", ICON_COLLAPSE)
+        + _tool("expand-all", "Expand all", ICON_EXPAND)
+        + _tool("expand-projects", "Expand Proj+SubItems", ICON_TREE)
+        + "</p>"
+        + _top("Projects at a glance",
+               "<table><tr><th>Project</th><th>Status</th><th>Progress</th><th>Timeline</th><th>Top risk</th></tr>"
+               f"{glance}</table>", fold=True)
+        + "<h2>Project status</h2>"
         f"{''.join(_project(p, base) for p in projects)}"
-        f"<h2>Sprint status</h2>{_sprint(sprint)}"
-        f"{gap_html}{brand.footer()}"
-        "</main>" + brand.foot()
+        + _top("Sprint status", _sprint(sprint))
+        + gap_html
+        + brand.footer()
+        + "</main>" + brand.foot(base)
     )
 
 

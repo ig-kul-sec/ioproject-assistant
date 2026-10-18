@@ -69,6 +69,8 @@ th.sortable[data-dir=asc]::after{{content:" \\25B2";font-size:10px}}
 th.sortable[data-dir=desc]::after{{content:" \\25BC";font-size:10px}}
 button.tool{{background:var(--forest);color:var(--off-white);border:0;border-radius:8px;padding:6px 14px;
 font:600 13px 'DM Sans',Arial,sans-serif;cursor:pointer;margin-right:8px}}
+button.tool{{display:inline-flex;align-items:center;gap:6px}}
+button.tool svg{{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}}
 button.tool:hover{{background:var(--spearmint);color:var(--forest)}}
 """
 
@@ -88,7 +90,7 @@ def head(title: str, extra_css: str = "", fonts: bool = True) -> str:
 
 
 def banner(title: str, subtitle: str, range_line: str = "", compact: bool = False, note_html: str = "",
-           subtitle_last: bool = False) -> str:
+           subtitle_last: bool = False, tail_html: str = "") -> str:
     """Header band. subtitle_last puts the subtitle (e.g. the Generated line) after the range and link lines."""
     # wordmark for the Forest band. Compact builds (connector upload, text only) carry no logo: a model cannot
     # retype the base64 faithfully, and an approximated logo would break the brand rules.
@@ -100,12 +102,17 @@ def banner(title: str, subtitle: str, range_line: str = "", compact: bool = Fals
         + (f"<p class='range'>{escape(range_line)}</p>" if range_line else "")
         + (f"<p class='store'>{note_html}</p>" if note_html else "")
         + (f"<p>{escape(subtitle)}</p>" if subtitle_last else "")
+        + tail_html
         + "</div></header>"
     )
 
 
 AUTHOR_EMAIL = "igor.kulyk@sectigo.com"
 REPO_URL = "https://github.com/ig-kul-sec/ioproject-assistant"
+JIRA_BOARD_URL = (
+    "https://projects.sectigo.net/secure/RapidBoard.jspa?rapidView=485&projectKey=IOSP"
+    "&view=planning.nodetail&issueLimit=100"
+)
 CONFLUENCE_PARENT_URL = "https://confluence.comodoca.net/display/CO/ITSM+Freshservice"
 REPORT_FOLDER_URL = (
     "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared%20Documents/"
@@ -139,6 +146,7 @@ def header_links() -> str:
     return (
         f'<a href="{escape(sharepoint_folder_url(), quote=True)}" target="_blank" rel="noopener">SharePoint Report Archive Link</a>'
         f' &nbsp;|&nbsp; <a href="{CONFLUENCE_PARENT_URL}" target="_blank" rel="noopener">Confluence ITSM Parent Page</a>'
+        f' &nbsp;|&nbsp; <a href="{escape(JIRA_BOARD_URL, quote=True)}" target="_blank" rel="noopener">JIRA ScrumBoard</a>'
     )
 
 
@@ -174,16 +182,22 @@ document.querySelectorAll('table').forEach(function(t){
     return asc?r:-r});
    rows.forEach(function(r){par.appendChild(r)});
   })})});
+var JB='@@JB@@';
+document.querySelectorAll('a.j').forEach(function(a){a.href=JB+a.textContent.trim()});
+document.querySelectorAll('a[href^=http]').forEach(function(a){a.target='_blank';a.rel='noopener'});
 function openTo(){var id=decodeURIComponent(location.hash.slice(1));var e=id&&document.getElementById(id);
  while(e){if(e.tagName==='DETAILS')e.open=true;e=e.parentElement}}
 window.addEventListener('hashchange',openTo);openTo();
 function all(open){document.querySelectorAll('details').forEach(function(d){d.open=open})}
-var c=document.getElementById('collapse-all'),x=document.getElementById('expand-all');
+var c=document.getElementById('collapse-all'),x=document.getElementById('expand-all'),pj=document.getElementById('expand-projects');
+if(pj)pj.addEventListener('click',function(){document.querySelectorAll('details.card').forEach(function(d){d.open=true});document.querySelectorAll('details.top').forEach(function(d){d.open=!d.classList.contains('fold')});document.querySelectorAll('details.sub').forEach(function(d){d.open=false})});
 if(c)c.addEventListener('click',function(){all(false)});
 if(x)x.addEventListener('click',function(){all(true)});
 })();
 </script>"""
 
 
-def foot() -> str:
-    return SCRIPT + "</body></html>"
+def foot(jira_base: str = "") -> str:
+    """Closing script and tags. jira_base is the Jira browse URL used to restore links on compact builds."""
+    js = SCRIPT.replace("@@JB@@", jira_base.replace("\\", "").replace("'", ""))
+    return js + "</body></html>"

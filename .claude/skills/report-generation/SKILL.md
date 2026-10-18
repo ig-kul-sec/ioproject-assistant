@@ -48,6 +48,8 @@ Per-project section order: 1 Project updates (summary, with ticket links and ris
 
 `project_manager` and `technical_lead` print under the project name (n/a when unknown). Take them from the roadmap deck's Project review slide, else the Confluence page, else the Jira epic's roles; never guess. `change[].name` is the ticket's subject (summary); the renderer falls back to the project's `tickets` list.
 
+Header links: SharePoint Report Archive Link, Confluence ITSM Parent Page and JIRA ScrumBoard (`brand.JIRA_BOARD_URL`); the Sprint status section starts with a JIRA ScrumBoard Link.
+
 Presentation rules built into the renderer: every table sorts by clicking a column header; dates print as mm/dd (ISO values are kept for sorting); IOSP/RM/COR keys in any text become Jira links; project cards and their sections collapse and expand (plus Collapse all / Expand all); both reports show the SharePoint location (`SHAREPOINT_REPORT_FOLDER_URL`, default the AI Test SharePoint Folder) and the same footer (version, author, GitHub, sectigo.com).
 
 Report style: management layout per the Sectigo brand 2026 (`src/ioassistant/brand.py`, assets bundled in `src/ioassistant/brand/`): summary tiles, projects at a glance, then per-project cards with the top 3 notes (rest collapsed), risks, action items and source links; sprint ticket list and data gaps are collapsed. Palette, fonts and logo come only from the bundled brand files.

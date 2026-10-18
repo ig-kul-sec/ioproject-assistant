@@ -7,6 +7,8 @@ description: Review JIRA tickets in the IOSP, RM and COR spaces for discussed pr
 
 Instance: `JIRA_BASE_URL` (https://projects.sectigo.net/). The token is `JIRA_API_TOKEN` in `~/.ioassistant/secrets.env` (outside the repo). Send it as `Authorization: Bearer <token>` (personal access token). Load it in the shell command that makes the call; never print it, log it or write it to any project file.
 
+Scrum board (planning view, linked from the report header and under Sprint status): https://projects.sectigo.net/secure/RapidBoard.jspa?rapidView=485&projectKey=IOSP&view=planning.nodetail&issueLimit=100 (board id 485, project IOSP). Read the active sprint from this board.
+
 Spaces:
 - **IOSP**: epics, tasks, weekly scrum boards. The active sprint feeds the SPRINT STATUS section.
 - **RM**: release management tickets.
