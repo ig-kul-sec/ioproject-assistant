@@ -1,0 +1,87 @@
+{
+  "run_id": "IOProjectAssistantReport_20261018_0350",
+  "source_deck": "I&O Project Roadmap.pptx (IOProjectTeam/Shared Documents/Presentations), Project review slides only; Accomplishments excluded; deck has no date stamp, file used as-is",
+  "roadmap": [
+    {
+      "project": "Rubrik DR backup (epic IOSP-471)",
+      "status": "Overall RAG not stated on slide (label lost in extraction); Schedule Y, Scope G, Cost G; portfolio tile shows On-Track/Yellow marker ambiguous",
+      "start": null,
+      "end": "2026-12 (project completion December 2026)",
+      "owner": null,
+      "project_manager": "Igor Kulyk",
+      "technical_lead": "Calvin Cochran",
+      "notes": "Milestones: next milestone Oct 16 (enable Rubrik RAC backup); production implementation Dec 6 (full production in Europe); completion Dec 2026. Planned: Configure CA Backup VLAN on RAC (RM-1658, Oct 17); enable RAC instance backup (target Oct 18); appliance shipment to Manchester Oct 27-Nov 9; rack and stack Nov 9-16; production preparation Nov 16-Dec 6. Risk: Pure storage issue.",
+      "risks": ["Pure storage issue"]
+    },
+    {
+      "project": "Oracle RAC migration / Manchester standby and legacy decommission",
+      "status": "Off Track (Schedule G, Scope R; cost not shown)",
+      "start": null,
+      "end": "Latest thinking: Sept 30, Oct 2, Nov 13, Dec 15, Nov 27 (original 2025)",
+      "owner": null,
+      "project_manager": "Gabriel E Rovira",
+      "technical_lead": "Prajeet Singh Kahlon",
+      "notes": "Epic IOSP-541. Next milestone: Manchester Servers, originally Aug 10, fact Oct 2. Production implementation: Sept 30, Oct 2, Nov 13, Dec 15. Risk: server build in Manchester overdue, pushes DBA work right. Next steps: build Oracle RAC on Manchester, data migration, FarSync, add to DG, decom/repurpose old DB.",
+      "risks": ["Manchester server build overdue, pushes DBA work to the right"]
+    },
+    {
+      "project": "PostgreSQL EDB migration (COR-10818)",
+      "status": "On-Track (Schedule G, Scope Y, Cost not shown)",
+      "start": null,
+      "end": "Latest thinking: Feb 1, March 1 2027 (original Dec 30)",
+      "owner": null,
+      "project_manager": "Gabriel E Rovira",
+      "technical_lead": "Prajeet Singh Kahlon",
+      "notes": "Deck cites IOSP-955 'Postgres EDB'; COR-10818 not named on slide. Next milestone: Non-Prod Migration Wave 2, originally Sept 15, fact Oct 30. Production implementation Feb 1. Dependency: Manchester and Secaucus servers (Proxmox).",
+      "risks": ["Resource priorities (keeping the lights on vs project work)", "Delays in NON_PROD cut-over to new EDB servers"]
+    },
+    {
+      "project": "Sprint planning and ticket hygiene (IOSP board)",
+      "status": "No project review slide",
+      "start": null,
+      "end": null,
+      "owner": null,
+      "project_manager": null,
+      "technical_lead": null,
+      "notes": "Process topic, not a roadmap project. Not to be confused with IT Service Management (PM Igor Kulyk), which is a different project.",
+      "risks": []
+    },
+    {
+      "project": "HSM",
+      "status": "Off Track (Schedule R, Scope R, Cost R)",
+      "start": null,
+      "end": "Latest thinking Oct 30 (original 2025)",
+      "owner": null,
+      "project_manager": "Gabriel E Rovira",
+      "technical_lead": "Rik Furness / Edino Moniz",
+      "notes": "HSM Upgrade, IOSP-399. Next milestone: Completion of Prod SignerWeb, planned Oct 2, fact Oct 2. Production implementation Oct 30. Issue: SignerWeb scope creep from new architecture complexity. Next: migrate IoT, TSA, CertStatus; decom old HSM, utimaco and luna servers.",
+      "risks": ["Compliance priorities vs this project"]
+    }
+  ],
+  "files": [
+    {"project": "Rubrik DR backup", "name": "RUBRIK (folder)", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/RUBRIK"},
+    {"project": "Rubrik DR backup", "name": "RUBRIK Project Plan.xlsx", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/RUBRIK/RUBRIK Project Plan.xlsx"},
+    {"project": "Rubrik DR backup", "name": "Rubrik_Project_Change_Order_CO-001.docx", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/RUBRIK/Rubrik_Project_Change_Order_CO-001.docx"},
+    {"project": "Rubrik DR backup", "name": "20260729_RubrikSession_Notes.msg", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/RUBRIK/20260729_RubrikSession_Notes.msg"},
+    {"project": "Oracle RAC", "name": "Oracle RAC (folder)", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Oracle RAC"},
+    {"project": "Oracle RAC", "name": "Project Oracle RAC Fina timeline.pptx", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Presentations/Project Oracle RAC Fina timeline.pptx"},
+    {"project": "Oracle RAC", "name": "Project Oracle RAC.pptx", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Presentations/Project Oracle RAC.pptx"},
+    {"project": "PostgreSQL EDB migration", "name": "Postgres DB Project (folder)", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Postgres DB Project"},
+    {"project": "PostgreSQL EDB migration", "name": "Postgres Migration to EDB.xlsx", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Postgres DB Project/Postgres Migration to EDB.xlsx"},
+    {"project": "PostgreSQL EDB migration", "name": "Project Charter PostgreSQL Consolidation.docx", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Postgres DB Project/Project Charter PostgreSQL Consolidation.docx"},
+    {"project": "PostgreSQL EDB migration", "name": "Project Postgres core.pptx", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Presentations/Project Postgres core.pptx"},
+    {"project": "HSM", "name": "HSM (folder)", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/HSM"},
+    {"project": "HSM", "name": "Sectigo HSM Review - 5.12.pptx", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/HSM/Sectigo HSM Review - 5.12.pptx"},
+    {"project": "HSM", "name": "HSM Project SP New.xlsx", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/HSM/HSM Project SP New.xlsx"}
+  ],
+  "uploaded": [],
+  "gaps": [
+    "Folder and file web URLs were constructed from the site path https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/... (connector returned only drive item URIs for these); not individually verified.",
+    ".env has empty SHAREPOINT_* values (only .env.example found), so locations came from the skill description and connector search.",
+    "Rubrik: overall RAG label missing in slide text; only Schedule Y, Scope G, Cost G readable.",
+    "PostgreSQL: slide cites IOSP-955, not COR-10818; cost RAG not shown. Oracle RAC cost RAG not shown.",
+    "Sprint planning and ticket hygiene has no project review slide, so no PM/TL/status.",
+    "Deck carries no as-of date and shows dates like Oct 16 as 'next' milestones; may predate the 2026-10-12..17 window.",
+    "Wider PMO folder is large; only folders for discussed projects were listed (Rubrik, Oracle RAC, Postgres, HSM)."
+  ]
+}

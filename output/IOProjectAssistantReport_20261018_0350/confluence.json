@@ -1,0 +1,72 @@
+{
+ "run_id": "IOProjectAssistantReport_20261018_0350",
+ "pages": [
+  {
+   "project": "Rubrik DR backup (IOSP-471)",
+   "title": "Rubrik",
+   "url": "https://confluence.comodoca.net/display/CO/Rubrik",
+   "last_modified": "2026-10-14T18:05:10+01:00",
+   "last_editor": "Igor Kulyk",
+   "in_window": true,
+   "project_manager": "Volodymyr Fedyna (PMO Manager)",
+   "technical_lead": null,
+   "dates": {
+    "pmo_appearance": "Dec-2025",
+    "deadline": "May-2026"
+   },
+   "summary": "v7. Initiator Calvin Cochran. Goal: on-prem Rubrik in Secaucus and Manchester, onboard Oracle backups, cross-DC sync, monthly restore validation, evaluate decommission of legacy backups. Postgres onboarding objective removed Sept 2026 because Postgres EDB project is on hold. Decommission-evaluation objective updated 10/14/2026. Budget ~900K pending Finance approval per page assumptions. Risks: hardware shipping to Manchester, DB/SRE availability, load on Oracle during parallel backups. Deadline May-2026 on page appears stale."
+  },
+  {
+   "project": "Oracle RAC migration / Manchester standby",
+   "title": "Project Charter Oracle RAC",
+   "url": "https://confluence.comodoca.net/display/CO/Project+Charter+Oracle+RAC",
+   "last_modified": "2026-01-30T01:24:52Z",
+   "last_editor": "Gabriel Rovira",
+   "in_window": false,
+   "project_manager": "Gabriel E. Rovira",
+   "technical_lead": "Jeff Novick / Prajeet Singh Kahlon (Technical Resource Manager)",
+   "dates": {
+    "target_end": "from Jira IOSP-541 (not in page text)"
+   },
+   "summary": "Two-instance Oracle RAC across Manchester and Secaucus, Dev/QA/Prod; sponsor Brion Peck; schedule fixed, scope controlled. Jira IOSP-541. Related page Oracle RAC RDBMS (id 403539762, last edit 2025-05-02, Gabriel Rovira) is technical. No edits in window."
+  },
+  {
+   "project": "PostgreSQL EDB migration (COR-10818)",
+   "title": "Status Dashboard Postgres Migration to EDB",
+   "url": "https://confluence.comodoca.net/display/CO/Status+Dashboard+Postgres+Migration+to+EDB",
+   "last_modified": "2026-09-22T15:30:40+01:00",
+   "last_editor": "Gabriel Rovira",
+   "in_window": false,
+   "project_manager": "Gabriel E. Rovira",
+   "technical_lead": "Prajeet Singh Kahlon (design owner on action items)",
+   "dates": {
+    "start": "April 1",
+    "report_period": "Sept 21-25",
+    "charter_completion": "2026-12-15 (two phases)"
+   },
+   "summary": "v18. Sponsor Brion Peck. Jira IOSP-955 (COR-10818 not referenced on page). Week of Sep 21-25: server in production, cut-over to new EDB servers in NON-PROD, then PROD servers. Pending: PEM in Secaucus (Aug 15). Rubrik page says EDB project on hold since Sept 2026, which conflicts with this dashboard. Charter page: Project Charter PostgreSQL (id 402956758, edited 2026-06-03). No edits in window."
+  },
+  {
+   "project": "HSM",
+   "title": "Project Charter HSM",
+   "url": "https://confluence.comodoca.net/display/CO/Project+Charter+HSM",
+   "last_modified": "2026-01-30T01:26:26Z",
+   "last_editor": "Gabriel Rovira",
+   "in_window": false,
+   "project_manager": "Gabriel E. Rovira",
+   "technical_lead": "Jeff Novick (Technical Resource Manager)",
+   "dates": {
+    "target_end": "from Jira IOSP-399 (not in page text)"
+   },
+   "summary": "Replace unsupported HSMs, unify on Utimaco and/or Thales. Initiator Brion Peck. Jira IOSP-399, IOSP-477, IOSP-888. Also page HSM Project (id 403538710, edited 2025-03-21). No edits in window."
+  }
+ ],
+ "gaps": [
+  "No Confluence page found for Sprint planning and ticket hygiene (IOSP board).",
+  "No dedicated Confluence page for Manchester standby / legacy decommission. Closest: Phase two: decommission in Prolocation (id 402953597, 2026-02-06, Kostiantyn Nikonenko) and Data Center Failover (id 403538392, 2026-02-03).",
+  "Target end dates are Jira macros and did not render; get them from Jira.",
+  "COR-10818 is not referenced in the fetched Confluence pages.",
+  "Only Rubrik was edited in the window (CO space). Other CO edits in window are unrelated (Spacelift, Vault, Sitelock, Network v2.0). Page timestamps are in +01:00 server time.",
+  "Status of Rubrik/EDB conflict: EDB reported on hold in Rubrik page but active in Sept dashboard."
+ ]
+}
