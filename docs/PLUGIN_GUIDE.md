@@ -48,7 +48,7 @@ Nothing secret is in the plugin. Tokens live only on each person's computer in `
 2. Run the tests: `python -m pytest`. All must pass.
 3. Check the plugin: `claude plugin validate plugins/ioproject-assistant --strict`. It must say **Validation passed**.
 4. Try it yourself in a scratch folder: `claude --plugin-dir "<repo>/plugins/ioproject-assistant"`, then `/ioproject-assistant:setup`.
-5. **Raise the version** in `plugins/ioproject-assistant/.claude-plugin/plugin.json` (for example `0.3.1` → `0.3.2`). Colleagues only receive updates when this number changes.
+5. **Raise the version** in `plugins/ioproject-assistant/.claude-plugin/plugin.json` (for example `0.3.2` → `0.3.3`). Colleagues only receive updates when this number changes.
 6. Commit and push to GitHub.
 
 ## A3. Choose how colleagues get it
