@@ -20,6 +20,8 @@ def _t(value) -> str:
 ISO_DATE = re.compile(r"(?<![\w/.-])\d{4}-(\d{2})-(\d{2})(?:T[\d:.]+(?:Z|[+-]\d{2}:?\d{2})?)?(?![\w-])")
 MD_DATE = re.compile(r"(?<![\w/.:-])(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])(?![\w-])")
 TICKET_IN_TEXT = re.compile(r"(?<![\w/-])((?:IOSP|RM|COR)-\d+)(?![\w-])")
+# an already linked key followed by bare numbers: "IOSP-1004/1005", "IOSP-1004, 1005", "IOSP-1004 and 1005"
+LINKED_SHORT = re.compile(r">((?:IOSP|RM|COR)-)(\d+)</a>((?:\s*(?:/|,|\band\b)\s*\d+(?![\w-]))+)")
 
 
 def _md(value) -> str:
@@ -41,7 +43,20 @@ def _rich(value, base: str = "") -> str:
     if value in (None, ""):
         return NA
     text = _dated(value)
-    return TICKET_IN_TEXT.sub(lambda m: _ticket_link(m.group(1), base or JIRA_BROWSE), text)
+    base = base or JIRA_BROWSE
+    text = TICKET_IN_TEXT.sub(lambda m: _ticket_link(m.group(1), base), text)
+    return LINKED_SHORT.sub(lambda m: _short_tickets(m, base), text)
+
+
+def _short_tickets(m, base: str) -> str:
+    """'IOSP-1004/1005' shorthand: link each extra number as a key with the same prefix (and digit count)."""
+    prefix, first, rest = m.groups()
+
+    def one(n):
+        num = n.group(2)
+        return n.group(1) + (_ticket_link(prefix + num, base) if len(num) == len(first) else num)
+
+    return f">{prefix}{first}</a>" + re.sub(r"(\s*(?:/|,|\band\b)\s*)(\d+)(?![\w-])", one, rest)
 
 
 def _date_td(value) -> str:
@@ -103,10 +118,7 @@ def _card(label, value, sub="") -> str:
     )
 
 
-def _sprint(sprint: dict) -> str:
-    board = _link("JIRA ScrumBoard Link", brand.JIRA_BOARD_URL)
-    if not sprint:
-        return f"<p>{board}</p><p>No sprint data.</p>"
+def _sprint_body(sprint: dict) -> str:
     dur = _days(sprint.get("start"), sprint.get("end"))
     tickets = sprint.get("tickets", [])
     done = sum(1 for t in tickets if any(w in str(t.get("status") or "").lower() for w in DONE_WORDS))
@@ -117,13 +129,21 @@ def _sprint(sprint: dict) -> str:
         for t in tickets
     )
     return (
-        f"<p>{board}</p>"
         f"<p><b>{_t(sprint.get('name'))}</b>: {_t(_md(sprint.get('start')))} to {_t(_md(sprint.get('end')))}"
         f" ({dur if dur is not None else NA} days). {done} of {len(tickets)} tickets done ({pct}).</p>"
         f"<details class=\"sub\"><summary>All {len(tickets)} sprint tickets</summary>"
         "<table><tr><th>Ticket</th><th>Ticket name</th><th>Status</th><th>Responsible</th><th>Due</th></tr>"
         f"{rows}</table></details>"
     )
+
+
+def _sprint(sprint: dict, past: dict | None = None) -> str:
+    """Board link, then collapsible subsections: the past sprint (only while not closed yet), then the current one."""
+    board = _link("JIRA ScrumBoard Link", brand.JIRA_BOARD_URL)
+    subs = ([("Past sprint (not closed yet)", past)] if past else []) + ([("Current sprint", sprint)] if sprint else [])
+    if not subs:
+        return f"<p>{board}</p><p>No sprint data.</p>"
+    return f"<p>{board}</p>" + "".join(_sec(i, title, _sprint_body(s)) for i, (title, s) in enumerate(subs, 1))
 
 
 def _links(links: dict) -> str:
@@ -245,7 +265,7 @@ def _sources(p: dict) -> str:
     return f"<p>Sources used: {counts or NA}.</p>" + (_ul(other) if other else "")
 
 
-def _tickets(p: dict, base: str, compact: bool = False) -> str:
+def _tickets(p: dict, base: str, compact: bool = False, sprint_of: dict | None = None) -> str:
     ts = sorted(p.get("tickets") or [], key=lambda t: (_is_done(t), not t.get("epic")))
     omitted = 0
     if compact:  # the upload copy must stay small: closed tickets stay in the full local report
@@ -258,12 +278,13 @@ def _tickets(p: dict, base: str, compact: bool = False) -> str:
     rows = "".join(
         f"<tr class=\"{'done' if _is_done(t) else 'active'}\"><td>{_ticket_link(t, base)}</td>"
         f"<td>{_rich(t.get('name') or t.get('summary'), base)}</td><td>{_t(t.get('status'))}</td>"
+        f"<td>{_t(t.get('sprint') or (sprint_of or {}).get(str(t.get('key'))))}</td>"
         f"<td>{_t(t.get('assignee'))}</td>{_date_td(t.get('start'))}{_date_td(t.get('end') or t.get('due'))}"
         f"<td>{', '.join(_ticket_link(r, base) for r in t.get('related') or []) or NA}</td></tr>"
         for t in ts
     )
     return (
-        "<table class='tix'><tr><th>Ticket #</th><th>Ticket name</th><th>Status</th><th>Responsible</th>"
+        "<table class='tix'><tr><th>Ticket #</th><th>Ticket name</th><th>Status</th><th>Sprint</th><th>Responsible</th>"
         f"<th>Start</th><th>End</th><th>Related tickets</th></tr>{rows}</table>" + note
     )
 
@@ -335,7 +356,7 @@ def _people(p: dict) -> str:
     )
 
 
-def _project(p: dict, base: str = JIRA_BROWSE, compact: bool = False) -> str:
+def _project(p: dict, base: str = JIRA_BROWSE, compact: bool = False, sprint_of: dict | None = None) -> str:
     links = p.get("links") or {}
     return (
         f'<details class="card" id="{_anchor(p.get("name"))}" open>'
@@ -347,7 +368,7 @@ def _project(p: dict, base: str = JIRA_BROWSE, compact: bool = False) -> str:
         f"{_sec(4, 'Project meeting chats', _link_list(links.get('teams')))}"
         f"{_sec(5, 'Project SharePoint folder', _link_list(links.get('sharepoint')))}"
         f"{_sec(6, 'Project Confluence page', _link_list(links.get('confluence')))}"
-        f"{_sec(7, 'Jira tickets for this project', _tickets(p, base, compact))}</details>"
+        f"{_sec(7, 'Jira tickets for this project', _tickets(p, base, compact, sprint_of))}</details>"
     )
 
 
@@ -460,6 +481,9 @@ def _render(data: dict, title: str, compact: bool) -> str:
     )
     sprint = data.get("sprint") or {}
     tickets = sprint.get("tickets", [])
+    past = data.get("past_sprint") or {}
+    sprint_of = {str(t.get("key")): past.get("name") for t in past.get("tickets") or [] if past.get("name")}
+    sprint_of.update({str(t.get("key")): sprint.get("name") for t in tickets if sprint.get("name")})  # current wins
     done = sum(1 for t in tickets if any(w in str(t.get("status") or "").lower() for w in DONE_WORDS))
     kpis = (
         _card("Projects reported", len(projects))
@@ -496,9 +520,9 @@ def _render(data: dict, title: str, compact: bool) -> str:
                "<table><tr><th>Project</th><th>Status</th><th>Progress</th><th>Timeline</th><th>Top risk</th></tr>"
                f"{glance}</table>", fold=True)
         + "<h2>Project status</h2>"
-        f"{''.join(_project(p, base, compact) for p in projects)}"
+        f"{''.join(_project(p, base, compact, sprint_of) for p in projects)}"
         + _top(OPS_TITLE, _non_project(non_project, base), fold=True)
-        + _top("Sprint status", _sprint(sprint))
+        + _top("Sprint status", _sprint(sprint, past))
         + gap_html
         + brand.footer()
         + "</main>" + brand.foot(base)

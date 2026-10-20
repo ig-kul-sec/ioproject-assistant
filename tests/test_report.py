@@ -1,4 +1,6 @@
 import json
+import tempfile
+from pathlib import Path
 
 from ioassistant import report, spend
 
@@ -68,7 +70,7 @@ def test_per_project_view(tmp_path):
     assert "Add backup VLAN IPs" in html and "Move start to 10/18" in html
     assert html.index("What to do</th>") < html.index("Reason/Comment</th>") and "Agreed in the SyncUp" in html
     assert html.index("Description</th>") < html.index("Reason/Comment</th>", html.index("Description</th>")) and "No ticket for the new VLAN" in html
-    assert "Version: " in html and "github.com/ig-kul-sec/ioproject-assistant" in html
+    assert "AI AGENT FACTORY:" in html and "User-Guide</a>" in html and "sk=sheeUB2-jY3qJTuYhUBMTQ" in html and "Version: " in html and "github.com/ig-kul-sec/ioproject-assistant" in html
 
 
 def test_compact_trims_closed_and_caps_active_tickets(tmp_path):
@@ -82,6 +84,42 @@ def test_compact_trims_closed_and_caps_active_tickets(tmp_path):
     assert "Closed 101" in full and "Active 30" in full and "left out of this copy" not in full
     assert "Closed 101" not in small and "Active 30" not in small
     assert f"Active {report.COMPACT_TICKET_CAP}<" in small and "15 tickets are left out of this copy" in small
+
+
+def _render_data(tmp_path, data):
+    run = Path(tempfile.mkdtemp(dir=tmp_path)) / "R_4"
+    run.mkdir()
+    (run / "data.json").write_text(json.dumps(data), encoding="utf-8")
+    return report.build(run / "data.json").read_text(encoding="utf-8")
+
+
+def test_shorthand_ticket_lists_are_linked(tmp_path):
+    data = {"projects": [{"name": "P", "summary": [{"text": "Status email: IOSP-1004/1005 moved; also RM-1658, 1661 and COR-5, 12 hosts"}]}]}
+    html = _render_data(tmp_path, data)
+    assert 'IOSP-1004</a>/<a href="https://projects.sectigo.net/browse/IOSP-1005"' in html
+    assert 'RM-1658</a>, <a href="https://projects.sectigo.net/browse/RM-1661"' in html
+    assert "COR-5</a>, 12 hosts" in html  # different digit count: left as plain text
+
+
+def test_project_tickets_show_sprint(tmp_path):
+    data = {"sprint": {"name": "I&O 26.43", "tickets": [{"key": "IOSP-7", "name": "a", "status": "Open"}]},
+            "projects": [{"name": "P", "tickets": [
+                {"key": "IOSP-7", "name": "In sprint", "status": "Open"},
+                {"key": "IOSP-8", "name": "Elsewhere", "status": "Open", "sprint": "I&O 26.42"},
+                {"key": "IOSP-9", "name": "None", "status": "Open"}]}]}
+    html = _render_data(tmp_path, data)
+    assert "Sprint</th>" in html and "I&amp;O 26.43</td>" in html and "I&amp;O 26.42</td>" in html
+
+
+def test_sprint_status_subsections(tmp_path):
+    cur = {"name": "I&O 26.43", "start": "2026-10-19", "end": "2026-10-23", "tickets": [{"key": "IOSP-1", "status": "Open"}]}
+    past = {"name": "I&O 26.42", "start": "2026-10-12", "end": "2026-10-16", "tickets": [{"key": "IOSP-2", "status": "Open"}]}
+    both = _render_data(tmp_path, {"sprint": cur, "past_sprint": past})
+    assert both.index("Past sprint (not closed yet)</summary>") < both.index("Current sprint</summary>")
+    assert both.count('<details class="sub" open><summary class="sec"><span>1</span> Past sprint') == 1
+    assert "I&amp;O 26.42</b>" in both and "I&amp;O 26.43</b>" in both
+    only = _render_data(tmp_path, {"sprint": cur})
+    assert "Past sprint" not in only and "<span>1</span> Current sprint" in only
 
 
 def test_analysis_period_and_generated_format():
@@ -129,7 +167,7 @@ def test_report_features(tmp_path):
     assert "I&amp;O PROJECT STATUS REPORT" in html
     assert "SharePoint Report Archive Link</a>" in html and "Confluence ITSM Parent Page</a>" in html
     assert "display/CO/ITSM+Freshservice" in html
-    assert "JIRA ScrumBoard</a>" in html and html.count("rapidView=485&amp;projectKey=IOSP") == 2
+    assert "AI AGENT FACTORY</a>" in html and html.index("AI AGENT FACTORY</a>") < html.index("SharePoint Report Archive Link") and "JIRA ScrumBoard</a>" in html and html.count("rapidView=485&amp;projectKey=IOSP") == 2
     assert "Sprint status</h2></summary><p><a " in html and "JIRA ScrumBoard Link</a>" in html
     head = html[html.index("<header"):html.index("</header>")]
     assert head.index("Analysis period") < head.index("SharePoint Report Archive") < head.index("Generated:")
@@ -147,7 +185,7 @@ def test_compact_build_is_smaller_and_restores_links(tmp_path):
 
 def test_spending_report_footer_and_sharepoint(tmp_path):
     out = spend.render([{"agent": "a", "model": "m", "input_tokens": 10, "output_tokens": 0, "seconds": 1.0}], {}, "RUN_1")
-    assert "Version: " in out and "github.com/ig-kul-sec/ioproject-assistant" in out
+    assert "AI AGENT FACTORY:" in out and "User-Guide</a>" in out and "sk=sheeUB2-jY3qJTuYhUBMTQ" in out and "Version: " in out and "github.com/ig-kul-sec/ioproject-assistant" in out
     assert "Sectigo&copy; 2026. All rights reserved." in out
     assert "Stored in SharePoint:" in out and "RUN_1_spending.html" in out and "<script>" in out
 
@@ -174,7 +212,7 @@ def test_confluence_body_and_email_draft(tmp_path):
     minidom.parseString(f"<r>{body}</r>")  # well-formed XML
     assert "Rubrik" not in body  # same content as the email, not the per-project report
     assert "The latest I&amp;O project status report is on SharePoint:" in body
-    assert "Version: " in body and "github.com/ig-kul-sec/ioproject-assistant" in body
+    assert "AI AGENT FACTORY:" in body and "User-Guide</a>" in body and "sk=sheeUB2-jY3qJTuYhUBMTQ" in body and "Version: " in body and "github.com/ig-kul-sec/ioproject-assistant" in body
     assert "Sectigo© 2026. All rights reserved." in body
     assert confluence.title_for(run.name) == "TEST: IO Project Assistant Report 20261017 1759 (Draft)"
     mail = emaildraft.build(run / "data.json").read_text(encoding="utf-8")

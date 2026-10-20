@@ -109,6 +109,7 @@ def banner(title: str, subtitle: str, range_line: str = "", compact: bool = Fals
 
 AUTHOR_EMAIL = "igor.kulyk@sectigo.com"
 REPO_URL = "https://github.com/ig-kul-sec/ioproject-assistant"
+GUIDE_URL = "https://claude.ai/artifact/PvvZeQj7adETgzUuCpRhog?sk=sheeUB2-jY3qJTuYhUBMTQ"
 JIRA_BOARD_URL = (
     "https://projects.sectigo.net/secure/RapidBoard.jspa?rapidView=485&projectKey=IOSP"
     "&view=planning.nodetail&issueLimit=100"
@@ -122,9 +123,10 @@ REPORT_FOLDER_URL = (
 
 def footer() -> str:
     return (
-        "<footer><p><b>IO Project Assistant</b> &nbsp;|&nbsp; "
+        "<footer><p><b>AI AGENT FACTORY:</b> <b>IO Project Assistant</b> &nbsp;|&nbsp; "
         f"Version: {escape(__version__)} &nbsp;|&nbsp; Author: "
         f'<a href="mailto:{AUTHOR_EMAIL}">{AUTHOR_EMAIL}</a> &nbsp;|&nbsp; '
+        f'<a href="{GUIDE_URL}" target="_blank" rel="noopener">User-Guide</a> &nbsp;|&nbsp; '
         f'GitHub: <a href="{REPO_URL}" target="_blank" rel="noopener">{REPO_URL}</a></p>'
         "<p>sectigo.com &nbsp;|&nbsp; Sectigo&copy; 2026. All rights reserved.</p></footer>"
     )
@@ -144,6 +146,7 @@ def sharepoint_file_url(filename: str) -> str:
 def header_links() -> str:
     """Raw HTML links line for the status report header."""
     return (
+        f'<a href="{GUIDE_URL}" target="_blank" rel="noopener">AI AGENT FACTORY</a> &nbsp;|&nbsp; '
         f'<a href="{escape(sharepoint_folder_url(), quote=True)}" target="_blank" rel="noopener">SharePoint Report Archive Link</a>'
         f' &nbsp;|&nbsp; <a href="{CONFLUENCE_PARENT_URL}" target="_blank" rel="noopener">Confluence ITSM Parent Page</a>'
         f' &nbsp;|&nbsp; <a href="{escape(JIRA_BOARD_URL, quote=True)}" target="_blank" rel="noopener">JIRA ScrumBoard</a>'

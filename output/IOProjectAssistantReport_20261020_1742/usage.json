@@ -48,6 +48,30 @@
   "note": "upload mode (spending report uploaded, main report not); total tokens from the Agent usage block (no input/output split)"
  },
  {
+  "agent": "sharepoint-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 182050,
+  "output_tokens": 0,
+  "seconds": 655.1,
+  "note": "upload mode, second attempt with the smaller compact copy; total tokens from the Agent usage block (no input/output split)"
+ },
+ {
+  "agent": "report-email-drafter",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 25754,
+  "output_tokens": 0,
+  "seconds": 68.9,
+  "note": "total tokens from the Agent usage block (no input/output split)"
+ },
+ {
+  "agent": "report-confluence-publisher",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 24147,
+  "output_tokens": 0,
+  "seconds": 78.9,
+  "note": "total tokens from the Agent usage block (no input/output split)"
+ },
+ {
   "agent": "orchestrator",
   "model": "claude-opus-5-5",
   "input_tokens": 138054,

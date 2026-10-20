@@ -9561,7 +9561,6 @@
   "SharePoint: Only the top-level PMO folder was listed; subfolder contents were not opened.",
   "Status ratings come from the roadmap deck. Rubrik has no overall badge (Schedule Yellow), so it is shown At risk. Debian/OS EOL uses the On-Track rating of the EOL/EOS migration (Debian lifecycle is Paused). The sprint rollover is not rated.",
   "The Rubrik SyncUp 2026-10-14 transcript link is a meeting-transcript URI, not a web link, so it renders as text.",
-  "SharePoint upload: only the spending report was uploaded. The main report upload (compact build, 190,521 bytes) was stopped by a safety classifier during the connector call and was not retried. The status report is available locally only.",
-  "Outlook draft (report-email-drafter) and Confluence page (report-confluence-publisher) were skipped because the main report upload failed."
+  "SharePoint upload: the first upload of the main report (190,521 bytes) was stopped by a safety classifier and not retried. A smaller compact copy (103,290 bytes) was uploaded afterwards: it leaves out closed tickets and lists at most the first 20 active tickets per project. The full ticket lists are in the local report."
  ]
 }

@@ -24,8 +24,8 @@ def render(data: dict, run_id: str) -> str:
         f"Spending report: {_a(run_id + '_spending.html', brand.sharepoint_file_url(run_id + '_spending.html'))}<br />"
         f"Folder: {_a('AI Test SharePoint Folder', brand.sharepoint_folder_url())}</p>"
         "<hr />"
-        f"<p><strong>IO Project Assistant</strong> | Version: {escape(__version__)} | Author: "
-        f'<a href="mailto:{brand.AUTHOR_EMAIL}">{brand.AUTHOR_EMAIL}</a> | GitHub: {_a(brand.REPO_URL, brand.REPO_URL)}<br />'
+        f"<p><strong>AI AGENT FACTORY:</strong> <strong>IO Project Assistant</strong> | Version: {escape(__version__)} | Author: "
+        f'<a href="mailto:{brand.AUTHOR_EMAIL}">{brand.AUTHOR_EMAIL}</a> | {_a('User-Guide', brand.GUIDE_URL)} | GitHub: {_a(brand.REPO_URL, brand.REPO_URL)}<br />'
         "sectigo.com | Sectigo© 2026. All rights reserved.</p>"
     )
 

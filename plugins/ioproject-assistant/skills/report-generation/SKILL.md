@@ -12,6 +12,7 @@ description: Merged-data schema and rendering of the clickable HTML status repor
   "generated_at": "ISO",
   "window": {"from": "ISO with offset", "to": "ISO with offset"},
   "sprint": {"name": "", "start": "", "end": "", "tickets": [{"key": "", "url": "", "name": "ticket subject", "status": "", "assignee": "", "due": ""}]},
+  "past_sprint": null,
   "projects": [{
     "name": "", "status": "On track | At risk | Off track", "notes": [], "progress": "", "timeline": "", "dates": {"start": "", "end": ""},
     "action_items": [{"text": "", "owner": "", "due": ""}], "risks": [],
@@ -35,12 +36,16 @@ Per-project fields used by the per-project view (all optional; `jira_base_url` d
       "change": [{"key": "IOSP-1012", "name": "ticket subject", "type": "dates|status|comment", "detail": "what to do", "reason": "why, with the evidence and its source"}],
       "create": [{"name": "", "description": "what the ticket is for", "reason": "why it is needed, with the evidence and its source", "start": "", "end": "", "owner": ""}]
     },
-    "tickets": [{"key": "", "url": "", "name": "", "status": "", "assignee": "", "start": "", "end": "",
+    "tickets": [{"key": "", "url": "", "name": "", "status": "", "sprint": "", "assignee": "", "start": "", "end": "",
                  "epic": false, "related": [{"key": "", "url": ""}]}],
     "links": {"teams": [{"label": "", "url": ""}], "sharepoint": [], "confluence": [], "jira": []}
   }]
 }
 ```
+
+`past_sprint` has the same shape as `sprint`; set it only for a sprint that has ended but is not closed in Jira yet, otherwise leave it null. "Sprint status" then shows two collapsible subsections, Past sprint (not closed yet) first and Current sprint second. A project ticket's `sprint` is its sprint name; when it is missing the report uses the current or past sprint if the key is in that sprint's ticket list, else "n/a".
+
+Write Jira keys in full in every text field ("IOSP-1004 and IOSP-1005", never "IOSP-1004/1005"), so each key becomes a link. The renderer also links shorthand lists when it meets them.
 
 `jira_updates.create` has one entry per ticket. An action item that names several deliverables or separate vendors/teams (for example "Rubrik and Oracle support cases") becomes one entry for each, never one combined line.
 
