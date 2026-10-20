@@ -11,7 +11,7 @@ description: Merged-data schema and rendering of the clickable HTML status repor
 {
   "generated_at": "ISO",
   "window": {"from": "ISO with offset", "to": "ISO with offset"},
-  "sprint": {"name": "", "start": "", "end": "", "tickets": [{"key": "", "url": "", "status": "", "assignee": "", "due": ""}]},
+  "sprint": {"name": "", "start": "", "end": "", "tickets": [{"key": "", "url": "", "name": "ticket subject", "status": "", "assignee": "", "due": ""}]},
   "projects": [{
     "name": "", "status": "On track | At risk | Off track", "notes": [], "progress": "", "timeline": "", "dates": {"start": "", "end": ""},
     "action_items": [{"text": "", "owner": "", "due": ""}], "risks": [],
@@ -32,8 +32,8 @@ Per-project fields used by the per-project view (all optional; `jira_base_url` d
     "project_manager": "Name", "technical_lead": "Name",
     "summary": [{"text": "", "tickets": ["IOSP-1012"]}],
     "jira_updates": {
-      "change": [{"key": "IOSP-1012", "name": "ticket subject", "type": "dates|status|comment", "detail": ""}],
-      "create": [{"name": "", "description": "", "start": "", "end": "", "owner": ""}]
+      "change": [{"key": "IOSP-1012", "name": "ticket subject", "type": "dates|status|comment", "detail": "what to do", "reason": "why, with the evidence and its source"}],
+      "create": [{"name": "", "description": "what the ticket is for", "reason": "why it is needed, with the evidence and its source", "start": "", "end": "", "owner": ""}]
     },
     "tickets": [{"key": "", "url": "", "name": "", "status": "", "assignee": "", "start": "", "end": "",
                  "epic": false, "related": [{"key": "", "url": ""}]}],
@@ -41,6 +41,8 @@ Per-project fields used by the per-project view (all optional; `jira_base_url` d
   }]
 }
 ```
+
+`jira_updates.create` has one entry per ticket. An action item that names several deliverables or separate vendors/teams (for example "Rubrik and Oracle support cases") becomes one entry for each, never one combined line.
 
 Daily Ops operational health and incidents (top-level `non_project`, from the Daily Ops Standup only): items discussed at the standup that belong to no project, such as system health, incidents, problems, issues, changes and maintenance. They render as the "Daily Ops operational health and incidents" section after the project cards and before Sprint status. Rows are newest first, with columns Date, Type, Item, Status / next step, Update by, Owner, Jira tickets and Source, and a "Daily Ops items" count tile in the summary.
 

@@ -6,7 +6,7 @@ DATA = {
     "generated_at": "2026-10-16T09:00:00",
     "sprint": {
         "name": "Sprint 1", "start": "2026-10-12", "end": "2026-10-16",
-        "tickets": [{"key": "IOSP-1", "url": "https://projects.example/IOSP-1", "status": "Open"}],
+        "tickets": [{"key": "IOSP-1", "url": "https://projects.example/IOSP-1", "name": "Patch the sprint server", "status": "Open"}],
     },
     "projects": [{"name": "Proj <A>", "links": {"jira": [{"label": "x", "url": "javascript:alert(1)"}]}}],
 }
@@ -19,6 +19,7 @@ def test_report_renders_and_escapes(tmp_path):
     html = report.build(run / "data.json").read_text(encoding="utf-8")
     assert 'href="https://projects.example/IOSP-1"' in html
     assert "(5 days)" in html
+    assert "Ticket name</th>" in html and "Patch the sprint server" in html
     assert "Proj &lt;A&gt;" in html
     assert 'href="javascript' not in html
     assert "Not rated" in html
@@ -46,8 +47,9 @@ def test_per_project_view(tmp_path):
         "name": "Rubrik",
         "summary": [{"text": "RAC backup slipped", "tickets": ["IOSP-1012"]}],
         "jira_updates": {
-            "change": [{"key": "IOSP-1012", "type": "dates", "detail": "Move start to 10/18"}],
-            "create": [{"name": "Add backup VLAN IPs", "description": "d", "start": "2026-10-17",
+            "change": [{"key": "IOSP-1012", "type": "dates", "detail": "Move start to 10/18",
+                        "reason": "Agreed in the SyncUp"}],
+            "create": [{"name": "Add backup VLAN IPs", "description": "d", "reason": "No ticket for the new VLAN", "start": "2026-10-17",
                         "end": "2026-10-18", "owner": "Earle"}],
         },
         "links": {"teams": [{"label": "Chat", "url": "https://teams.example/c"}]},
@@ -64,7 +66,22 @@ def test_per_project_view(tmp_path):
     assert 'href="https://projects.sectigo.net/browse/RM-5"' in html  # related ticket
     assert html.index("IOSP-471</a>") < html.index("IOSP-1</a>")  # active before done
     assert "Add backup VLAN IPs" in html and "Move start to 10/18" in html
+    assert html.index("What to do</th>") < html.index("Reason/Comment</th>") and "Agreed in the SyncUp" in html
+    assert html.index("Description</th>") < html.index("Reason/Comment</th>", html.index("Description</th>")) and "No ticket for the new VLAN" in html
     assert "Version: " in html and "github.com/ig-kul-sec/ioproject-assistant" in html
+
+
+def test_compact_trims_closed_and_caps_active_tickets(tmp_path):
+    tickets = [{"key": f"IOSP-{i}", "name": f"Active {i}", "status": "In Progress"} for i in range(1, 31)]
+    tickets += [{"key": f"IOSP-{i}", "name": f"Closed {i}", "status": "Done"} for i in range(101, 106)]
+    run = tmp_path / "R_3"
+    run.mkdir()
+    (run / "data.json").write_text(json.dumps({"projects": [{"name": "Big", "tickets": tickets}]}), encoding="utf-8")
+    full = report.build(run / "data.json").read_text(encoding="utf-8")
+    small = report.build(run / "data.json", compact=True).read_text(encoding="utf-8")
+    assert "Closed 101" in full and "Active 30" in full and "left out of this copy" not in full
+    assert "Closed 101" not in small and "Active 30" not in small
+    assert f"Active {report.COMPACT_TICKET_CAP}<" in small and "15 tickets are left out of this copy" in small
 
 
 def test_analysis_period_and_generated_format():

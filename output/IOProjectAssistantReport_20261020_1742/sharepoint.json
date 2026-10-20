@@ -1,0 +1,180 @@
+{
+  "run_id": "IOProjectAssistantReport_20261020_1742",
+  "window": {"from": "2026-10-14T00:00:00-04:00", "to": "2026-10-20T10:42:00-04:00"},
+  "source_deck": "I&O Project Roadmap.pptx (IOProjectTeam / Shared Documents / Presentations). Project review slides only (slides 2-7); Accomplishments blocks excluded; Other updates and Appendix not used.",
+  "projects": [
+    {
+      "name": "Rubrik DR backup (IOSP-471)",
+      "rag": "Schedule Yellow, Scope Green, Cost not shown; overall RAG badge not explicit on the slide (portfolio tile shows no On-Track/Off-Track label)",
+      "progress": "Not stated as a percentage on the slide.",
+      "dates": {"start": null, "end": "December 2026", "next_milestone": "October 16 (enable Rubrik RAC backup)", "production": "December 6 (full production in Europe)"},
+      "timeline": [
+        "Run/validate Rubrik RAC backup and replication (IOSP-880), by 10/20, marked 'To be confirmed?'",
+        "Prepare appliances for shutdown and Manchester deployment incl. network/IP (IOSP-1013), by 10/21, marked 'To be confirmed?'",
+        "Appliance shipment to Manchester: Oct 27 - Nov 9",
+        "Appliance rack and stack in Manchester: Nov 9 - 16",
+        "Appliance production preparation: Nov 16 - Dec 6"
+      ],
+      "project_manager": "Igor Kulyk",
+      "technical_lead": "Calvin Cochran",
+      "notes": "Next milestone date (Oct 16) is already past; the deck was not updated to show whether it was met.",
+      "risks": ["Pure storage issue"],
+      "links": [
+        {"label": "RUBRIK folder (PMO)", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/RUBRIK"}
+      ],
+      "gaps": ["Overall RAG not shown", "Issues section empty", "Milestone Oct 16 outcome not stated"]
+    },
+    {
+      "name": "Oracle RAC (SASP)",
+      "rag": "Off Track (Schedule G, Scope R, Cost not shown)",
+      "progress": "Not stated as a percentage.",
+      "dates": {"start": null, "end": "Latest thinking: Sept 30, Oct 2, Nov 13, Dec 15, Nov 27 (original plan: 2025)", "next_milestone": "Manchester Servers: originally Aug 10, fact Oct 2", "production": "Sept 30, Oct 2, Nov 13, Dec 15 (slipping series)"},
+      "timeline": [
+        "Create Oracle RAC on Manchester (VM, OS, RDBMS install)",
+        "Data migration into the Oracle RAC environment",
+        "Configure FarSync",
+        "Add new Manchester RAC to Data Guard",
+        "Decom / repurpose the old DB"
+      ],
+      "project_manager": "Gabriel E Rovira",
+      "technical_lead": "Prajeet Singh Kahlon",
+      "notes": "Deck epic reference: IOSP-541.",
+      "risks": ["Server build in Manchester is overdue and pushes DBA work to the right"],
+      "links": [
+        {"label": "Oracle RAC folder (PMO)", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Oracle RAC"}
+      ],
+      "gaps": ["Issues and Dependencies empty on the slide", "Deck does not mention SASP"]
+    },
+    {
+      "name": "Postgres EDB DB migration (COR-10818)",
+      "rag": "On-Track (Schedule G, Scope Y, Cost not shown)",
+      "progress": "Data replication on NON-PROD servers 90% (subscription, live_compare, PEM, BARMAN).",
+      "dates": {"start": null, "end": "Latest thinking: Feb 1, March 1 2027 (original: Dec 30)", "next_milestone": "Non-Prod Migration Wave 2: originally Sept 15, fact Oct 30", "production": "Feb 1 (2027)"},
+      "timeline": [
+        "Cut over applications to new EDB env (NON-PROD)",
+        "Decom server with migrated EDB",
+        "Replication on NON-PROD servers (90%)",
+        "PEM servers for observability/alerting (recurring)",
+        "BARMAN servers for NON-PROD backup (recurring)"
+      ],
+      "project_manager": "Gabriel E Rovira",
+      "technical_lead": "Prajeet Singh Kahlon",
+      "notes": "Deck epic reference is IOSP-955, not COR-10818. Status On-Track conflicts with milestone slippage (Sept 15 to Oct 30, completion pushed to Feb/March 2027).",
+      "risks": ["Resource priorities (keeping the lights on vs project work)", "Delays in NON_PROD cut-over"],
+      "dependencies": ["Manchester and Secaucus servers (Proxmox)"],
+      "links": [
+        {"label": "Postgres DB Project folder (PMO)", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Postgres DB Project"}
+      ],
+      "gaps": ["COR-10818 not referenced in deck"]
+    },
+    {
+      "name": "HSM project (DBA-3622)",
+      "rag": "Off Track (Schedule R, Scope R, Cost not shown)",
+      "progress": "Not stated as a percentage on the review slide.",
+      "dates": {"start": null, "end": "Latest thinking: Oct 30 (original: 2025)", "next_milestone": "Completion of Prod SignerWeb: planned Oct 2, fact Oct 2", "production": "Production Implementation: Oct 30"},
+      "timeline": [
+        "Monitoring of SignerWeb + HSM env",
+        "Migrating IoT, TSA, CertStatus",
+        "Decom / repurpose old HSM devices",
+        "Decom Utimaco and Luna servers",
+        "Documentation"
+      ],
+      "project_manager": "Gabriel E Rovira",
+      "technical_lead": "Rik Furness / Edino Moniz",
+      "notes": "Deck epic reference is IOSP-399 (HSM Hardware Upgrade), not DBA-3622.",
+      "issues": ["SignerWeb scope creep driven by complexity of the new architecture"],
+      "risks": ["Compliance priorities vs this project"],
+      "links": [
+        {"label": "HSM folder (PMO)", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/HSM"}
+      ],
+      "gaps": ["DBA-3622 not referenced in deck"]
+    },
+    {
+      "name": "Network 2.0",
+      "rag": "On-Track (Schedule G, Scope G, Cost not shown)",
+      "progress": "Not stated as a percentage.",
+      "dates": {"start": null, "end": null, "next_milestone": null, "production": null},
+      "timeline": [
+        "Create and present the migration plan",
+        "Continue FW rules migration Juniper to Palo",
+        "Create new CA FW rules from current Linux rules",
+        "Continue Arista configs for Cloud Vision",
+        "Waiting on x-cons of new circuits to cage"
+      ],
+      "project_manager": "Kos (Kostiantyn Nikonenko; shown as 'Kos' on the project slide, 'Karl W' on the portfolio tile)",
+      "technical_lead": "Jaime Larsen / Network",
+      "notes": "Slide has no milestone dates. PM name differs between portfolio tile and project slide.",
+      "issues": ["Information gathering from outside network group (port validation, internal application flows)"],
+      "risks": ["Creation of migration plan"],
+      "dependencies": ["Migration plan depends on internal groups supplying information in a timely manner"],
+      "links": [
+        {"label": "Network 2.0 folder (PMO)", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Network 2.0"}
+      ],
+      "gaps": ["No dates or milestones on slide", "PM name inconsistent in deck"]
+    },
+    {
+      "name": "Debian / OS end-of-life upgrades",
+      "rag": "Migration EOL/EOS OSs: On-Track (Schedule G, Scope G, Cost not shown). Debian OS lifecycle management: Paused (G/G).",
+      "progress": "Not stated as a percentage on the review slide.",
+      "dates": {"start": null, "end": "Migration EOL/EOS: TBD. Debian lifecycle: readiness for upgrade planned EOY 2026, on track.", "next_milestone": "Migration EOL/EOS: TBD. Debian lifecycle: negotiate inventory and maintenance windows with app owners, Sept - Oct.", "production": null},
+      "timeline": [
+        "Migrate in priority set by InfoSec",
+        "Work on P1 migration",
+        "Continue monitoring Gentoo and FreeBSD deferred list",
+        "Debian lifecycle (paused): restart communication and upgrade planning, orchestration setup and validation, rolling upgrades"
+      ],
+      "project_manager": "Kostiantyn Nikonenko",
+      "technical_lead": "Jeff Novick",
+      "notes": "Epics: IOSP-485 (old IOSP-498), COR-10633 (regular OS updates), IOSP-806 (Debian lifecycle). Debian lifecycle project needs a refresh/restart to reset priority and timeline.",
+      "risks": ["41 Gentoo machines deferred, risk accepted by Security", "Legacy system"],
+      "dependencies": ["Deferred machines depend on Crt.sh, Time Stamp Authority, Time Stamp Signing, Utimaco, SASP Drones", "FreeBSD migration on Maarten team", "Compliance requirements"],
+      "links": [
+        {"label": "Upgrading Gentoo to Debian folder (PMO)", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Upgrading Gentoo to Debian"}
+      ],
+      "gaps": ["No firm end dates"]
+    },
+    {
+      "name": "I&O Scrum sprint 42 to 43 rollover",
+      "rag": null,
+      "progress": null,
+      "dates": {"start": null, "end": null, "next_milestone": null, "production": null},
+      "timeline": [],
+      "project_manager": null,
+      "technical_lead": null,
+      "notes": "Not a roadmap project; not in the deck. Covered by Jira.",
+      "risks": [],
+      "links": [],
+      "gaps": ["Not present in the Project review slides or PMO folder"]
+    }
+  ],
+  "roadmap": [
+    {"project": "Rubrik DR backup (IOSP-471)", "status": "Schedule Y, Scope G; overall not shown", "start": null, "end": "2026-12", "owner": null, "project_manager": "Igor Kulyk", "technical_lead": "Calvin Cochran", "notes": "Prod Dec 6"},
+    {"project": "Oracle RAC (SASP)", "status": "Off Track", "start": null, "end": "2026-12-15", "owner": null, "project_manager": "Gabriel E Rovira", "technical_lead": "Prajeet Singh Kahlon", "notes": "Manchester servers Oct 2; completion dates slipping"},
+    {"project": "Postgres EDB DB migration (COR-10818)", "status": "On-Track (Scope Y)", "start": null, "end": "2027-02-01", "owner": null, "project_manager": "Gabriel E Rovira", "technical_lead": "Prajeet Singh Kahlon", "notes": "Wave 2 moved to Oct 30; March 2027 also cited"},
+    {"project": "HSM project (DBA-3622)", "status": "Off Track", "start": null, "end": "2026-10-30", "owner": null, "project_manager": "Gabriel E Rovira", "technical_lead": "Rik Furness / Edino Moniz", "notes": "Deck epic IOSP-399"},
+    {"project": "Network 2.0", "status": "On-Track", "start": null, "end": null, "owner": null, "project_manager": "Kos", "technical_lead": "Jaime Larsen / Network", "notes": "No dates"},
+    {"project": "Debian / OS end-of-life upgrades", "status": "EOL/EOS On-Track; Debian lifecycle Paused", "start": null, "end": null, "owner": null, "project_manager": "Kostiantyn Nikonenko", "technical_lead": "Jeff Novick", "notes": "Debian readiness EOY 2026"},
+    {"project": "I&O Scrum sprint 42 to 43 rollover", "status": null, "start": null, "end": null, "owner": null, "project_manager": null, "technical_lead": null, "notes": "Not in deck"}
+  ],
+  "files": [
+    {"project": "Roadmap deck", "name": "I&O Project Roadmap.pptx", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Presentations/I&O Project Roadmap.pptx"},
+    {"project": "Rubrik DR backup (IOSP-471)", "name": "RUBRIK", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/RUBRIK"},
+    {"project": "Oracle RAC (SASP)", "name": "Oracle RAC", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Oracle RAC"},
+    {"project": "Postgres EDB DB migration (COR-10818)", "name": "Postgres DB Project", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Postgres DB Project"},
+    {"project": "HSM project (DBA-3622)", "name": "HSM", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/HSM"},
+    {"project": "Network 2.0", "name": "Network 2.0", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Network 2.0"},
+    {"project": "Debian / OS end-of-life upgrades", "name": "Upgrading Gentoo to Debian", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Upgrading Gentoo to Debian"}
+  ],
+  "uploaded": [],
+  "gaps": [
+    "SHAREPOINT_PMO_FOLDER_URL, SHAREPOINT_ROADMAP_URL and SHAREPOINT_REPORT_FOLDER_URL are empty in defaults.env; locations were found by search and by reading the IOProjectTeam drive root. The 'PMO folder' was taken to be the IOProjectTeam Shared Documents root.",
+    "Folder URLs were built from the folder names in the drive root listing (Shared Documents/<name>); they were not returned as webUrl by the connector, so verify they open.",
+    "Roadmap deck webUrl was built from the configured path; the connector read it by drive path, no webUrl was returned.",
+    "Cost RAG is blank on every Project review slide.",
+    "Jira keys differ from the request: HSM is IOSP-399 in the deck (not DBA-3622), Postgres is IOSP-955 (not COR-10818).",
+    "Network 2.0 PM appears as 'Kos' on the project slide and 'Karl W' on the portfolio tile.",
+    "The deck's Rubrik next milestone (Oct 16) and two 'To be confirmed?' items (by 10/20 and 10/21) were not updated after their dates.",
+    "Sprint 42 to 43 rollover is not covered by the deck or PMO folder.",
+    "Only the top-level PMO folder was listed; subfolder contents were not opened."
+  ]
+}

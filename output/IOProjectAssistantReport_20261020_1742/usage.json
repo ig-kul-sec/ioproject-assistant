@@ -1,0 +1,58 @@
+[
+ {
+  "agent": "teams-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 372349,
+  "output_tokens": 0,
+  "seconds": 302.5,
+  "note": "total tokens from the Agent usage block (no input/output split)"
+ },
+ {
+  "agent": "jira-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 43369,
+  "output_tokens": 0,
+  "seconds": 498.5,
+  "note": "total tokens from the Agent usage block (no input/output split)"
+ },
+ {
+  "agent": "confluence-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 38549,
+  "output_tokens": 0,
+  "seconds": 224.2,
+  "note": "total tokens from the Agent usage block (no input/output split)"
+ },
+ {
+  "agent": "sharepoint-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 73380,
+  "output_tokens": 0,
+  "seconds": 139.8,
+  "note": "read mode; total tokens from the Agent usage block (no input/output split)"
+ },
+ {
+  "agent": "report-builder",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 28312,
+  "output_tokens": 0,
+  "seconds": 40.6,
+  "note": "total tokens from the Agent usage block (no input/output split)"
+ },
+ {
+  "agent": "sharepoint-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 178867,
+  "output_tokens": 0,
+  "seconds": 383.5,
+  "note": "upload mode (spending report uploaded, main report not); total tokens from the Agent usage block (no input/output split)"
+ },
+ {
+  "agent": "orchestrator",
+  "model": "claude-opus-5-5",
+  "input_tokens": 138054,
+  "output_tokens": 0,
+  "seconds": 2390.8,
+  "note": "total tokens from the Agent usage block (no input/output split)"
+ }
+]

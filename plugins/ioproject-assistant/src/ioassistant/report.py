@@ -82,6 +82,7 @@ RAG = {
     "off track": ("Off track", "off"), "off-track": ("Off track", "off"), "red": ("Off track", "off"),
 }
 DONE_WORDS = ("done", "closed", "resolved", "complete")
+COMPACT_TICKET_CAP = 20  # active tickets per project in the upload copy (keeps it under about 100 KB)
 TOP_NOTES = 3
 
 
@@ -111,7 +112,7 @@ def _sprint(sprint: dict) -> str:
     done = sum(1 for t in tickets if any(w in str(t.get("status") or "").lower() for w in DONE_WORDS))
     pct = f"{round(100 * done / len(tickets))}%" if tickets else NA
     rows = "".join(
-        f"<tr><td>{_link(t.get('key'), t.get('url'))}</td><td>{_t(t.get('summary'))}</td>"
+        f"<tr><td>{_link(t.get('key'), t.get('url'))}</td><td>{_t(t.get('name') or t.get('summary'))}</td>"
         f"<td>{_t(t.get('status'))}</td><td>{_t(t.get('assignee'))}</td>{_date_td(t.get('due'))}</tr>"
         for t in tickets
     )
@@ -120,7 +121,7 @@ def _sprint(sprint: dict) -> str:
         f"<p><b>{_t(sprint.get('name'))}</b>: {_t(_md(sprint.get('start')))} to {_t(_md(sprint.get('end')))}"
         f" ({dur if dur is not None else NA} days). {done} of {len(tickets)} tickets done ({pct}).</p>"
         f"<details class=\"sub\"><summary>All {len(tickets)} sprint tickets</summary>"
-        "<table><tr><th>Ticket</th><th>Summary</th><th>Status</th><th>Responsible</th><th>Due</th></tr>"
+        "<table><tr><th>Ticket</th><th>Ticket name</th><th>Status</th><th>Responsible</th><th>Due</th></tr>"
         f"{rows}</table></details>"
     )
 
@@ -213,22 +214,22 @@ def _jira_updates(p: dict, base: str) -> str:
         rows = "".join(
             f"<tr><td>{_ticket_link(c, base)}</td>"
             f"<td>{_rich(c.get('name') or c.get('summary') or names.get(str(c.get('key'))), base)}</td>"
-            f"<td>{_t(c.get('type'))}</td><td>{_rich(c.get('detail'), base)}</td></tr>"
+            f"<td>{_t(c.get('type'))}</td><td>{_rich(c.get('detail'), base)}</td><td>{_rich(c.get('reason'), base)}</td></tr>"
             for c in change
         )
         html += (
             "<p class='lbl'>Existing tickets to change</p>"
-            "<table><tr><th>Ticket</th><th>Ticket name</th><th>Change</th><th>What to do</th></tr>" + rows + "</table>"
+            "<table><tr><th>Ticket</th><th>Ticket name</th><th>Change</th><th>What to do</th><th>Reason/Comment</th></tr>" + rows + "</table>"
         )
     if create:
         rows = "".join(
-            f"<tr><td>{_rich(c.get('name'), base)}</td><td>{_rich(c.get('description'), base)}</td>"
+            f"<tr><td>{_rich(c.get('name'), base)}</td><td>{_rich(c.get('description'), base)}</td><td>{_rich(c.get('reason'), base)}</td>"
             f"{_date_td(c.get('start'))}{_date_td(c.get('end'))}<td>{_t(c.get('owner'))}</td></tr>"
             for c in create
         )
         html += (
             "<p class='lbl'>New tickets to create</p>"
-            "<table><tr><th>Name</th><th>Description</th><th>Start</th><th>End</th><th>Responsible</th></tr>"
+            "<table><tr><th>Name</th><th>Description</th><th>Reason/Comment</th><th>Start</th><th>End</th><th>Responsible</th></tr>"
             + rows + "</table>"
         )
     return html
@@ -244,10 +245,16 @@ def _sources(p: dict) -> str:
     return f"<p>Sources used: {counts or NA}.</p>" + (_ul(other) if other else "")
 
 
-def _tickets(p: dict, base: str) -> str:
+def _tickets(p: dict, base: str, compact: bool = False) -> str:
     ts = sorted(p.get("tickets") or [], key=lambda t: (_is_done(t), not t.get("epic")))
+    omitted = 0
+    if compact:  # the upload copy must stay small: closed tickets stay in the full local report
+        kept = [t for t in ts if not _is_done(t)][:COMPACT_TICKET_CAP]
+        omitted, ts = len(ts) - len(kept), kept
+    note = (f"<p class='lbl'>{omitted} tickets are left out of this copy (closed or done, or beyond the first "
+            f"{COMPACT_TICKET_CAP} active ones); the full list is in the local report.</p>") if omitted else ""
     if not ts:
-        return f"<p>{NA}</p>"
+        return note or f"<p>{NA}</p>"
     rows = "".join(
         f"<tr class=\"{'done' if _is_done(t) else 'active'}\"><td>{_ticket_link(t, base)}</td>"
         f"<td>{_rich(t.get('name') or t.get('summary'), base)}</td><td>{_t(t.get('status'))}</td>"
@@ -257,7 +264,7 @@ def _tickets(p: dict, base: str) -> str:
     )
     return (
         "<table class='tix'><tr><th>Ticket #</th><th>Ticket name</th><th>Status</th><th>Responsible</th>"
-        f"<th>Start</th><th>End</th><th>Related tickets</th></tr>{rows}</table>"
+        f"<th>Start</th><th>End</th><th>Related tickets</th></tr>{rows}</table>" + note
     )
 
 
@@ -328,7 +335,7 @@ def _people(p: dict) -> str:
     )
 
 
-def _project(p: dict, base: str = JIRA_BROWSE) -> str:
+def _project(p: dict, base: str = JIRA_BROWSE, compact: bool = False) -> str:
     links = p.get("links") or {}
     return (
         f'<details class="card" id="{_anchor(p.get("name"))}" open>'
@@ -340,7 +347,7 @@ def _project(p: dict, base: str = JIRA_BROWSE) -> str:
         f"{_sec(4, 'Project meeting chats', _link_list(links.get('teams')))}"
         f"{_sec(5, 'Project SharePoint folder', _link_list(links.get('sharepoint')))}"
         f"{_sec(6, 'Project Confluence page', _link_list(links.get('confluence')))}"
-        f"{_sec(7, 'Jira tickets for this project', _tickets(p, base))}</details>"
+        f"{_sec(7, 'Jira tickets for this project', _tickets(p, base, compact))}</details>"
     )
 
 
@@ -489,7 +496,7 @@ def _render(data: dict, title: str, compact: bool) -> str:
                "<table><tr><th>Project</th><th>Status</th><th>Progress</th><th>Timeline</th><th>Top risk</th></tr>"
                f"{glance}</table>", fold=True)
         + "<h2>Project status</h2>"
-        f"{''.join(_project(p, base) for p in projects)}"
+        f"{''.join(_project(p, base, compact) for p in projects)}"
         + _top(OPS_TITLE, _non_project(non_project, base), fold=True)
         + _top("Sprint status", _sprint(sprint))
         + gap_html
