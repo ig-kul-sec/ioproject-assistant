@@ -163,8 +163,29 @@ def _sec(n: int, text: str, body: str) -> str:
     return f'<details class="sub" open><summary class="sec"><span>{n}</span> {escape(text)}</summary>{body}</details>'
 
 
+def _unique_links(items) -> list[dict]:
+    """Drop repeated URLs, then number labels that still repeat ("recap 10/14 (1)", "(2)") so each link reads distinct."""
+    seen, out = set(), []
+    for it in items or []:
+        key = it.get("url") or it.get("label")
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(dict(it))
+    totals: dict = {}
+    for it in out:
+        totals[it.get("label")] = totals.get(it.get("label"), 0) + 1
+    counter: dict = {}
+    for it in out:
+        label = it.get("label")
+        if label and totals[label] > 1:
+            counter[label] = counter.get(label, 0) + 1
+            it["label"] = f"{label} ({counter[label]})"
+    return out
+
+
 def _link_list(items) -> str:
-    rows = "".join(f"<li>{_link(it.get('label'), it.get('url'))}</li>" for it in items or [])
+    rows = "".join(f"<li>{_link(it.get('label'), it.get('url'))}</li>" for it in _unique_links(items))
     return f"<ul>{rows}</ul>" if rows else f"<p>{NA}</p>"
 
 
@@ -214,11 +235,11 @@ def _jira_updates(p: dict, base: str) -> str:
 
 
 def _sources(p: dict) -> str:
-    links = p.get("links") or {}
+    links = {k: _unique_links(v) for k, v in (p.get("links") or {}).items()}
     counts = ", ".join(f"{_dated(k)} ({len(v)})" for k, v in links.items() if v)
     other = [
         f"<li>{_dated(k)}: {_link(it.get('label'), it.get('url'))}</li>"
-        for k, v in links.items() if k not in SOURCE_TYPES for it in v or []
+        for k, v in links.items() if k not in SOURCE_TYPES for it in v
     ]
     return f"<p>Sources used: {counts or NA}.</p>" + (_ul(other) if other else "")
 
@@ -249,6 +270,49 @@ ICON_TREE = "<path d='M3 6h18'/><path d='M7 12h14'/><path d='M11 18h10'/>"
 def _tool(ident: str, label: str, icon: str) -> str:
     return (f"<button class='tool' id='{ident}'><svg viewBox='0 0 24 24' aria-hidden='true'>{icon}</svg>"
             f"{escape(label)}</button>")
+
+
+NON_PROJECT_TYPES = ("Incident", "Problem", "Issue", "Change", "Maintenance", "Other")
+
+
+OPS_TITLE = "Daily Ops operational health and incidents"
+
+
+def _ops_tickets(tickets, base: str) -> str:
+    """Related Jira tickets: keys or {key, url, status}; the status follows the link when known."""
+    out = []
+    for t in tickets or []:
+        link = _ticket_link(t, base)
+        status = t.get("status") if isinstance(t, dict) else None
+        out.append(f"{link} ({escape(str(status))})" if status else link)
+    return "<br>".join(out) or NA
+
+
+def _non_project(items, base: str) -> str:
+    """Daily Ops items not tied to a project (incidents, problems, issues...), newest first."""
+    if not items:
+        return "<p>No Daily Ops operational updates in this period.</p>"
+    counts = ", ".join(
+        f"{t}: {n}" for t in NON_PROJECT_TYPES
+        if (n := sum(1 for it in items if (it.get("type") or "Other") == t))
+    )
+    rows = []
+    for it in sorted(items, key=lambda i: str(i.get("date") or ""), reverse=True):
+        item = f"<b>{_rich(it.get('title'), base)}</b>"
+        if it.get("detail"):
+            item += f"<br>{_rich(it.get('detail'), base)}"
+        src = it.get("source") or {}
+        rows.append(
+            f"<tr>{_date_td(it.get('date'))}<td>{_t(it.get('type') or 'Other')}</td><td>{item}</td>"
+            f"<td>{_rich(it.get('status'), base)}</td><td>{_t(it.get('reported_by'))}</td><td>{_t(it.get('owner'))}</td>"
+            f"<td>{_ops_tickets(it.get('tickets'), base)}</td><td>{_link(src.get('label'), src.get('url'))}</td></tr>"
+        )
+    return (
+        f"<p>{len(items)} items from the Daily Ops Standup ({counts}).</p>"
+        "<table><tr><th>Date</th><th>Type</th><th>Item</th><th>Status / next step</th><th>Update by</th>"
+        "<th>Owner</th><th>Jira tickets</th><th>Source</th></tr>"
+        + "".join(rows) + "</table>"
+    )
 
 
 def _top(title: str, body: str, fold: bool = False) -> str:
@@ -381,6 +445,7 @@ def _render(data: dict, title: str, compact: bool) -> str:
     base = str(data.get("jira_base_url") or JIRA_BROWSE)
     projects = data.get("projects", [])
     gaps = data.get("gaps", [])
+    non_project = data.get("non_project") or []
     attention = sum(1 for p in projects if _rag(p)[1] in ("risk", "off"))
     jira_todo = sum(
         len((p.get("jira_updates") or {}).get("change") or []) + len((p.get("jira_updates") or {}).get("create") or [])
@@ -394,6 +459,7 @@ def _render(data: dict, title: str, compact: bool) -> str:
         + _card("Need attention", attention, "at risk or off track")
         + _card("Jira updates needed", jira_todo, "change or create")
         + _card("Sprint tickets done", f"{done}/{len(tickets)}", escape(str(sprint.get("name") or "")))
+        + _card("Daily Ops items", len(non_project), "health, incidents, problems, issues")
         + _card("Data gaps", len(gaps), "see end of report")
     )
     glance = "".join(
@@ -424,6 +490,7 @@ def _render(data: dict, title: str, compact: bool) -> str:
                f"{glance}</table>", fold=True)
         + "<h2>Project status</h2>"
         f"{''.join(_project(p, base) for p in projects)}"
+        + _top(OPS_TITLE, _non_project(non_project, base), fold=True)
         + _top("Sprint status", _sprint(sprint))
         + gap_html
         + brand.footer()

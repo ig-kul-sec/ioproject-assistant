@@ -42,6 +42,20 @@ Per-project fields used by the per-project view (all optional; `jira_base_url` d
 }
 ```
 
+Daily Ops operational health and incidents (top-level `non_project`, from the Daily Ops Standup only): items discussed at the standup that belong to no project, such as system health, incidents, problems, issues, changes and maintenance. They render as the "Daily Ops operational health and incidents" section after the project cards and before Sprint status. Rows are newest first, with columns Date, Type, Item, Status / next step, Update by, Owner, Jira tickets and Source, and a "Daily Ops items" count tile in the summary.
+
+```json
+{"non_project": [{"date": "YYYY-MM-DD (latest standup it was discussed)", "type": "Incident | Problem | Issue | Change | Maintenance | Other",
+  "title": "", "detail": "", "status": "current state or next step",
+  "reported_by": "person who gave the latest update at the standup (null if unknown)", "owner": null,
+  "tickets": [{"key": "IOSP-123", "url": "https://projects.sectigo.net/browse/IOSP-123", "status": "In Progress"}],
+  "source": {"label": "Standup 2026-10-14 · closing recap (13:24 UTC)", "url": ""}}]}
+```
+
+`reported_by` is the speaker or chat author who gave the update. It is never the meeting assistant (Facilitator) and never the person who summarized; when only a bot recap mentions the item and no one is named, use null. `tickets` lists related Jira tickets only: tickets named at the standup, plus tickets the Jira collector found clearly about the same item, each with its current status. Plain key strings are also accepted.
+
+Type meanings: **Incident** = an unplanned outage or degradation being handled now; **Problem** = a recurring or root-cause item (RCA, repeat issues); **Issue** = a blocker or risk outside any project; **Change** = a planned change or deployment (RM/COR change tickets); **Maintenance** = routine or scheduled operational work (backups, patching, maintenance windows); **Other** = anything else. Never put a project's item here, and never invent an owner or status (null renders as n/a).
+
 Per-project section order: 1 Project updates (summary, with ticket links and risks), 2 Jira task updates needed, 3 Project sources, 4 Project meeting chats, 5 Project SharePoint folder, 6 Project Confluence page, 7 Jira tickets (active first, closed or done last). `links.teams`, `links.sharepoint` and `links.confluence` feed sections 4-6; link only the project's own chat, folder and page. Other link types appear under Project sources. The footer shows version (`ioassistant.__version__`), author and the GitHub repository.
 
 `status` drives the management summary (status pills, "Need attention" count). Set it from source evidence only: the roadmap deck's RAG rating first, else Jira (overdue or slipped dates mean At risk or Off track). Leave it empty when no source rates the project; the report then shows "Not rated". Never guess.

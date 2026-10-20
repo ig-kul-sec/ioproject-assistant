@@ -1,0 +1,74 @@
+[
+ {
+  "agent": "teams-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 286151,
+  "output_tokens": 0,
+  "seconds": 297.7,
+  "note": "total tokens only; Agent usage block reports no input/output split (total recorded as input_tokens)"
+ },
+ {
+  "agent": "sharepoint-collector (read)",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 87931,
+  "output_tokens": 0,
+  "seconds": 156.1,
+  "note": "total tokens only; Agent usage block reports no input/output split (total recorded as input_tokens)"
+ },
+ {
+  "agent": "confluence-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 42682,
+  "output_tokens": 0,
+  "seconds": 399.7,
+  "note": "total tokens only; Agent usage block reports no input/output split (total recorded as input_tokens)"
+ },
+ {
+  "agent": "jira-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 65112,
+  "output_tokens": 0,
+  "seconds": 738.1,
+  "note": "total tokens only; Agent usage block reports no input/output split (total recorded as input_tokens)"
+ },
+ {
+  "agent": "report-builder",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 27796,
+  "output_tokens": 0,
+  "seconds": 539.6,
+  "note": "total tokens only"
+ },
+ {
+  "agent": "sharepoint-collector (upload)",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 128566,
+  "output_tokens": 0,
+  "seconds": 313.1,
+  "note": "total tokens only; the uploaded spending report copy was built before this row existed"
+ },
+ {
+  "agent": "report-email-drafter",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 26329,
+  "output_tokens": 0,
+  "seconds": 120.6,
+  "note": "total tokens only; added after upload"
+ },
+ {
+  "agent": "report-confluence-publisher",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 26736,
+  "output_tokens": 0,
+  "seconds": 155.6,
+  "note": "total tokens only; added after upload"
+ },
+ {
+  "agent": "orchestrator",
+  "model": "claude-opus-5-5",
+  "input_tokens": 106977,
+  "output_tokens": 0,
+  "seconds": 2722.5,
+  "note": "total tokens and duration from the orchestrator's own Agent usage block (filled in by the launching session after the run)"
+ }
+]

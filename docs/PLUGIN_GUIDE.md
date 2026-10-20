@@ -48,7 +48,7 @@ Nothing secret is in the plugin. Tokens live only on each person's computer in `
 2. Run the tests: `python -m pytest`. All must pass.
 3. Check the plugin: `claude plugin validate plugins/ioproject-assistant --strict`. It must say **Validation passed**.
 4. Try it yourself in a scratch folder: `claude --plugin-dir "<repo>/plugins/ioproject-assistant"`, then `/ioproject-assistant:setup`.
-5. **Raise the version** in `plugins/ioproject-assistant/.claude-plugin/plugin.json` (for example `0.3.0` → `0.3.1`). Colleagues only receive updates when this number changes.
+5. **Raise the version** in `plugins/ioproject-assistant/.claude-plugin/plugin.json` (for example `0.3.1` → `0.3.2`). Colleagues only receive updates when this number changes.
 6. Commit and push to GitHub.
 
 ## A3. Choose how colleagues get it
@@ -125,7 +125,7 @@ Also check they have the access the report needs (see B0).
 ## A5. Things that are specific to you (the owner)
 
 - **Rubrik SyncUp transcript:** only the meeting organizer (you) can read it. For colleagues it is skipped automatically and shown as a data gap; the chat and status emails are still used.
-- **Daily Ops StandUp transcript:** only its organizer can read it, so it is a data gap for everyone else too.
+- **Daily Ops StandUp transcript:** read from the "Daily Ops Standup_<yyyymmdd>" emails that link the downloaded transcript (`Daily Ops Standup_<yyyymmdd>.docx` in OneDrive › Attachments). Keep sending one per standup; a day without it falls back to the chat and shows as a data gap.
 - The report footer always names the plugin author and repository. The Outlook draft is CC'd to whoever runs it (their "Your work email" setting).
 
 ---
@@ -273,7 +273,7 @@ When the owner announces a new version:
 | Jira or Confluence **401 / 403** | Token wrong or expired | Make a new token (B7) and replace it in the Notepad file. To reopen the file, type `/ioproject-assistant:setup` |
 | Jira or Confluence **000** / timeout | Not on the Sectigo network | Connect to VPN and run again |
 | "No such file or directory" when writing the report | Folder path too long | Use a short folder such as `C:\IOReports` (B4) |
-| "Transcript unavailable" in data gaps | Only the meeting organizer can read transcripts | Normal; chat messages are used instead |
+| "No transcript email" for a standup date | No "Daily Ops Standup_<yyyymmdd>" email with the transcript link was received | Email the downloaded transcript link with that subject; until then the chat is used |
 | SharePoint upload failed | No write access to the AI Test SharePoint Folder | Ask the folder owner for access; the local report is still in `output` |
 | CC address is wrong or shows `${user_config...}` | Work email not set | Type `/config`, find **ioproject-assistant → Your work email**, and fix it |
 | The run is taking very long | Many chats in the period | Wait up to 30 minutes; for quicker runs choose a shorter period |
@@ -399,6 +399,8 @@ The report starts with a header: links to the SharePoint archive, the Confluence
 - Confluence page
 - Jira tickets
 
+After the project cards, a **Daily Ops operational health and incidents** table lists Daily Ops Standup items that belong to no project: health, incidents, problems, issues, changes and maintenance. It shows the date, type, item, status, who gave the update, owner, related Jira tickets with their status, and the source link.
+
 Tables sort by column, cards collapse, and Jira keys are links.
 
 ## C6. Python package `ioassistant`
@@ -421,7 +423,8 @@ Run it as `PYTHONPATH="<plugin>/src" python -m ioassistant.cli <command> <json>`
 
 | Resource | Location |
 |---|---|
-| Daily Ops StandUp (Teams chat + transcript) | Thread `19:meeting_NDAxMzEzOGEtZmUzYS00MTMxLTk3NTItODc1MGM1ZTBkZWQ2@thread.v2` |
+| Daily Ops StandUp (Teams chat) | Thread `19:meeting_NDAxMzEzOGEtZmUzYS00MTMxLTk3NTItODc1MGM1ZTBkZWQ2@thread.v2` |
+| Daily Ops StandUp transcripts | Outlook emails with subject `Daily Ops Standup_<yyyymmdd>` linking `Daily Ops Standup_<yyyymmdd>.docx` (OneDrive › Attachments) |
 | Rubrik Project SyncUp (Teams chat + transcript) | Thread `19:meeting_YjU0ZDdlMWEtNjc1Mi00Nzg4LTlhZjItNDBmMWEzNmExNzFl@thread.v2` |
 | Rubrik status emails | Outlook, subject "RUBRIK - Project Status" |
 | Jira | https://projects.sectigo.net/ (spaces IOSP, RM, COR) |

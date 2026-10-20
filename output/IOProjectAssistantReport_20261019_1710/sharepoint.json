@@ -1,0 +1,118 @@
+{
+  "run_id": "IOProjectAssistantReport_20261019_1710",
+  "window": {"from": "2026-10-14T00:00:00-04:00", "to": "2026-10-19T10:10:33-04:00"},
+  "source_deck": "I&O Project Roadmap.pptx (IOProjectTeam/Shared Documents/Presentations), Project review slides only; Accomplishments excluded",
+  "deck_url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Presentations/I&O Project Roadmap.pptx",
+  "deck_last_modified": null,
+  "pmo_folder_url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents",
+  "projects": [
+    {
+      "name": "Rubrik DR backup (IOSP-471)",
+      "on_review_slide": true,
+      "rag": {"overall": null, "schedule": "Y", "scope": "G", "cost": null},
+      "progress": "Not stated as a percentage. What's Next items: Rubrik RAC backup VLAN (RM-1658, Oct 17), enable RAC backup (target Oct 18), validate RAC backup and replication (by 10/20), prepare appliances for shutdown (IOSP-1013, by 10/21); all shown as to be confirmed.",
+      "timeline": {"start": null, "next_milestone": "2026-10-16 (enable Rubrik RAC backup)", "production_implementation": "2026-12-06 (full production in Europe)", "end": "2026-12 (December 2026)", "other_dates": "Appliance shipment to Manchester Oct 27 - Nov 9; rack and stack Nov 9-16; production preparation Nov 16 - Dec 6"},
+      "risks": ["Pure storage issue"],
+      "project_manager": "Igor Kulyk",
+      "technical_lead": "Calvin Cochran",
+      "sharepoint_project_folder": null,
+      "files_changed_in_window": []
+    },
+    {
+      "name": "Oracle RAC / legacy Oracle server decommission (IOSP-541)",
+      "on_review_slide": true,
+      "rag": {"overall": "R (Off Track)", "schedule": "G", "scope": "R", "cost": null},
+      "progress": "Not stated as a percentage. Next: create Oracle RAC on Manchester (VM, OS, RDBMS), data migration, FarSync, add to DG, decommission or repurpose old DB.",
+      "timeline": {"start": null, "next_milestone": "Manchester Servers: planned Aug 10, actual Oct 2", "production_implementation": "Sept 30, Oct 2, Nov 13, Dec 15 (slipped dates as listed)", "end": "Latest thinking: Sept 30, Oct 2, Nov 13, Dec 15, Nov 27 (originally 2025)"},
+      "risks": ["Server build in Manchester is overdue and pushes DBA work to the right"],
+      "project_manager": "Gabriel E Rovira",
+      "technical_lead": "Prajeet Singh Kahlon",
+      "sharepoint_project_folder": null,
+      "related_files": [
+        {"name": "Project Oracle RAC.pptx", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Presentations/Project Oracle RAC.pptx"},
+        {"name": "Project Oracle RAC Fina timeline.pptx", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Presentations/Project Oracle RAC Fina timeline.pptx"}
+      ],
+      "files_changed_in_window": []
+    },
+    {
+      "name": "HSM key-destruction ceremony (HSM Upgrade, IOSP-399)",
+      "on_review_slide": true,
+      "note": "Slide covers the HSM Upgrade project; no separate key-destruction ceremony item. Decommission of old HSM devices is listed under What's Next.",
+      "rag": {"overall": "R (Off Track)", "schedule": "R", "scope": "R", "cost": null},
+      "progress": "Not stated as a percentage.",
+      "timeline": {"start": null, "next_milestone": "Completion of Prod SignerWeb: planned Oct 2, actual Oct 2", "production_implementation": "2026-10-30", "end": "Latest thinking 2026-10-30 (originally 2025)"},
+      "issues": ["SignerWeb scope creep driven by complexity of the new architecture"],
+      "risks": ["Compliance priorities vs this project"],
+      "project_manager": "Gabriel E Rovira",
+      "technical_lead": "Rik Furness / Edino Moniz",
+      "sharepoint_project_folder": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/HSM",
+      "sharepoint_project_folder_note": "Folder name match only; folder last modified 2025-05-14, contents not listed.",
+      "files_changed_in_window": []
+    },
+    {
+      "name": "Network 2.0 / Manchester network plan",
+      "on_review_slide": true,
+      "rag": {"overall": "G (On-Track)", "schedule": "G", "scope": "G", "cost": null},
+      "progress": "Not stated as a percentage. Next: create and present migration plan, FW rules migration Juniper to Palo, Arista configs to CloudVision, waiting on x-cons of new circuits.",
+      "timeline": {"start": null, "next_milestone": null, "production_implementation": null, "end": null},
+      "risks": ["Creation of migration plan, dependent on internal groups supplying information"],
+      "project_manager": "Karl W (dashboard header shows 'Kos', truncated; portfolio overview shows Karl W)",
+      "technical_lead": "Jaime Larsen / Network",
+      "sharepoint_project_folder": null,
+      "files_changed_in_window": []
+    },
+    {
+      "name": "SCM demo cutover",
+      "on_review_slide": false,
+      "note": "Not on any Project review slide. Only SCM EU DR appears, under Other updates (ELT, Ongoing), which is excluded.",
+      "rag": {"overall": null, "schedule": null, "scope": null, "cost": null},
+      "progress": null,
+      "timeline": {"start": null, "end": null},
+      "project_manager": null,
+      "technical_lead": null,
+      "sharepoint_project_folder": null,
+      "files_changed_in_window": []
+    },
+    {
+      "name": "Daily Ops operational health and incidents",
+      "on_review_slide": false,
+      "rag": {"overall": null, "schedule": null, "scope": null, "cost": null},
+      "progress": null,
+      "timeline": {"start": null, "end": null},
+      "project_manager": null,
+      "technical_lead": null,
+      "sharepoint_project_folder": null,
+      "files_changed_in_window": []
+    },
+    {
+      "name": "AI agent pipeline for project status reporting (IO Project Assistant)",
+      "on_review_slide": false,
+      "note": "Not on the deck. Closest slide is AI POC Observability (a different project; PM Igor Kulyk, TL Ashwadeep Vaishnav, G/G/G, On-Track), not mapped here.",
+      "rag": {"overall": null, "schedule": null, "scope": null, "cost": null},
+      "progress": null,
+      "timeline": {"start": null, "end": null},
+      "project_manager": null,
+      "technical_lead": null,
+      "sharepoint_project_folder": null,
+      "files_changed_in_window": [
+        {"name": "IOProjectAssistantReport_20261019_1319.html (report archive output, not project documentation)", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/ITSM Freshservice/Archive/AI Test SharePoint Folder/IOProjectAssistantReport_20261019_1319.html", "modified": "2026-10-19T10:36:56Z"}
+      ]
+    }
+  ],
+  "files": [
+    {"project": "Oracle RAC", "name": "Project Oracle RAC.pptx", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Presentations/Project Oracle RAC.pptx"},
+    {"project": "Oracle RAC", "name": "Project Oracle RAC Fina timeline.pptx", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Presentations/Project Oracle RAC Fina timeline.pptx"},
+    {"project": "HSM", "name": "HSM (folder)", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/HSM"}
+  ],
+  "uploaded": [],
+  "gaps": [
+    "SHAREPOINT_PMO_FOLDER_URL, SHAREPOINT_ROADMAP_URL and SHAREPOINT_REPORT_FOLDER_URL are empty in defaults.env and no .env exists in the working folder. The deck was located by path Presentations/I&O Project Roadmap.pptx on site IOProjectTeam; the PMO folder was taken to be the IOProjectTeam Shared Documents library (assumption).",
+    "Deck last-modified time could not be obtained, and it did not appear in a search filtered to the window. Files changed in the window could not be confirmed for any project; the lists are empty or contain only report-archive outputs.",
+    "Rubrik overall RAG is not legible in the extracted slide text (schedule Y, scope G only). Cost RAG is not extractable for any project. Earlier run outputs showed Rubrik as High-Risk but that is not from the deck, so it was not used.",
+    "No per-project SharePoint folders found, apart from the HSM folder by name only. Presentations contains only generic Oracle RAC decks.",
+    "No percentage progress is stated on any Project review slide.",
+    "SCM demo cutover, Daily Ops operational health and AI agent pipeline (IO Project Assistant) are not on the Project review slides.",
+    "Network v2.0 PM name is truncated on the dashboard slide ('Kos'); the overview slide says Karl W.",
+    "Key-destruction ceremony is not a separate item; the HSM Upgrade slide only mentions that the key ceremony was completed (an Accomplishments item, excluded) and old-device decommission under What's Next."
+  ]
+}

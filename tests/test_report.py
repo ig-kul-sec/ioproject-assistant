@@ -164,3 +164,35 @@ def test_confluence_body_and_email_draft(tmp_path):
     assert "AI%20Test%20SharePoint%20Folder/IOProjectAssistantReport_20261017_1759.html" in mail
     assert "Sectigo\u00a9 2026. All rights reserved." in mail and "<span" not in mail and "<img" not in mail
     assert emaildraft.subject_for(run.name) == "IO Project Assistant Report 20261017 1759"
+
+
+def test_daily_ops_section():
+    data = {"projects": [], "non_project": [
+        {"date": "2026-10-14", "type": "Incident", "title": "DNS connector TCP errors", "detail": "Matches the maintenance window",
+         "status": "Owner to confirm", "reported_by": "Calvin Cochran", "owner": None,
+         "tickets": [{"key": "IOSP-9", "url": "https://projects.sectigo.net/browse/IOSP-9", "status": "In Progress"}, "RM-5"],
+         "source": {"label": "Standup 2026-10-14 · closing recap (13:24 UTC)", "url": "https://teams.example/m/2"}},
+        {"date": "2026-10-16", "type": "Problem", "title": "Recurring OCSP latency", "status": "RCA open"},
+    ]}
+    html = report.render(data, "IOProjectAssistantReport_20261016_0900")
+    assert "<h2>Daily Ops operational health and incidents</h2>" in html and "Non-project updates" not in html
+    assert "2 items from the Daily Ops Standup (Incident: 1, Problem: 1)" in html
+    assert "<th>Update by</th>" in html and "Calvin Cochran" in html
+    assert html.index("Recurring OCSP latency") < html.index("DNS connector TCP errors")  # newest first
+    assert 'href="https://projects.sectigo.net/browse/IOSP-9"' in html and "</a> (In Progress)" in html
+    assert 'href="https://projects.sectigo.net/browse/RM-5"' in html and 'href="https://teams.example/m/2"' in html
+    assert html.index("incidents</h2>") < html.index("Sprint status</h2>")
+    assert "No Daily Ops operational updates in this period." in report.render({"projects": []}, "IOProjectAssistantReport_20261016_0900")
+
+
+def test_repeated_source_links_are_merged_or_numbered():
+    recap = "Standup recap 2026-10-14"
+    links = {"sources": [
+        {"label": recap, "url": "https://teams.example/m/1"},
+        {"label": recap, "url": "https://teams.example/m/2"},
+        {"label": recap, "url": "https://teams.example/m/1"},  # same message twice
+    ]}
+    html = report.render({"projects": [{"name": "P", "links": links}]}, "IOProjectAssistantReport_20261014_0900")
+    assert "sources (2)" in html
+    assert html.count("https://teams.example/m/1") == 1
+    assert "Standup recap 10/14 (1)" in html and "Standup recap 10/14 (2)" in html

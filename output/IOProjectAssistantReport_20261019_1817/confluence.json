@@ -1,0 +1,173 @@
+{
+ "run_id": "IOProjectAssistantReport_20261019_1817",
+ "window": "2026-10-14T00:00:00-04:00/2026-10-19T11:18:57-04:00",
+ "pages": [
+  {
+   "project": "Rubrik DR backup",
+   "title": "Rubrik (project charter)",
+   "url": "https://confluence.comodoca.net/display/CO/Rubrik",
+   "last_modified": "2026-10-14T18:05:10.344+01:00",
+   "last_editor": "Igor Kulyk",
+   "status": "Charter; deadline May-2026 (overdue)",
+   "dates": "PMO appearance Dec-2025; deadline May-2026; Jira IOSP-471",
+   "owners": "PM: Volodymyr Fedyna; Initiator: Calvin Cochran; technical lead not named",
+   "edited_in_window": true,
+   "summary": "Charter v7 edited in window by Igor Kulyk (original author Fedyna). Goal: on-prem Rubrik appliances, Oracle/Postgres backup onboarding, cross-DC sync, immutable backups, IOC scanning. ~900K budget; MicroAge procurement; Manchester shipping affects schedule. Edit content not diffed (no diff available)."
+  },
+  {
+   "project": "Rubrik DR backup",
+   "title": "Status Dashboard - Rubrik",
+   "url": "https://confluence.comodoca.net/display/CO/Status+Dashboard+-+Rubrik",
+   "last_modified": "2026-04-21T12:45:33.557+01:00",
+   "last_editor": "Volodymyr Fedyna",
+   "status": "Stale; blocked pending cabling, DC prep and cluster install (as of Apr 2026)",
+   "dates": "Start Dec-2025",
+   "owners": "Sponsor: Brion Peck; PM: Volodymyr Fedyna",
+   "edited_in_window": false,
+   "summary": "Next steps: confirm hardware installed, schedule KT, confirm devices sent to and installed in Manchester DC, decommission previous solution."
+  },
+  {
+   "project": "Rubrik DR backup",
+   "title": "Rubrik Schedule - 2026",
+   "url": "https://confluence.comodoca.net/display/CO/Rubrik+Schedule+-+2026",
+   "last_modified": "2026-04-02T12:36:01.667+01:00",
+   "last_editor": "Volodymyr Fedyna",
+   "status": "Stale",
+   "dates": "n/a",
+   "owners": "PM: Volodymyr Fedyna",
+   "edited_in_window": false,
+   "summary": "Not opened in detail."
+  },
+  {
+   "project": "Oracle RAC migration and legacy server decommission (Manchester standby)",
+   "title": "Dashboard Oracle RAC Status RDBMS New",
+   "url": "https://confluence.comodoca.net/display/CO/Dashboard+Oracle+RAC+Status+RDBMS+New",
+   "last_modified": "2026-09-23T18:54:28.891+01:00",
+   "last_editor": "Gabriel Rovira",
+   "status": "Report period Sept 21-25; RAG colours not extractable from text; Manchester server creation pending",
+   "dates": "Start March 6; item 16 Manchester server install due Sept 11 / Sept 25 (Pending); next: move data to new Oracle RAC server; Jira IOSP-541",
+   "owners": "PM: Gabriel E. Rovira; Sponsor: Brion Peck; allocations Prajeet 20%, Jeff 5%, Raymond 10%; technical lead not explicitly named (Prajeet is the DBA architect)",
+   "edited_in_window": false,
+   "summary": "Not edited in window; last update Sept 23 so it is about 3.5 weeks stale. Legacy server decommission is not covered on this page (truncated at action item 16)."
+  },
+  {
+   "project": "Oracle RAC migration and legacy server decommission (Manchester standby)",
+   "title": "Secaucus RAC to Manchester EMERGENCY Switchover Quick Notes",
+   "url": "https://confluence.comodoca.net/pages/viewpage.action?pageId=479595104",
+   "last_modified": "2026-09-08T18:17:38.319+01:00",
+   "last_editor": "Earle Long",
+   "status": "Reference notes",
+   "dates": "n/a",
+   "owners": "Earle Long",
+   "edited_in_window": false,
+   "summary": "Related runbook; space DT."
+  },
+  {
+   "project": "Oracle RAC migration and legacy server decommission (Manchester standby)",
+   "title": "20261006 - cert_producer ORA-12504 Investigation & Resolution",
+   "url": "https://confluence.comodoca.net/pages/viewpage.action?pageId=479759891",
+   "last_modified": "2026-10-07T14:46:17.549+01:00",
+   "last_editor": "Raymond Raiani",
+   "status": "Incident write-up",
+   "dates": "2026-10-06",
+   "owners": "Raymond Raiani",
+   "edited_in_window": false,
+   "summary": "Related incident page; before window."
+  },
+  {
+   "project": "HSM key-destruction ceremony",
+   "title": "HSM Migration - Task list",
+   "url": "https://confluence.comodoca.net/display/ARCH/HSM+Migration+-+Task+list",
+   "last_modified": "2026-02-11T19:37:28.383Z",
+   "last_editor": "Gabriel Rovira",
+   "status": "Work in progress as of Feb 2026; key destruction ceremony for Luna and old Utimaco HSMs and destroying old Utimaco HSMs are listed without status (not started)",
+   "dates": "no dates",
+   "owners": "Key destruction owners: Derek, Rik; others Martijn, Ops, Networking",
+   "edited_in_window": false,
+   "summary": "Offline HSMs production ready; 2 online HSMs shipment to Secaucus pending performance concern; Signerweb deploy in progress. Stale since Feb."
+  },
+  {
+   "project": "HSM key-destruction ceremony",
+   "title": "Project Charter HSM",
+   "url": "https://confluence.comodoca.net/display/CO/Project+Charter+HSM",
+   "last_modified": "2026-01-30T01:26:26.336Z",
+   "last_editor": "Gabriel Rovira",
+   "status": "Charter; scope item 7 Old HSM destruction",
+   "dates": "Jira IOSP-399, IOSP-888",
+   "owners": "PM: Gabriel E. Rovira; Technical Resource Manager: Jeff Novick; Initiator: Brion Peck",
+   "edited_in_window": false,
+   "summary": "Goal: replace unsupported HSMs with HA HSMs (2 Offline, 2 Secaucus, 2 Manchester, 2 spare)."
+  },
+  {
+   "project": "Network 2.0 / Manchester network plan",
+   "title": "Network 2.0 Schedule 2026",
+   "url": "https://confluence.comodoca.net/display/CO/Network+2.0+Schedule+2026",
+   "last_modified": "2026-10-16T16:21:46.032+01:00",
+   "last_editor": "Kostiantyn Nikonenko",
+   "status": "Schedule lives in Planner (Net2.0 schedule); page only links to it",
+   "dates": "Version 14",
+   "owners": "Kostiantyn Nikonenko (maintainer)",
+   "edited_in_window": true,
+   "summary": "Edited in window (Oct 16). Page body only links to Planner, so no dates or status are readable from Confluence."
+  },
+  {
+   "project": "Network 2.0 / Manchester network plan",
+   "title": "Network v2.0",
+   "url": "https://confluence.comodoca.net/display/CO/Network+v2.0",
+   "last_modified": "2026-10-12T15:09:25.718+01:00",
+   "last_editor": "Kostiantyn Nikonenko",
+   "status": "Charter; priority High",
+   "dates": "Deadline EOY 2026; Jira IOSP-477",
+   "owners": "Initiator: I&O; PMO manager field blank; edited by Kostiantyn Nikonenko; technical lead not named",
+   "edited_in_window": false,
+   "summary": "Redesign with choke-point firewalls, segregated prod/non-prod and WebTrust zones, automation-driven config. Last edit Oct 12, before the window."
+  },
+  {
+   "project": "Postgres/EDB cutover (Service Core, AVS, SCM Demo)",
+   "title": "Status Dashboard Postgres Migration to EDB",
+   "url": "https://confluence.comodoca.net/display/CO/Status+Dashboard+Postgres+Migration+to+EDB",
+   "last_modified": "2026-09-22T15:30:40.289+01:00",
+   "last_editor": "Gabriel Rovira",
+   "status": "Report period Sept 21-25; NON-PROD cutover in progress, PROD servers completion next; PEM server in Secaucus pending (due Aug 15, overdue)",
+   "dates": "Start April 1; Jira IOSP-955",
+   "owners": "PM: Gabriel E. Rovira; Sponsor: Brion Peck; DBA/architect Prajeet 10%; Nkafu 15%; Calvin, Jeff N, Raymond, Mihai",
+   "edited_in_window": false,
+   "summary": "Not edited in window. Service Core, AVS and SCM Demo are not named individually in the fetched text (groups DEV/DEMO/PROD/QA)."
+  },
+  {
+   "project": "Postgres/EDB cutover (Service Core, AVS, SCM Demo)",
+   "title": "EDB Postgres 16 - High Level Architecture",
+   "url": "https://confluence.comodoca.net/display/DT/EDB+Postgres+16+-+High+Level+Architecture",
+   "last_modified": "2026-09-01T17:08:15.882+01:00",
+   "last_editor": "Prajeet Singh Kahlon",
+   "status": "Reference architecture",
+   "dates": "n/a",
+   "owners": "Prajeet Singh Kahlon",
+   "edited_in_window": false,
+   "summary": "Supporting page."
+  },
+  {
+   "project": "AI agent project status pipeline (IO Project Assistant)",
+   "title": "TEST: IO Project Assistant Report 20261019 1710 (Draft)",
+   "url": "https://confluence.comodoca.net/pages/viewpage.action?pageId=479596973",
+   "last_modified": "2026-10-19T15:51:55.384+01:00",
+   "last_editor": "Igor Kulyk",
+   "status": "Auto-generated draft report pages; no project charter found",
+   "dates": "Drafts 20261017 2325 to 20261019 1710",
+   "owners": "Igor Kulyk",
+   "edited_in_window": true,
+   "summary": "Generated report pages edited in window: 20261019 1710, 20261019 1319 (pageId 479596956), 20261018 0350 (pageId 479596953), 20261018 0041 (pageId 479760285). These are outputs, not project status."
+  }
+ ],
+ "gaps": [
+  "No Confluence project page found for AI agent project status pipeline (only generated TEST report pages).",
+  "No Confluence page found for HSM key-destruction ceremony beyond the charter and the Feb 2026 task list; ceremony date and status unknown.",
+  "Legacy server decommission has no dedicated page; the Oracle RAC dashboard text was truncated at item 16.",
+  "No dedicated pages for Service Core, AVS or SCM Demo cutover; the EDB dashboard has no per-application status.",
+  "No Network 2.0 Manchester network plan page found; the schedule is in Planner and not readable.",
+  "Dashboards for Oracle RAC and EDB were last updated Sept 22-23 (stale for the window). Rubrik dashboard last updated Apr 21.",
+  "RAG status colours are not extractable via REST text; status given from text only.",
+  "Page edit content was not diffed; only the editor and timestamp were read. Timestamps are returned in +01:00 or Z, and the window is -04:00.",
+  "Technical leads are not explicitly named on most pages."
+ ]
+}

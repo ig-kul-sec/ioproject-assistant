@@ -24,6 +24,8 @@ For each discussed project (by key from the Teams collector, otherwise by epic/n
 
 Return every project's tickets as the structured `tickets` list in the output JSON: the epic itself (`epic: true`) plus all child tickets, including closed ones, with `start`/`end` from the start-date and due-date fields (null when empty), the assignee's display name, and `related` from issue links and linked RM/COR tickets (key + browse URL).
 
+**Daily Ops items** (when the orchestrator passes the Teams collector's `non_project` list): for each item, find related tickets in IOSP, RM and COR. First fetch every key the item already lists. Then run a narrow text search on the item's distinctive terms, e.g. `project in (IOSP, RM, COR) AND text ~ "\"DNS connector\"" AND updated >= -30d ORDER BY updated DESC`, and keep at most 3 matches. Keep a match only if its summary clearly refers to the same system or incident; never pad with loosely related tickets. Return each item's `title` with `tickets` (`key`, `url`, `status`, `summary`); an item with no confident match gets an empty list.
+
 Use read-only REST calls (`/rest/api/2/search`, `/rest/agile/1.0/board/{id}/sprint`). If the API is unreachable, fall back to the connector/browser if available, else record a gap.
 
 ## Output JSON
@@ -35,6 +37,7 @@ Use read-only REST calls (`/rest/api/2/search`, `/rest/agile/1.0/board/{id}/spri
   "projects": [{"name": "", "changes": [{"key": "", "who": "", "when": "", "text": ""}],
     "tickets": [{"key": "", "url": "", "name": "", "status": "", "assignee": "", "start": null, "end": null,
                  "epic": false, "related": [{"key": "", "url": ""}]}]}],
+  "daily_ops": [{"title": "", "tickets": [{"key": "", "url": "", "status": "", "summary": ""}]}],
   "gaps": []
 }
 ```

@@ -1,0 +1,37 @@
+{
+  "run_id": "IOProjectAssistantReport_20261019_1817",
+  "window": {"from": "2026-10-14T00:00:00-04:00", "to": "2026-10-19T11:18:57-04:00"},
+  "source_deck": "I&O Project Roadmap.pptx (IOProjectTeam/Shared Documents/Presentations)",
+  "source_deck_url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Presentations/I&O Project Roadmap.pptx",
+  "roadmap": [
+    {"project": "Rubrik DR backup", "status": "Yellow (Schedule Y, Scope G; overall label not legible in deck)", "start": null, "end": "2026-12 (project completion Dec 2026)", "owner": null, "project_manager": "Igor Kulyk", "technical_lead": "Calvin Cochran",
+     "notes": "Next milestone Oct 16 (enable Rubrik RAC backup, IOSP-471). Next steps: RAC backup VLAN (RM-1658, Oct 17), enable RAC backup (Oct 18), validate RAC backup/replication (OSP-880, by 10/20), prepare appliances for shutdown/Manchester (IOSP-1013, by 10/21); each marked 'Completed?/To be confirmed?' in deck. Shipment to Manchester Oct 27-Nov 9, rack/stack Nov 9-16, production prep Nov 16-Dec 6; production Dec 6 (Europe). Risk: Pure storage issue."},
+    {"project": "Oracle RAC migration and legacy server decommission (Manchester standby)", "status": "Off Track (R); Schedule G, Scope R", "start": null, "end": "Production implementation / completion slipping: Sept 30, Oct 2, Nov 13, Dec 15 (latest list also shows Nov 27); originally 2025", "owner": null, "project_manager": "Gabriel E Rovira", "technical_lead": "Prajeet Singh Kahlon",
+     "notes": "Next milestone Manchester Servers: planned Aug 10, actual Oct 2 (IOSP-541). Next: create Oracle RAC on Manchester (VM, OS, RDBMS), data migration, FarSync config, add to DG, decom/repurpose old DB. Risk: Manchester server build overdue pushes DBA work right."},
+    {"project": "HSM key-destruction ceremony (HSM Upgrade)", "status": "Off Track (R); Schedule R, Scope R", "start": null, "end": "Production implementation Oct 30; completion latest thinking Oct 30 (originally 2025)", "owner": null, "project_manager": "Gabriel E Rovira", "technical_lead": "Rik Furness / Edino Moniz",
+     "notes": "Next milestone Prod SignerWeb completion: planned Oct 2, actual Oct 2 (IOSP-399). Next: monitor SignerWeb+HSM, migrate IoT/TSA/CertStatus, decom/repurpose old HSMs, decom utimaco and luna servers, documentation. Issue: SignerWeb scope creep. Risk: compliance priorities. Deck has no explicit key-destruction ceremony item."},
+    {"project": "Network 2.0 / Manchester network plan", "status": "On-Track (G); Schedule G, Scope G, Cost G", "start": null, "end": null, "owner": null, "project_manager": "Karl W (dashboard slide shows 'Kos')", "technical_lead": "Jaime Larsen / Network",
+     "notes": "Next: create and present Migration plan, FW rules migration Juniper to Palo, new CA FW rules, Arista configs to Cloud Vision, waiting on x-cons of new circuits. Issue: information gathering from outside network group. Risk: creation of migration plan. No dates in deck."},
+    {"project": "Postgres/EDB cutover (Service Core, AVS, SCM Demo)", "status": "On-Track (G); Schedule G, Scope Y", "start": null, "end": "Production implementation Feb 1; completion latest thinking Feb 1 / Mar 1 2027 (originally Dec 30)", "owner": null, "project_manager": "Gabriel E Rovira", "technical_lead": "Prajeet Singh Kahlon",
+     "notes": "Next milestone Non-Prod Migration Wave 2: planned Sept 15, actual Oct 30 (IOSP-955). Next: cut-over apps to new EDB NON-PROD, decom migrated servers, replication on NON-PROD (90%), PEM and BARMAN config. Risks: resource priorities, NON_PROD cut-over delays. Dependency: Manchester and Secaucus Proxmox servers. Deck does not break out Service Core, AVS or SCM Demo."},
+    {"project": "AI agent project status pipeline (IO Project Assistant)", "status": "Not on deck (closest: AI POC Observability, On-Track G; different project)", "start": null, "end": null, "owner": null, "project_manager": null, "technical_lead": null,
+     "notes": "No Project review slide for the IO Project Assistant. Do not map to AI POC Observability (PM Igor Kulyk, TL Ashwadeep Vaishnav, COR-10291, re-align Nov 2026)."}
+  ],
+  "files": [
+    {"project": "All", "name": "I&O Project Roadmap.pptx (roadmap deck)", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Presentations/I&O Project Roadmap.pptx"},
+    {"project": "Oracle RAC migration and legacy server decommission (Manchester standby)", "name": "Project Oracle RAC.pptx (project deck)", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Presentations/Project Oracle RAC.pptx"},
+    {"project": "Oracle RAC migration and legacy server decommission (Manchester standby)", "name": "Project Oracle RAC Fina timeline.pptx (final timeline)", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Presentations/Project Oracle RAC Fina timeline.pptx"},
+    {"project": "Postgres/EDB cutover (Service Core, AVS, SCM Demo)", "name": "Project Postgres core.pptx (project deck)", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Presentations/Project Postgres core.pptx"}
+  ],
+  "uploaded": [],
+  "gaps": [
+    "SHAREPOINT_PMO_FOLDER_URL, SHAREPOINT_ROADMAP_URL and SHAREPOINT_REPORT_FOLDER_URL are empty in config/defaults.env and no .env exists; PMO folder could not be located (folder searches 'PMO' and 'Project Management Office' returned only meeting recordings and unrelated items). No per-project SharePoint folder links found for any project (project_folder_url null).",
+    "Roadmap deck was found by browsing IOProjectTeam Presentations folder (file last listed there; modified date not shown). Deck URLs for files are built from the site path pattern, not returned by the connector.",
+    "Rubrik overall RAG label is missing in extracted text (only Schedule Y, Scope G shown).",
+    "Network 2.0 PM shows as 'Karl W' in overview and 'Kos' on the dashboard; unresolved.",
+    "No project start dates on any Project review slide.",
+    "Accomplishments content was deliberately excluded. Rubrik What's Next items carry 'Completed?/To be confirmed?' markers, so their completion is unverified.",
+    "No documents found for Rubrik, HSM, Network 2.0 or the AI agent pipeline in the Presentations folder; Rubrik search returned only meeting recordings and a screenshot (RUbrik.png) in a personal OneDrive.",
+    "Project Review slide has no entry for the AI agent project status pipeline, and none for the key-destruction ceremony as a distinct item."
+  ]
+}

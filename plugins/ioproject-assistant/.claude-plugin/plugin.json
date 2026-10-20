@@ -1,6 +1,6 @@
 {
   "name": "ioproject-assistant",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Daily I&O project status report: reads the Teams standups, Jira, Confluence and the SharePoint roadmap, builds a clickable HTML report and a spending report, uploads both to SharePoint, then prepares an unsent Outlook draft and a Confluence draft page.",
   "author": {
     "name": "Igor Kulyk",
