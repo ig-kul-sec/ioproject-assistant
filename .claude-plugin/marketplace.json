@@ -1,0 +1,18 @@
+{
+  "name": "sectigo-io-tools",
+  "owner": {
+    "name": "Igor Kulyk",
+    "email": "igor.kulyk@sectigo.com"
+  },
+  "metadata": {
+    "description": "I&O team plugins for Claude Code."
+  },
+  "plugins": [
+    {
+      "name": "ioproject-assistant",
+      "source": "./plugins/ioproject-assistant",
+      "description": "Daily I&O project status report from Teams, Jira, Confluence and SharePoint, with an Outlook draft and a Confluence draft page.",
+      "category": "productivity"
+    }
+  ]
+}

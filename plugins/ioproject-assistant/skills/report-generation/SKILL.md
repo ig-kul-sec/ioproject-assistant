@@ -52,8 +52,8 @@ Header links: SharePoint Report Archive Link, Confluence ITSM Parent Page and JI
 
 Presentation rules built into the renderer: every table sorts by clicking a column header; dates print as mm/dd (ISO values are kept for sorting); IOSP/RM/COR keys in any text become Jira links; project cards and their sections collapse and expand (plus Collapse all / Expand all); both reports show the SharePoint location (`SHAREPOINT_REPORT_FOLDER_URL`, default the AI Test SharePoint Folder) and the same footer (version, author, GitHub, sectigo.com).
 
-Report style: management layout per the Sectigo brand 2026 (`src/ioassistant/brand.py`, assets bundled in `src/ioassistant/brand/`): summary tiles, projects at a glance, then per-project cards with the top 3 notes (rest collapsed), risks, action items and source links; sprint ticket list and data gaps are collapsed. Palette, fonts and logo come only from the bundled brand files.
+Report style: management layout per the Sectigo brand 2026 (`${CLAUDE_PLUGIN_ROOT}/src/ioassistant/brand.py`, assets bundled in `${CLAUDE_PLUGIN_ROOT}/src/ioassistant/brand/`): summary tiles, projects at a glance, then per-project cards with the top 3 notes (rest collapsed), risks, action items and source links; sprint ticket list and data gaps are collapsed. Palette, fonts and logo come only from the bundled brand files.
 
 The `--compact` build (written to `output/<RUN_ID>/upload/`) is for the connector upload: no embedded fonts or logo image, because file contents must be pasted into the upload call and cannot be reproduced reliably.
 
-Render with `python -m ioassistant.cli report output/<RUN_ID>/data.json`. Output: `output/<RUN_ID>/<RUN_ID>.html` (self-contained, all source links clickable).
+Render with `PYTHONPATH="${CLAUDE_PLUGIN_ROOT}/src" python -m ioassistant.cli report output/<RUN_ID>/data.json`. Output: `output/<RUN_ID>/<RUN_ID>.html` (self-contained, all source links clickable).

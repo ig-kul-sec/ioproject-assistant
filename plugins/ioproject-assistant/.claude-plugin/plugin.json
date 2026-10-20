@@ -1,0 +1,20 @@
+{
+  "name": "ioproject-assistant",
+  "version": "0.3.0",
+  "description": "Daily I&O project status report: reads the Teams standups, Jira, Confluence and the SharePoint roadmap, builds a clickable HTML report and a spending report, uploads both to SharePoint, then prepares an unsent Outlook draft and a Confluence draft page.",
+  "author": {
+    "name": "Igor Kulyk",
+    "email": "igor.kulyk@sectigo.com"
+  },
+  "homepage": "https://github.com/ig-kul-sec/ioproject-assistant",
+  "repository": "https://github.com/ig-kul-sec/ioproject-assistant",
+  "keywords": ["project-status", "jira", "confluence", "teams", "sharepoint", "report"],
+  "userConfig": {
+    "cc_email": {
+      "type": "string",
+      "title": "Your work email",
+      "description": "The Outlook draft of each report is CC'd to this address (normally your own Sectigo email).",
+      "required": true
+    }
+  }
+}

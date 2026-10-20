@@ -1,0 +1,453 @@
+# IO Project Assistant: sharing and user guide
+
+This guide has three parts:
+
+- **Part A, for the plugin owner:** how to publish the plugin and get it to colleagues.
+- **Part B, for colleagues (no technical knowledge needed):** how to install it once and make a report every day.
+- **Part C, About this project:** architecture, agents and skills, the run flow, files produced, and every resource it uses.
+
+---
+
+## What the plugin does (in plain words)
+
+You type one command. About 10-20 minutes later you have:
+
+1. A **clickable status report** (HTML) of every I&O project discussed this week: status, updates, risks, action items, Jira tickets and links to sources.
+2. A **spending report** showing roughly what the run cost in AI usage.
+3. Both reports **uploaded to SharePoint** (AI Test SharePoint Folder).
+4. An **Outlook draft** with the SharePoint links, CC'd to you. It is **never sent automatically**; you check it and press Send yourself.
+5. A **Confluence draft page** under ITSM Freshservice with the same links.
+
+It reads (never changes) the Daily Ops StandUp and Rubrik Project SyncUp Teams chats, the "RUBRIK - Project Status" emails, Jira (IOSP, RM, COR), Confluence and the I&O Project Roadmap deck. The only things it writes are the two SharePoint files, the unsent draft and the one new Confluence page.
+
+---
+
+# Part A: Sharing the plugin (owner)
+
+## A1. One-time: what is in the repository
+
+The GitHub repository `ig-kul-sec/ioproject-assistant` is now both a **marketplace** (a catalog colleagues subscribe to) and the **plugin** itself:
+
+```
+ioproject-assistant/                      <- repository = marketplace "sectigo-io-tools"
+├─ .claude-plugin/marketplace.json        <- the catalog (lists one plugin)
+├─ plugins/ioproject-assistant/           <- the plugin colleagues install
+│  ├─ .claude-plugin/plugin.json          <- name, version, the "Your work email" question
+│  ├─ agents/                             <- orchestrator + 7 helper agents
+│  ├─ skills/                             <- instructions, incl. run-report and setup
+│  ├─ src/ioassistant/                    <- report rendering (Python, no extra packages)
+│  └─ config/                             <- prices, non-secret default settings
+├─ tests/  docs/  output/                 <- stay with you; not installed by colleagues
+```
+
+Nothing secret is in the plugin. Tokens live only on each person's computer in `~/.ioassistant/secrets.env`.
+
+## A2. Before every release (5 minutes)
+
+1. Open a terminal in the repository folder.
+2. Run the tests: `python -m pytest`. All must pass.
+3. Check the plugin: `claude plugin validate plugins/ioproject-assistant --strict`. It must say **Validation passed**.
+4. Try it yourself in a scratch folder: `claude --plugin-dir "<repo>/plugins/ioproject-assistant"`, then `/ioproject-assistant:setup`.
+5. **Raise the version** in `plugins/ioproject-assistant/.claude-plugin/plugin.json` (for example `0.3.0` → `0.3.1`). Colleagues only receive updates when this number changes.
+6. Commit and push to GitHub.
+
+## A3. Choose how colleagues get it
+
+Pick **one** of the options below. Option 1 is the easiest for non-technical people.
+
+| | Option 1: Organization library (claude.ai) | Option 2: GitHub marketplace | Option 3: Shared OneDrive/SharePoint folder |
+|---|---|---|---|
+| Colleague needs a GitHub account | No | Yes (repo is private) | No |
+| Colleague types commands to install | None, or one click | 2 commands | 2 commands |
+| Who can do it | Needs a claude.ai Team/Enterprise admin | You | You |
+| Updates reach colleagues | Admin publishes new version | They run an update command (or auto-update) | Folder syncs; they run an update command |
+
+### Option 1: Publish to the Sectigo organization library (recommended)
+
+The plugin is built to qualify. It has no `bin/` folder, which organization sync does not allow.
+
+**Route a: from Claude Code (you)**
+1. Open Claude Code in the repository folder.
+2. Type: *"Publish the plugin in plugins/ioproject-assistant to my organization."*
+3. Claude shows exactly which files will be uploaded and asks you to confirm. Check that no `.env`, token or `output/` file is listed, then say yes.
+4. The plugin goes to your uploads on claude.ai and is submitted to the organization. An administrator reviews it, unless the organization publishes without review.
+
+**Route b: an Owner syncs the repository**
+1. A claude.ai Owner opens **Organization settings → Plugins & skills**.
+2. They connect the repository `ig-kul-sec/ioproject-assistant`.
+3. They set **ioproject-assistant** to one of:
+   - **Installed by default** (recommended for the I&O team): it simply appears for everyone.
+   - **Available to install**: colleagues install it themselves from the plugin list.
+   - **Required**: everyone has it and cannot remove it.
+
+**Updating:** raise the version (A2 step 5), push, and publish again (route a) or let the sync pick it up (route b).
+
+### Option 2: GitHub marketplace
+
+Use this when colleagues already have GitHub access to `ig-kul-sec/ioproject-assistant`.
+
+1. Give each colleague read access to the repository on GitHub.
+2. Each colleague sets up GitHub sign-in on their computer **once**. This is the only technical step; you may want to do it with them:
+   - Install Git for Windows (https://git-scm.com/download/win), keeping all defaults. It includes the sign-in helper, which opens a browser the first time.
+3. Send them Part B of this guide plus these two lines to paste into Claude:
+   ```
+   /plugin marketplace add ig-kul-sec/ioproject-assistant
+   /plugin install ioproject-assistant@sectigo-io-tools
+   ```
+   On Claude Code 2.1.275 or later, this single line does both:
+   ```
+   /plugin install ioproject-assistant --marketplace ig-kul-sec/ioproject-assistant
+   ```
+4. **Updating:** push a new version. Colleagues type `/plugin marketplace update sectigo-io-tools` and restart Claude. Alternatively, they turn on auto-update for this marketplace in `/plugin` → Marketplaces.
+
+### Option 3: Shared OneDrive / SharePoint folder
+
+Use this when colleagues have no GitHub account and no admin can do Option 1.
+
+1. Put a copy of the repository (at least `.claude-plugin/` and `plugins/`) in a SharePoint/OneDrive folder the team can sync, for example `I&O Team/Tools/ioproject-assistant`.
+2. Each colleague clicks **Sync** (or **Add shortcut to My files**) on that folder in SharePoint, so it appears in File Explorer.
+3. In File Explorer, they open the synced folder, click the address bar, and copy the path. It looks like `C:\Users\first.last\OneDrive - Sectigo\Tools\ioproject-assistant`.
+4. In Claude they type, with their own path in quotes:
+   ```
+   /plugin marketplace add "C:\Users\first.last\OneDrive - Sectigo\Tools\ioproject-assistant"
+   /plugin install ioproject-assistant@sectigo-io-tools
+   ```
+5. **Updating:** replace the files in the shared folder with the new version. Colleagues type `/plugin marketplace update sectigo-io-tools` and restart Claude.
+
+## A4. What to send colleagues
+
+A short message, for example:
+
+> Hi! The IO Project Assistant now runs on your own laptop. It makes the weekly I&O project status report (SharePoint upload, Outlook draft, Confluence page) with one command. Set-up takes about 20 minutes and only has to be done once. Follow Part B of the attached guide: [link to this guide]. Questions: ask me.
+
+Also check they have the access the report needs (see B0).
+
+## A5. Things that are specific to you (the owner)
+
+- **Rubrik SyncUp transcript:** only the meeting organizer (you) can read it. For colleagues it is skipped automatically and shown as a data gap; the chat and status emails are still used.
+- **Daily Ops StandUp transcript:** only its organizer can read it, so it is a data gap for everyone else too.
+- The report footer always names the plugin author and repository. The Outlook draft is CC'd to whoever runs it (their "Your work email" setting).
+
+---
+
+# Part B: Using the plugin (colleagues)
+
+You do steps B0-B7 **once**. After that, making a report is B8 only.
+
+## B0. What you need
+
+- A Windows laptop on the Sectigo network or VPN.
+- A **Sectigo Claude account** with Claude Code access. Ask your manager if unsure.
+- Access to:
+  - the **Daily Ops StandUp** Teams chat (and the Rubrik Project SyncUp chat, if you cover Rubrik)
+  - **Jira** (projects.sectigo.net) and **Confluence** (confluence.comodoca.net)
+  - the **I&O Project Roadmap** on SharePoint (IOProjectTeam site)
+  - write access to the **AI Test SharePoint Folder** and to the Confluence space **CO**
+
+  Missing access will not break the run; the missing part shows up as a "data gap" in the report.
+
+## B1. Install the Claude app
+
+1. Download Claude for Windows from https://claude.ai/download and install it.
+2. Open it and **sign in with your Sectigo work account** (not a personal account).
+3. Make sure you can see the **Code** tab. If not, ask your Claude administrator to enable Claude Code for you.
+
+(Already use Claude Code in a terminal? That works too; every step below is the same.)
+
+## B2. Install Python (needed to draw the report)
+
+1. Open the **Microsoft Store**.
+2. Search **Python 3.13** (publisher: Python Software Foundation) and click **Get**.
+3. When it finishes, close Claude completely and open it again.
+
+No other software is needed.
+
+## B3. Connect Microsoft 365 (Teams, Outlook, SharePoint)
+
+1. Go to https://claude.ai and sign in.
+2. Click your initials (bottom left) → **Settings** → **Connectors**.
+3. Find **Microsoft 365** and click **Connect**.
+4. Sign in with your Sectigo account and click **Accept**.
+
+If Microsoft 365 is not in the list, your Claude administrator has to enable it for the organization.
+
+## B4. Make a folder for your reports
+
+1. Open File Explorer → **Documents**.
+2. Create a new folder named **IO Reports**.
+
+Reports are saved here, in a subfolder called `output`. Keep the folder name short. Windows refuses very long file paths, so don't bury it deep inside other folders.
+
+## B5. Open Claude in that folder
+
+1. In the Claude app, open the **Code** tab and start a new session.
+2. When asked for a folder, choose **Documents → IO Reports**.
+3. If Claude asks whether you trust this folder, choose **Yes**.
+
+Do this every time you want a report: Code tab, then the IO Reports folder.
+
+## B6. Install the plugin
+
+How you do this depends on what the plugin owner told you:
+
+- **"It's in the organization library":** if it was set to *Installed by default*, there is nothing to do. Otherwise type `/plugin`, find **ioproject-assistant** in the list of available plugins, and choose **Install**.
+- **"Use GitHub":** type the line you were sent, for example `/plugin install ioproject-assistant --marketplace ig-kul-sec/ioproject-assistant`, and press Enter.
+- **"Use the shared folder":** type the two lines from the owner's message, with your own folder path in quotes.
+
+When asked **"Your work email"**, type your Sectigo email (for example `first.last@sectigo.com`). Your Outlook drafts are CC'd to it. You can change it later with `/config`.
+
+Close and reopen the session (or type `/reload-plugins`) after installing.
+
+## B7. Run the setup check
+
+In the chat box type:
+
+```
+/ioproject-assistant:setup
+```
+
+Claude checks everything and walks you through what is missing. The one manual part is creating your **two access tokens**. These are like passwords that let the assistant read Jira and Confluence as you.
+
+**Jira token**
+1. Open https://projects.sectigo.net/ in your browser.
+2. Click your picture (top right) → **Profile** → **Personal Access Tokens** → **Create token**.
+3. Name it `IO Project Assistant`, click **Create**, and **copy** the token.
+
+**Confluence token**
+1. Open https://confluence.comodoca.net/.
+2. Click your picture → **Settings** → **Personal Access Tokens** → **Create token**, and **copy** the token.
+
+**Where to put them:** Claude opens a small file in Notepad that looks like this:
+
+```
+JIRA_API_TOKEN=paste_your_jira_token_here
+CONFLUENCE_API_TOKEN=paste_your_confluence_token_here
+```
+
+Replace each `paste_..._here` with the matching token: no spaces, no quotes. Save (Ctrl+S), close Notepad, and type **done** in Claude.
+
+> **Never paste a token into the Claude chat.** Only put it in that Notepad file.
+
+Claude then tests the tokens and Microsoft 365 and shows a checklist. When everything is ✅ you're ready.
+
+## B8. Make a report (every time)
+
+1. Open Claude → **Code** tab → folder **IO Reports** (B5).
+2. Type:
+   ```
+   /ioproject-assistant:run-report
+   ```
+   By default it covers **Monday 00:00 (New York time) until now**. For another period, add it after the command, for example:
+   ```
+   /ioproject-assistant:run-report since 2026-10-12
+   ```
+3. **Approve the requests.** Claude asks permission before it reads Teams, runs the report program or contacts Jira, Confluence, SharePoint or Outlook. Read each one and click **Allow** (or *Allow for this session* to be asked less often). Nothing is ever sent or deleted.
+4. Wait 10-20 minutes. You can do other work meanwhile, but keep the Claude window open.
+5. Claude ends with a short summary:
+   - where the report is on your computer and on SharePoint
+   - the **Outlook draft** link
+   - the **Confluence draft page** link
+   - projects that need attention
+   - any data gaps, with what to do about them
+
+## B9. After the run
+
+1. **Open the report:** click the SharePoint link, or open the `.html` file in `Documents\IO Reports\output\...` by double-clicking it. Click column headers to sort, and click project names to expand them.
+2. **Check the Outlook draft:** open Outlook → **Drafts**. Add the recipients, review the text, and click **Send** when happy. The report file cannot be attached automatically, which is why the email contains the SharePoint link. If you want the file attached, drag it in from the `output` folder.
+3. **Check the Confluence page:** it is titled `TEST: IO Project Assistant Report <date> <time> (Draft)` under ITSM Freshservice. Edit or delete it as you would any page.
+
+## B10. Keeping the plugin up to date
+
+When the owner announces a new version:
+
+- **Organization library:** nothing to do, or click **Update** in `/plugin` if offered.
+- **GitHub or shared folder:** type `/plugin marketplace update sectigo-io-tools`, then close and reopen Claude.
+
+## B11. Troubleshooting
+
+| You see | What it means | What to do |
+|---|---|---|
+| `Unknown skill` / `/ioproject-assistant:...` does nothing | Plugin not installed or not loaded | Do B6 again, then type `/reload-plugins` |
+| "Python not found" | Python missing | Do B2, then restart Claude |
+| "Teams: authentication required" or no Microsoft 365 tools | Connector not connected | Do B3, then restart Claude |
+| Jira or Confluence **401 / 403** | Token wrong or expired | Make a new token (B7) and replace it in the Notepad file. To reopen the file, type `/ioproject-assistant:setup` |
+| Jira or Confluence **000** / timeout | Not on the Sectigo network | Connect to VPN and run again |
+| "No such file or directory" when writing the report | Folder path too long | Use a short folder such as `C:\IOReports` (B4) |
+| "Transcript unavailable" in data gaps | Only the meeting organizer can read transcripts | Normal; chat messages are used instead |
+| SharePoint upload failed | No write access to the AI Test SharePoint Folder | Ask the folder owner for access; the local report is still in `output` |
+| CC address is wrong or shows `${user_config...}` | Work email not set | Type `/config`, find **ioproject-assistant → Your work email**, and fix it |
+| The run is taking very long | Many chats in the period | Wait up to 30 minutes; for quicker runs choose a shorter period |
+
+Still stuck? Copy the last message Claude showed (never a token) and send it to the plugin owner.
+
+## B12. Good to know
+
+- **Safe by design:** the assistant never sends emails, never changes Jira tickets, never edits or deletes existing Confluence pages, and never overwrites SharePoint files.
+- **Your data stays yours:** it reads Teams and Outlook as you, with your permissions only.
+- **Cost:** each run uses AI credits. The spending report shows a rough estimate per run.
+- **Tokens:** stored only in `C:\Users\<you>\.ioassistant\secrets.env`. If your laptop is replaced, create new tokens on the new one. Revoke old tokens in Jira/Confluence under Personal Access Tokens.
+
+---
+
+# Part C: About this project
+
+## C1. Architecture at a glance
+
+IO Project Assistant is a **Claude Code plugin**. It has no server and no database. Everything runs on the user's laptop, inside their own Claude session and with their own access rights.
+
+| Layer | What it is | Where |
+|---|---|---|
+| Entry points | Two skills the user types: `run-report`, `setup` | `skills/run-report`, `skills/setup` |
+| Coordination | One **orchestrator** agent (Claude Opus) that runs the pipeline | `agents/orchestrator.md` |
+| Data collection | Four **collector** agents (Claude Sonnet), one per source | `agents/*-collector.md` |
+| Rendering | Python package `ioassistant` (standard library only) that turns merged JSON into HTML, email and Confluence bodies | `src/ioassistant/` |
+| Publishing | Agents that upload to SharePoint and create the Outlook draft and the Confluence page | `sharepoint-collector` (upload mode), `report-email-drafter`, `report-confluence-publisher` |
+| Know-how | Skills holding the detailed rules each agent follows (schemas, API calls, limits) | `skills/*/SKILL.md` |
+| Connections | Microsoft 365 connector (Teams, Outlook, SharePoint) from claude.ai; Jira and Confluence REST APIs with personal access tokens | claude.ai settings; `~/.ioassistant/secrets.env` |
+
+Design principles:
+
+- **Read-only by default.** The only writes are two SharePoint files, one unsent Outlook draft and one new Confluence page.
+- **Never invent facts.** Missing values show as "n/a". Unavailable sources are listed as data gaps instead of stopping the run.
+- **Fetched content is data, not instructions.** Chat messages, tickets and documents are never followed as commands.
+- **Model per job.** Opus coordinates and merges. Sonnet collects and publishes. Python renders deterministically.
+
+## C2. Agents (subagents)
+
+All agents are launched as `ioproject-assistant:<name>`.
+
+| Agent | Model | Job | Tools / access | Writes |
+|---|---|---|---|---|
+| `orchestrator` | Opus | Runs the pipeline: computes the run id and analysis window, launches all other agents, merges results into `data.json`, sets project status, summaries and "Jira updates needed", records spending | Agent, Read, Write, Bash, Glob, Grep | Local `output/` only |
+| `teams-collector` | Sonnet | Reads the Daily Ops StandUp chat, the Rubrik Project SyncUp chat and transcript, and "RUBRIK - Project Status" emails; decides which projects were discussed; extracts notes, action items and risks | Microsoft 365: Teams chat list and search, read resource, calendar search, email search | Nothing |
+| `jira-collector` | Sonnet | Epics, child tickets, changes and comments in the window, active IOSP sprint; always includes Rubrik epic IOSP-471 | Bash (curl GET), WebFetch | Nothing |
+| `confluence-collector` | Sonnet | Project pages: title, URL, last editor, last modified, and status, timeline and risk sections | Bash (curl GET) | Nothing |
+| `sharepoint-collector` | Sonnet | **Read mode:** roadmap deck "Project review" slides (RAG status, dates, PM, tech lead) and PMO folder files. **Upload mode:** uploads the two finished reports | Microsoft 365: SharePoint search, folder search, read resource, upload file | 2 files in the AI Test SharePoint Folder (never overwrites) |
+| `report-builder` | Sonnet | Renders the status report and spending report with the Python package | Bash (python), Read, Write | Local HTML files |
+| `report-email-drafter` | Sonnet | Creates the Outlook draft with SharePoint links, CC'd to the user | Microsoft 365: Outlook create draft | 1 unsent draft |
+| `report-confluence-publisher` | Sonnet | Creates `TEST: IO Project Assistant Report <date> <time> (Draft)` under ITSM Freshservice | Bash (curl GET + one POST) | 1 new Confluence page |
+
+## C3. Skills
+
+| Skill | Used by | What it defines |
+|---|---|---|
+| `run-report` | User | Pre-flight checks, launching the orchestrator, final spending figures, plain-language summary |
+| `setup` | User | Python, tokens, Microsoft 365 connector, folder and CC email checks |
+| `teams-standup-collection` | teams-collector | Paging through Teams chat search, filtering by chat, transcripts and status emails; output JSON |
+| `jira-project-review` | jira-collector | Jira spaces, scrum board 485, always-included epic, REST calls; output JSON |
+| `confluence-review` | confluence-collector | CQL search and page reads; output JSON |
+| `sharepoint-roadmap` | sharepoint-collector | Roadmap rules (Project review slides only, skip Accomplishments); size-checked upload rules |
+| `report-generation` | orchestrator, report-builder | `data.json` schema, section order, status rules, presentation rules |
+| `spend-tracking` | orchestrator, report-builder, run-report | `usage.json` format, pricing, how the orchestrator's own usage is filled in |
+| `outlook-report-draft` | report-email-drafter | Draft subject and body, CC, never send, attachment limit |
+| `confluence-report-page` | report-confluence-publisher | Parent page lookup, title check, single create call |
+
+## C4. The run, step by step
+
+```mermaid
+flowchart TD
+    U["User: /ioproject-assistant:run-report"] --> PF["Pre-flight: Python, tokens, M365, folder"]
+    PF --> O["orchestrator (Opus): RUN_ID + analysis window"]
+    O --> T["teams-collector: which projects were discussed"]
+    T --> J["jira-collector"]
+    T --> C["confluence-collector"]
+    T --> S["sharepoint-collector (read)"]
+    J --> M["Merge into data.json: status, summary, Jira updates needed"]
+    C --> M
+    S --> M
+    M --> RB["report-builder: status report + spending report"]
+    RB --> UP["sharepoint-collector (upload): compact copies, size-checked"]
+    UP --> E["report-email-drafter: unsent Outlook draft"]
+    UP --> CF["report-confluence-publisher: new draft page"]
+    E --> F["run-report: final spending figures + summary"]
+    CF --> F
+```
+
+1. **Start.** The user types `/ioproject-assistant:run-report`. The skill checks Python, the token file, the Microsoft 365 connector and the folder path.
+2. **Run id and window.** The orchestrator names the run `IOProjectAssistantReport_<yyyymmdd>_<hhmm>`. The analysis window is Monday 00:00 America/New_York until now, unless the user gave another period.
+3. **Teams first.** `teams-collector` decides which projects were discussed. Its project list drives every later step.
+4. **Jira, Confluence and SharePoint in parallel.** Each collector gets the project list. If the Jira agent can't start, a general agent retries once with the same read-only rules.
+5. **Merge.** The orchestrator writes `data.json`. Status comes only from evidence: roadmap RAG first, then Jira dates. "Jira updates needed" lists only gaps a source proves.
+6. **Render.** `report-builder` produces the full status report and the spending report.
+7. **Upload.** Compact copies (no embedded fonts or logo) are built and uploaded with a byte-count check. Existing files are never overwritten; a name clash adds `_2`.
+8. **Draft and page, in parallel.** These run only after a successful upload: the Outlook draft (never sent) and the Confluence draft page (never overwrites).
+9. **Finish.** `run-report` fills in the orchestrator's own token usage, re-renders the local spending report and summarizes the run for the user.
+
+A typical run takes 10-20 minutes. Any failed step is recorded as a data gap, and the run continues.
+
+## C5. Files a run produces
+
+All files go in `output/<RUN_ID>/` inside the folder Claude was opened in.
+
+| File | Content |
+|---|---|
+| `teams.json`, `jira.json`, `confluence.json`, `sharepoint.json` | Raw collector results |
+| `data.json` | Merged report data (schema in the `report-generation` skill) |
+| `usage.json` | One row per agent: model, tokens, seconds |
+| `<RUN_ID>.html` | Full status report: Sectigo brand, embedded fonts, self-contained |
+| `<RUN_ID>_spending.html` | Spending report with estimated USD cost |
+| `upload/<RUN_ID>.html`, `upload/<RUN_ID>_spending.html` | Compact copies uploaded to SharePoint |
+| `upload/<RUN_ID>_email.html` | Outlook draft body |
+| `upload/<RUN_ID>_confluence.xhtml` | Confluence page body (storage format) |
+
+The report starts with a header: links to the SharePoint archive, the Confluence parent page and the Jira scrum board, plus the analysis period. Below it come summary tiles, projects at a glance, sprint status, and a card per project. Each card has these sections:
+- updates
+- Jira updates needed
+- sources
+- meeting chats
+- SharePoint folder
+- Confluence page
+- Jira tickets
+
+Tables sort by column, cards collapse, and Jira keys are links.
+
+## C6. Python package `ioassistant`
+
+| Module | Role |
+|---|---|
+| `cli.py` | Command line: `report`, `spend`, `confluence`, `email`, `presentation` (`--compact` for upload copies) |
+| `report.py` | Status report HTML renderer |
+| `spend.py` | Spending report and cost calculation (`config/pricing.json`) |
+| `brand.py` | Sectigo 2026 palette, fonts, logo, footer and fixed URLs |
+| `emaildraft.py` | Outlook draft subject and body |
+| `confluence.py` | Confluence page title and body |
+| `presentation.py` | Clickable management presentation of the project |
+
+Run it as `PYTHONPATH="<plugin>/src" python -m ioassistant.cli <command> <json>`. It needs only the Python 3.10+ standard library.
+
+## C7. Resources
+
+**Sources (read)**
+
+| Resource | Location |
+|---|---|
+| Daily Ops StandUp (Teams chat + transcript) | Thread `19:meeting_NDAxMzEzOGEtZmUzYS00MTMxLTk3NTItODc1MGM1ZTBkZWQ2@thread.v2` |
+| Rubrik Project SyncUp (Teams chat + transcript) | Thread `19:meeting_YjU0ZDdlMWEtNjc1Mi00Nzg4LTlhZjItNDBmMWEzNmExNzFl@thread.v2` |
+| Rubrik status emails | Outlook, subject "RUBRIK - Project Status" |
+| Jira | https://projects.sectigo.net/ (spaces IOSP, RM, COR) |
+| Jira scrum board | https://projects.sectigo.net/secure/RapidBoard.jspa?rapidView=485&projectKey=IOSP&view=planning.nodetail&issueLimit=100 |
+| Rubrik DR backup epic | https://projects.sectigo.net/browse/IOSP-471 |
+| Confluence | https://confluence.comodoca.net/ |
+| I&O Project Roadmap deck | SharePoint site IOProjectTeam, `Presentations/I&O Project Roadmap.pptx` |
+| PMO folder | SharePoint (`SHAREPOINT_PMO_FOLDER_URL`) |
+
+**Destinations (write)**
+
+| Resource | Location |
+|---|---|
+| Report archive (SharePoint) | https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared%20Documents/ITSM%20Freshservice/Archive/AI%20Test%20SharePoint%20Folder |
+| Confluence parent page | https://confluence.comodoca.net/display/CO/ITSM+Freshservice (space CO) |
+| Outlook | Drafts folder of the user running the report |
+
+**Project and configuration**
+
+| Resource | Location |
+|---|---|
+| Source code and marketplace | https://github.com/ig-kul-sec/ioproject-assistant |
+| Plugin manifest | `plugins/ioproject-assistant/.claude-plugin/plugin.json` |
+| Marketplace catalog | `.claude-plugin/marketplace.json` (`sectigo-io-tools`) |
+| Model prices | `plugins/ioproject-assistant/config/pricing.json` (rough USD per million tokens) |
+| Default settings | `plugins/ioproject-assistant/config/defaults.env` (a `.env` in the working folder overrides it) |
+| Tokens | `~/.ioassistant/secrets.env` on each user's machine (never in the repo) |
+| User setting | "Your work email" (`cc_email`), set at install, changeable in `/config` |
+| Owner / author | Igor Kulyk, igor.kulyk@sectigo.com |

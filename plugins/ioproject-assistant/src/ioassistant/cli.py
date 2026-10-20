@@ -1,20 +1,24 @@
-"""Command line: python -m ioassistant.cli {report,spend,confluence,email} <json-file>."""
+"""Command line: python -m ioassistant.cli {report,spend,confluence,email,presentation} <json-file>."""
 from __future__ import annotations
 
 import argparse
 from pathlib import Path
 
-from . import confluence, emaildraft, report, spend
+from . import confluence, emaildraft, presentation, report, spend
 
 
 def main(argv=None) -> None:
     ap = argparse.ArgumentParser(prog="ioassistant")
-    ap.add_argument("command", choices=["report", "spend", "confluence", "email"])
-    ap.add_argument("path", type=Path)
+    ap.add_argument("command", choices=["report", "spend", "confluence", "email", "presentation"])
+    ap.add_argument("path", type=Path, nargs="?", help="data/usage json (not needed for presentation)")
     ap.add_argument("--compact", action="store_true",
                     help="write to <run>/upload/ without embedded fonts and with a small logo (fits one connector upload)")
     args = ap.parse_args(argv)
-    if args.command == "spend":
+    if args.command == "presentation":
+        out = presentation.build()
+    elif args.path is None:
+        ap.error("path is required for this command")
+    elif args.command == "spend":
         out = spend.build(args.path, compact=args.compact)
     elif args.command == "confluence":
         out = confluence.build(args.path)

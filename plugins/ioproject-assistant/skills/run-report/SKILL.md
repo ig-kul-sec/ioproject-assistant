@@ -1,0 +1,41 @@
+---
+name: run-report
+description: Run the daily I&O project status report end to end (Teams, Jira, Confluence, SharePoint -> HTML report, spending report, SharePoint upload, unsent Outlook draft, Confluence draft page). Use when the user asks to run, build or refresh the IO project report.
+argument-hint: "[optional period, e.g. 'since 2026-10-12' or 'last 3 days']"
+---
+
+# Run the IO Project Assistant report
+
+The user may not be technical. Speak plainly, keep progress updates to one short line each, and never show raw JSON, stack traces or tokens unless they ask.
+
+## 1. Quick pre-flight (stop at the first failure)
+
+Run these checks yourself; if one fails, tell the user in one sentence what is missing and that `/ioproject-assistant:setup` fixes it, then stop.
+
+- Python: `python --version` prints Python 3.10 or newer.
+- Tokens file: `test -s "$HOME/.ioassistant/secrets.env"` succeeds. Never print its contents.
+- Folder: on Windows, `pwd -W | wc -c` is under 140 (longer paths break the report files).
+- Microsoft 365 connector: ToolSearch `select:mcp__claude_ai_Microsoft_365__get_me` returns a tool other than `authenticate`.
+
+## 2. Run the pipeline
+
+Launch the Agent tool with `subagent_type: "ioproject-assistant:orchestrator"`. Prompt: "Run the daily IO Project Assistant pipeline." Add the analysis period only if the user gave one: `$ARGUMENTS`. Say once that a run usually takes 10-20 minutes.
+
+## 3. Finish the spending report
+
+Per the `ioproject-assistant:spend-tracking` skill: in `output/<RUN_ID>/usage.json`, replace the `orchestrator` placeholder row with the orchestrator's own Agent result usage (total tokens, duration in seconds, model `claude-opus-5-5`), then run:
+
+```bash
+PYTHONPATH="${CLAUDE_PLUGIN_ROOT}/src" python -m ioassistant.cli spend output/<RUN_ID>/usage.json
+```
+
+The SharePoint copy of the spending report was uploaded before this step; say that only the local copy has the final orchestrator figures.
+
+## 4. Tell the user what they got
+
+A short summary, plain language:
+- Where the report is on this computer (`output/<RUN_ID>/<RUN_ID>.html`, full path) and its SharePoint link.
+- The Outlook draft link (it is **not sent**; they review and send it themselves).
+- The Confluence draft page link.
+- Projects needing attention (At risk / Off track), one line each.
+- Any data gaps, one line each, with what the user can do about them (for example "Jira: token expired; run /ioproject-assistant:setup").

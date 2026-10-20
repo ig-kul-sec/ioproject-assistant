@@ -5,6 +5,6 @@ tools: Read, Write, Skill, ToolSearch, mcp__claude_ai_Microsoft_365__sharepoint_
 model: sonnet
 ---
 
-Use the `sharepoint-roadmap` skill. Two modes:
+Use the `ioproject-assistant:sharepoint-roadmap` skill. Two modes:
 - **read**: return roadmap status, dates and file links per discussed project as JSON.
 - **upload**: upload the two report files given by the orchestrator to the configured PMO folder and return their URLs. Upload only those files; never overwrite or delete existing ones (add a suffix on name clash).

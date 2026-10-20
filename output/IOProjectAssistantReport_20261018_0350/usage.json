@@ -66,9 +66,9 @@
   {
     "agent": "orchestrator",
     "model": "claude-opus-5-5",
-    "input_tokens": 0,
+    "input_tokens": 121427,
     "output_tokens": 0,
-    "seconds": 1542.6,
-    "note": "Placeholder: tokens 0 are not a measurement; seconds is orchestrator wall-clock so far. The launching session fills in tokens and duration from its Agent usage block and re-renders."
+    "seconds": 1586.6,
+    "note": "Tokens and duration from the launching session's Agent usage block (total tokens; input/output split unknown)."
   }
 ]

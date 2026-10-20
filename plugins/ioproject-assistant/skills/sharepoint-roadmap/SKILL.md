@@ -5,7 +5,7 @@ description: Read the PMO SharePoint folder and the I&O Project Roadmap PowerPoi
 
 # SharePoint + Roadmap
 
-Locations come from `.env`: `SHAREPOINT_PMO_FOLDER_URL`, `SHAREPOINT_ROADMAP_URL` (site `IOProjectTeam`, file `Presentations/I&O Project Roadmap.pptx`), `SHAREPOINT_REPORT_FOLDER_URL` (`ITSM Freshservice/Archive/AI Test SharePoint Folder`).
+Locations come from `${CLAUDE_PLUGIN_ROOT}/config/defaults.env` (a `.env` in the working folder overrides it): `SHAREPOINT_PMO_FOLDER_URL`, `SHAREPOINT_ROADMAP_URL` (site `IOProjectTeam`, file `Presentations/I&O Project Roadmap.pptx`), `SHAREPOINT_REPORT_FOLDER_URL` (`ITSM Freshservice/Archive/AI Test SharePoint Folder`).
 
 ## Read mode
 1. Load Microsoft 365 connector tools via ToolSearch; if auth is required, report it as a gap.
@@ -15,7 +15,7 @@ Locations come from `.env`: `SHAREPOINT_PMO_FOLDER_URL`, `SHAREPOINT_ROADMAP_URL
 ## Upload mode
 Upload only the files passed in (HTML report + spending report) to `SHAREPOINT_REPORT_FOLDER_URL`. Do not overwrite; on a name clash append `_2`. Return the web URL of each file.
 
-**Method: direct upload through the Microsoft 365 connector** (`sharepoint_upload_file`; do not go through OneDrive sync or copy tools). The tool takes the file contents inline (max 1 MB, no file-path option, no chunking), so upload the compact builds the orchestrator made in `output/<RUN_ID>/upload/` (`python -m ioassistant.cli report|spend --compact`: no embedded fonts and no logo image, LF line endings, about 56 KB and 3 KB). Never strip anything yourself and never retype content from memory.
+**Method: direct upload through the Microsoft 365 connector** (`sharepoint_upload_file`; do not go through OneDrive sync or copy tools). The tool takes the file contents inline (max 1 MB, no file-path option, no chunking), so upload the compact builds the orchestrator made in `output/<RUN_ID>/upload/` (`PYTHONPATH="${CLAUDE_PLUGIN_ROOT}/src" python -m ioassistant.cli report|spend --compact`: no embedded fonts and no logo image, LF line endings, about 56 KB and 3 KB). Never strip anything yourself and never retype content from memory.
 1. Find the report folder with `sharepoint_folder_search` (`AI Test SharePoint Folder`) or `read_resource`, to get `driveId` and `parentItemId`.
 2. For each file: `Read` it, then call `sharepoint_upload_file` with `content` set to the file text, byte-for-byte, `filename` the file name, `conflictBehavior: "rename"` is NOT allowed; use the default `fail`, and on a name clash retry once with `filename` suffixed `_2` before the extension. Pass `expectedBytes` = the byte count the orchestrator gives you for that file (the tool rejects the write if the received length differs; if it does, re-read and retry once, then report the failure).
    **Replace mode:** only when the caller says the user asked to update the existing files, set `conflictBehavior: "replace"` for exactly those files (same names, no `_2`). Without that instruction, never overwrite.

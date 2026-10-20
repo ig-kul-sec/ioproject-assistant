@@ -1,7 +1,7 @@
 """Agent definitions must have a valid front matter: a bad one makes the agent vanish from the session."""
 from pathlib import Path
 
-AGENTS = sorted((Path(__file__).resolve().parents[1] / ".claude" / "agents").glob("*.md"))
+AGENTS = sorted((Path(__file__).resolve().parents[1] / "plugins" / "ioproject-assistant" / "agents").glob("*.md"))
 
 
 def _front_matter(path: Path) -> dict:
