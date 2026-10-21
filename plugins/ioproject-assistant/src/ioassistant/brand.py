@@ -174,7 +174,7 @@ document.querySelectorAll('table').forEach(function(t){
    var asc=h.getAttribute('data-dir')!=='asc';
    t.querySelectorAll('th').forEach(function(x){x.removeAttribute('data-dir')});
    h.setAttribute('data-dir',asc?'asc':'desc');
-   var rows=Array.prototype.filter.call(t.rows,function(r){return r.querySelector('td')});
+   var rows=Array.prototype.filter.call(t.rows,function(r){return r.querySelector('td')&&r.parentNode.tagName!=='TFOOT'});
    if(!rows.length)return;var par=rows[0].parentNode;
    rows.sort(function(a,b){
     var x=a.cells[i]?val(a.cells[i]):'',y=b.cells[i]?val(b.cells[i]):'';

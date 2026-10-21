@@ -29,20 +29,24 @@ def cost(row: dict, pricing: dict):
 
 def render(rows: list[dict], pricing: dict, title: str, compact: bool = False) -> str:
     body, total, unpriced = "", 0.0, False
+    tokens = seconds = 0
     for r in rows:
         c = cost(r, pricing)
         unpriced |= c is None
         total += c or 0.0
+        tokens += r["input_tokens"] + r["output_tokens"]
+        seconds += r["seconds"]
         body += (
             f"<tr><td>{escape(r['agent'])}</td><td>{escape(r['model'])}</td>"
             f"<td>{r['input_tokens'] + r['output_tokens']:,}</td><td>{r['seconds']:.1f}</td>"
             f"<td>{'n/a' if c is None else f'{c:.2f}$'}</td></tr>"
         )
     priced = any(cost(r, pricing) is not None for r in rows)
-    if not priced:
-        total_txt = "n/a (no model prices configured)"
-    else:
-        total_txt = f"{total:.2f}$" + (" (partial: some models have no price)" if unpriced else "")
+    total_cell = f"{total:.2f}$" if priced else "n/a"
+    price_note = (
+        "<p class='lbl'>No model prices are configured, so the cost total is n/a.</p>" if not priced
+        else "<p class='lbl'>Some models have no price, so the cost total is partial.</p>" if unpriced else ""
+    )
     return (
         brand.head(f"{title} spending", fonts=not compact)
         + "<body>"
@@ -50,7 +54,8 @@ def render(rows: list[dict], pricing: dict, title: str, compact: bool = False) -
                        note_html=brand.sharepoint_note(f"{title}_spending.html"))
         + "<main class='wrap'><h2>Usage by agent</h2>"
         "<table><tr><th>Agent</th><th>Model</th><th>Tokens</th><th>Seconds</th><th>Est. cost (USD)</th></tr>"
-        f"{body}</table><p><b>Total:</b> {total_txt}</p>"
+        f"{body}<tfoot><tr class='total'><td><b>Total</b></td><td></td><td><b>{tokens:,}</b></td>"
+        f"<td><b>{seconds:.1f}</b></td><td><b>{total_cell}</b></td></tr></tfoot></table>{price_note}"
         f"<p class='lbl'>Rough estimate: token totals are split {round(100 * (1 - (pricing.get('_output_share') or 0)))}% input / "
         f"{round(100 * (pricing.get('_output_share') or 0))}% output at list prices; caching discounts are ignored.</p>"
         + brand.footer() + "</main>" + brand.foot()

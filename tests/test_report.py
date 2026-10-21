@@ -122,6 +122,13 @@ def test_sprint_status_subsections(tmp_path):
     assert "Past sprint" not in only and "<span>1</span> Current sprint" in only
 
 
+def test_spend_total_row_sums_tokens_seconds_cost():
+    rows = [{"agent": "a", "model": "claude-sonnet-5-5", "input_tokens": 1000, "output_tokens": 0, "seconds": 10.5},
+            {"agent": "b", "model": "claude-opus-5-5", "input_tokens": 2000, "output_tokens": 0, "seconds": 4.5}]
+    html = spend.render(rows, spend.load_pricing(), "R")
+    assert "<tfoot><tr class='total'><td><b>Total</b></td><td></td><td><b>3,000</b></td><td><b>15.0</b></td><td><b>0.01$</b></td>" in html
+
+
 def test_analysis_period_and_generated_format():
     out = report._range({"from": "2026-10-12T00:00:00-04:00", "to": "2026-10-17T19:07:00Z"})
     assert out == "Analysis period: 2026.10.12 - 2026.10.17 15:07 EDT"
@@ -155,14 +162,14 @@ def test_report_features(tmp_path):
     assert "Project Manager: <b>Pat</b>" in html and "Technical Lead: <b>Lee</b>" in html
     assert "Generated: 2026.10.17 11:16 EDT" in html
     assert "id='expand-projects'" in html and html.count("<svg viewBox='0 0 24 24'") == 3 and "Expand Proj+SubItems" in html
-    assert html.index("class='kpis'") < html.index("id='collapse-all'") < html.index("Projects at a glance")
+    assert html.index("class='kpis'") < html.index("id='collapse-all'") < html.index("<h2>Projects at a glance")
     head = html[html.index("<header"):html.index("</header>")]
     assert "Sectigo&copy;" not in head  # both lines are at the end
     assert html.rindex("IO Project Assistant</b>") > html.rindex("Sprint status")
     assert html.rindex("Sectigo&copy; 2026") > html.rindex("Version: ") and html.count("<footer>") == 1
     assert "class='about'" not in html  # same plain footer as the spending report
-    assert '<details class="top fold" open><summary class="top"><h2>Projects at a glance</h2>' in html
-    assert '<details class="top" open><summary class="top"><h2>Sprint status</h2>' in html
+    assert '<details class="top fold" id="glance" open><summary class="top"><h2>Projects at a glance</h2>' in html
+    assert '<details class="top" id="sprint" open><summary class="top"><h2>Sprint status</h2>' in html
     assert "id='collapse-all'" in html and '<details class="card"' in html and "th.sortable" in html
     assert "I&amp;O PROJECT STATUS REPORT" in html
     assert "SharePoint Report Archive Link</a>" in html and "Confluence ITSM Parent Page</a>" in html
@@ -172,6 +179,17 @@ def test_report_features(tmp_path):
     head = html[html.index("<header"):html.index("</header>")]
     assert head.index("Analysis period") < head.index("SharePoint Report Archive") < head.index("Generated:")
     assert "2026-09-11T" not in html
+
+
+def test_contents_rail_links_sections_and_projects():
+    data = {"gaps": ["Jira: token expired"], "projects": [{"name": "Rubrik"}, {"name": "Oracle RAC"}]}
+    html = report.render(data, "R")
+    nav = html[html.index("<nav class='toc'"):html.index("</nav>")]
+    assert html.index("<nav class='toc'") < html.index("<main>") and "class='wrap layout'" in html
+    for target in ("summary", "glance", "ops", "sprint", "gaps"):
+        assert f"href='#{target}'" in nav and (f"id='{target}'" in html or f'id="{target}"' in html)
+    assert nav.count("class='dot ") == 2 and "Rubrik</a>" in nav and "Oracle RAC</a>" in nav
+    assert "href='#gaps'" not in report.render({"projects": []}, "R")
 
 
 def test_compact_build_is_smaller_and_restores_links(tmp_path):

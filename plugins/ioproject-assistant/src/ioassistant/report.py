@@ -343,10 +343,33 @@ def _non_project(items, base: str) -> str:
     )
 
 
-def _top(title: str, body: str, fold: bool = False) -> str:
+def _top(title: str, body: str, fold: bool = False, ident: str = "") -> str:
     """Top-level report section that the Collapse all / Expand buttons also control.
-    fold=True: "Expand Proj+SubItems" closes it (the project view hides the overview and the gap list)."""
-    return f'<details class="top{" fold" if fold else ""}" open><summary class="top"><h2>{escape(title)}</h2></summary>{body}</details>'
+    fold=True: "Expand Proj+SubItems" closes it (the project view hides the overview and the gap list).
+    ident is the anchor the contents rail on the left links to."""
+    anchor = f' id="{ident}"' if ident else ""
+    return f'<details class="top{" fold" if fold else ""}"{anchor} open><summary class="top"><h2>{escape(title)}</h2></summary>{body}</details>'
+
+
+def _contents(projects: list, has_gaps: bool) -> str:
+    """Sticky contents rail on the left (like the guide): section links, then one link per project with its status dot."""
+    def group(text: str) -> str:
+        return f"<div class='grp'>{escape(text)}</div>"
+
+    def link(href: str, text: str, dot: str = "") -> str:
+        mark = f"<i class='dot {dot}'></i>" if dot else ""
+        return f"<a href='#{href}'>{mark}{escape(text)}</a>"
+
+    return (
+        "<nav class='toc' aria-label='Contents'>"
+        + group("Overview") + link("summary", "Summary") + link("glance", "Projects at a glance")
+        + group("Project status")
+        + "".join(link(_anchor(p.get("name")), str(p.get("name") or NA), _rag(p)[1]) for p in projects)
+        + group("More")
+        + link("ops", "Daily Ops health and incidents") + link("sprint", "Sprint status")
+        + (link("gaps", "Data gaps") if has_gaps else "")
+        + "</nav>"
+    )
 
 
 def _people(p: dict) -> str:
@@ -373,6 +396,22 @@ def _project(p: dict, base: str = JIRA_BROWSE, compact: bool = False, sprint_of:
 
 
 EXTRA_CSS = """
+.wrap{max-width:1360px}
+.layout{display:grid;grid-template-columns:220px minmax(0,1fr);gap:48px;padding-top:32px;padding-bottom:48px}
+.layout>main{min-width:0}
+.layout>main>h2:first-child{margin-top:0}
+nav.toc{position:sticky;top:16px;align-self:start;max-height:calc(100vh - 32px);overflow-y:auto;font-size:14px;display:grid;gap:2px;padding-top:6px}
+nav.toc a{text-decoration:none;color:var(--off-black);opacity:.75;padding:3px 0;display:flex;align-items:center;gap:8px}
+nav.toc a:hover{opacity:1;background:none;color:var(--forest);text-decoration:underline;text-decoration-color:var(--spearmint)}
+nav.toc .grp{margin-top:14px;font-weight:700;color:var(--forest);font-family:'Urbanist',Arial,sans-serif}
+nav.toc .grp:first-child{margin-top:0}
+nav.toc .dot{flex:none;width:10px;height:10px;border-radius:50%;border:1px solid var(--off-black)}
+nav.toc .dot.ok{background:var(--spearmint);border-color:var(--forest)}
+nav.toc .dot.risk{background:var(--scout)}
+nav.toc .dot.off{background:var(--coral)}
+html{scroll-behavior:smooth}
+@media (max-width:900px){.layout{grid-template-columns:minmax(0,1fr)}nav.toc{display:none}}
+@media print{nav.toc{display:none}.layout{display:block}}
 p.tools{margin:20px 0 0}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px}
 .kpi{background:var(--forest);color:var(--off-white);border-radius:12px;padding:18px 20px}
@@ -500,7 +539,8 @@ def _render(data: dict, title: str, compact: bool) -> str:
         for p in projects
     )
     gap_html = (
-        _top("Data gaps", f"<p>{len(gaps)} gaps in this run</p>" + _ul([f"<li>{_rich(g, base)}</li>" for g in gaps]), fold=True)
+        _top("Data gaps", f"<p>{len(gaps)} gaps in this run</p>" + _ul([f"<li>{_rich(g, base)}</li>" for g in gaps]),
+             fold=True, ident="gaps")
         if gaps else ""
     )
     return (
@@ -509,8 +549,10 @@ def _render(data: dict, title: str, compact: bool) -> str:
         + brand.banner("I&O PROJECT STATUS REPORT", f"Generated: {_stamp(data.get('generated_at'))}",
                        _range(data.get("window")), compact=compact, note_html=brand.header_links(),
                        subtitle_last=True)
-        + "<main class='wrap'>"
-        f"<h2>Summary</h2><div class='kpis'>{kpis}</div>"
+        + "<div class='wrap layout'>"
+        + _contents(projects, bool(gaps))
+        + "<main>"
+        f"<h2 id='summary'>Summary</h2><div class='kpis'>{kpis}</div>"
         "<p class='tools'>"
         + _tool("collapse-all", "Collapse all", ICON_COLLAPSE)
         + _tool("expand-all", "Expand all", ICON_EXPAND)
@@ -518,14 +560,14 @@ def _render(data: dict, title: str, compact: bool) -> str:
         + "</p>"
         + _top("Projects at a glance",
                "<table><tr><th>Project</th><th>Status</th><th>Progress</th><th>Timeline</th><th>Top risk</th></tr>"
-               f"{glance}</table>", fold=True)
+               f"{glance}</table>", fold=True, ident="glance")
         + "<h2>Project status</h2>"
         f"{''.join(_project(p, base, compact, sprint_of) for p in projects)}"
-        + _top(OPS_TITLE, _non_project(non_project, base), fold=True)
-        + _top("Sprint status", _sprint(sprint, past))
+        + _top(OPS_TITLE, _non_project(non_project, base), fold=True, ident="ops")
+        + _top("Sprint status", _sprint(sprint, past), ident="sprint")
         + gap_html
         + brand.footer()
-        + "</main>" + brand.foot(base)
+        + "</main></div>" + brand.foot(base)
     )
 
 
