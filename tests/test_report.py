@@ -181,6 +181,12 @@ def test_report_features(tmp_path):
     assert "2026-09-11T" not in html
 
 
+def test_compact_build_is_ascii_safe_for_upload():
+    data = {"projects": [{"name": "P", "summary": [{"text": "a · b – c"}]}]}
+    small = report.render(data, "R", compact=True)
+    assert "·" not in small and "–" not in small and "&middot;" in small
+
+
 def test_contents_rail_links_sections_and_projects():
     data = {"gaps": ["Jira: token expired"], "projects": [{"name": "Rubrik"}, {"name": "Oracle RAC"}]}
     html = report.render(data, "R")

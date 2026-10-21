@@ -485,7 +485,7 @@ def _shrink(html: str, base: str) -> str:
     # "correct" when the file is pasted into the upload call
     html = html.replace(LINK_ATTRS, "").replace("&#x27;", "'")
     # plain-ASCII look-alikes for characters that get altered in transit (no-break space, en dash)
-    html = html.replace("&nbsp;", " ").replace("–", "-")
+    html = html.replace("&nbsp;", " ").replace("–", "-").replace("·", "&middot;")
     return _unentity(html)
 
 
