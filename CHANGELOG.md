@@ -6,11 +6,14 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
-## [0.4.0] - in development (DEV)
+## [0.4.0] - 2026-10-23
 
 ### Added
+- Sprint charts (Sprint management tab): at-a-glance tiles, tickets by status (workflow order: Backlog, To Do, In Progress, QA, On Hold, Unassigned, Done), tickets by team, tickets by employee, and "Engineers without tickets assigned in sprint" (with the team manager).
+- Teams (DBA, Network, SRE Tier 2, SRE Tier 3, Other) follow the reporting lines in Ardoq, not the roadmap deck: bundled Ardoq MCP server (`.mcp.json`), new `org-collector` agent that refreshes the roster, and a bundled snapshot `config/org-teams.json` used (and flagged as a data gap) when Ardoq is not signed in. The setup skill has an Ardoq sign-in step.
+- Sprint management tab starts with a JIRA ScrumBoard link, then "Sprint charts" and "JIRA tickets" sections.
 - Contents rail on the status report, with a "Go to the top" link.
-- Tabs under the Collapse/Expand buttons: Projects, Sprint management and Data gaps (Sprint status and Data gaps moved into their tabs).
+- Tabs under the Collapse/Expand buttons: Projects, Operations, Sprint management and Data gaps (Sprint status and Data gaps moved into their tabs).
 - Spending report totals row, footer links, sprint column and sprint subsections.
 - Runs from the `DEV` branch use the `DEV_` file-name prefix and show a red "DEV:" before the report title.
 - This changelog.
