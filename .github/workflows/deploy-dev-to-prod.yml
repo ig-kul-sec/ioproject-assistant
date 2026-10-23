@@ -3,8 +3,8 @@ run-name: Deployment ${{ inputs.version }} from DEV to ${{ inputs.publish && 'PR
 
 # Manual pipeline. DEV is the working branch, main is PROD. The repository is also the marketplace
 # "sectigo-io-tools": colleagues get a new version when main holds a higher plugin version and they update.
-# Stage 1 checks DEV. Stage 2 (needs the "production" environment, add required reviewers there for an approval
-# step) fast-forwards main to DEV, tags vX.Y.Z, and publishes a GitHub Release with the packaged plugin.
+# Stage 1 checks DEV. Stage 2 fast-forwards main to DEV, tags vX.Y.Z, and publishes a GitHub Release with the
+# packaged plugin. main is PROD; there is no separate production environment.
 on:
   workflow_dispatch:
     inputs:
@@ -92,7 +92,6 @@ jobs:
     needs: verify
     if: ${{ inputs.publish }}
     runs-on: ubuntu-latest
-    environment: production
     permissions:
       contents: write
     steps:

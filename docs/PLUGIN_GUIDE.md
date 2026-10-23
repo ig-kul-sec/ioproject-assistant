@@ -141,7 +141,7 @@ Also check they have the access the report needs (see B0).
 | Stage | What happens |
 |---|---|
 | 1. Verify DEV | The version is `X.Y.Z`, equals `plugin.json` on DEV and is higher than PROD; the tag does not exist; the changelog has a dated section for it; `main` has nothing that DEV lacks (PROD only moves forward). No tracked secret files or token values, no `bin/` folder (claude.ai organization sync rejects it), no report output inside the plugin. `python -m pytest` must pass. `claude plugin validate --strict` runs too but is advisory. |
-| 2. Deploy (job "production") | Fast-forwards `main` to DEV, tags `vX.Y.Z`, packages the plugin folder as `ioproject-assistant-X.Y.Z.zip`, publishes a GitHub Release (notes from the changelog, zip attached), then checks that `main` ships that version and the marketplace lists the plugin. |
+| 2. Deploy to PROD (`main`) | Fast-forwards `main` to DEV, tags `vX.Y.Z`, packages the plugin folder as `ioproject-assistant-X.Y.Z.zip`, publishes a GitHub Release (notes from the changelog, zip attached), then checks that `main` ships that version and the marketplace lists the plugin. |
 
 **How each audience gets it**
 - **GitHub marketplace colleagues:** type `/plugin marketplace update sectigo-io-tools` and restart Claude, or leave auto-update on. Nothing else to do.
@@ -150,8 +150,9 @@ Also check they have the access the report needs (see B0).
 
 **One-time setup in GitHub (repository Settings)**
 1. **Actions** must be enabled. The workflow file must be on `main` before it appears in the Actions list, so merge it once by hand.
-2. **Environments** → create `production` and add yourself (or a second person) under *Required reviewers* if you want an approval click before anything is published.
-3. If `main` is protected, allow `github-actions[bot]` to push to it (ruleset bypass), or the deploy stage fails at the push.
+2. If `main` is protected, allow `github-actions[bot]` to push to it (ruleset bypass), or the deploy stage fails at the push.
+
+`main` is PROD. There is no separate production environment and no approval step: starting the workflow with "Publish to PROD" ticked is the approval, so use the dry run first.
 
 # Part B: Using the plugin (colleagues)
 
