@@ -1,0 +1,158 @@
+name: Deployment from DEV to PROD
+run-name: Deployment ${{ inputs.version }} from DEV to ${{ inputs.publish && 'PROD' || 'PROD (dry run)' }}
+
+# Manual pipeline. DEV is the working branch, main is PROD. The repository is also the marketplace
+# "sectigo-io-tools": colleagues get a new version when main holds a higher plugin version and they update.
+# Stage 1 checks DEV. Stage 2 (needs the "production" environment, add required reviewers there for an approval
+# step) fast-forwards main to DEV, tags vX.Y.Z, and publishes a GitHub Release with the packaged plugin.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version X.Y.Z (must equal "version" in plugin.json on DEV)'
+        required: true
+        type: string
+      publish:
+        description: 'Publish to PROD. Untick for a dry run (checks only).'
+        required: true
+        type: boolean
+        default: true
+
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  PLUGIN: plugins/ioproject-assistant
+  VERSION: ${{ inputs.version }}
+
+jobs:
+  verify:
+    name: 1. Verify DEV
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: DEV
+          fetch-depth: 0
+
+      - name: Release rules (version, changelog, history)
+        run: |
+          set -euo pipefail
+          fail() { echo "::error::$1"; exit 1; }
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || fail "Version must look like 1.2.3, got '$VERSION'"
+          git fetch -q origin main --tags
+          manifest() { python3 -c "import json,sys;print(json.load(sys.stdin)['version'])"; }
+          dev=$(manifest < "$PLUGIN/.claude-plugin/plugin.json")
+          prod=$(git show "origin/main:$PLUGIN/.claude-plugin/plugin.json" | manifest)
+          [ "$dev" = "$VERSION" ] || fail "plugin.json on DEV says $dev, not $VERSION. Bump it first."
+          python3 - "$prod" "$VERSION" <<'PY' || fail "Version $VERSION is not higher than PROD ($prod). Colleagues only update when it increases."
+          import sys
+          cur, new = (tuple(int(p) for p in v.split(".")) for v in sys.argv[1:3])
+          sys.exit(0 if new > cur else 1)
+          PY
+          if git rev-parse -q --verify "refs/tags/v$VERSION" >/dev/null; then fail "Tag v$VERSION already exists"; fi
+          grep -Eq "^## \[$VERSION\] - [0-9]{4}-[0-9]{2}-[0-9]{2}[[:space:]]*$" CHANGELOG.md \
+            || fail "CHANGELOG.md needs a dated section '## [$VERSION] - yyyy-mm-dd' (not 'in development')"
+          git merge-base --is-ancestor origin/main HEAD \
+            || fail "main has commits that DEV does not. Merge main into DEV first (PROD only moves forward)."
+          echo "PROD $prod -> $VERSION; $(git rev-list --count origin/main..HEAD) commit(s) to deploy"
+
+      - name: Repository hygiene (nothing secret or unsupported ships)
+        run: |
+          set -euo pipefail
+          fail() { echo "::error::$1"; exit 1; }
+          if git ls-files | grep -Ei '(^|/)(\.env|secrets\.env)$'; then fail "Secret file is tracked"; fi
+          if git ls-files "$PLUGIN" | grep -Ei '\.(pem|key|pfx|p12)$'; then fail "Key material inside the plugin"; fi
+          [ ! -e "$PLUGIN/bin" ] || fail "Plugin has a bin/ folder (claude.ai organization sync rejects it)"
+          if git ls-files "$PLUGIN" | grep -E '(^|/)output/'; then fail "Report output inside the plugin"; fi
+          if git grep -nIE '(JIRA|CONFLUENCE)_API_TOKEN=[A-Za-z0-9]{12,}' -- . ; then fail "A token value is committed"; fi
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Tests
+        run: |
+          python -m pip install --quiet -r requirements.txt
+          python -m pytest -q
+
+      - name: Plugin validation (claude plugin validate --strict)
+        # Advisory: the CLI download or its checks can change independently of this repository.
+        continue-on-error: true
+        run: |
+          npm install --global --silent @anthropic-ai/claude-code
+          claude plugin validate "$PLUGIN" --strict
+
+  deploy:
+    name: 2. Merge to main, tag and release
+    needs: verify
+    if: ${{ inputs.publish }}
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Fast-forward main to DEV (PROD)
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch -q origin DEV
+          git merge --ff-only origin/DEV
+          git push origin main
+
+      - name: Tag
+        run: |
+          set -euo pipefail
+          git tag -a "v$VERSION" -m "IO Project Assistant $VERSION"
+          git push origin "v$VERSION"
+
+      - name: Package the plugin and write release notes
+        run: |
+          set -euo pipefail
+          ZIP="ioproject-assistant-$VERSION.zip"
+          # the plugin folder only (what end users install): also the upload for the claude.ai organization library
+          git archive --format=zip --prefix=ioproject-assistant/ -o "$ZIP" "HEAD:$PLUGIN"
+          {
+            awk -v h="## [$VERSION] - " 'index($0,h)==1 {f=1; next} /^## / {f=0} f' CHANGELOG.md
+            echo
+            echo "### How end users get this version"
+            echo '- **GitHub marketplace:** `/plugin marketplace update sectigo-io-tools`, then restart Claude (or turn on auto-update for the marketplace in `/plugin`).'
+            echo "- **Organization library (claude.ai):** the owner uploads the attached \`$ZIP\`; an admin approves."
+            echo "- **Shared folder:** replace the files in the shared folder with the attached \`$ZIP\`, then users run \`/plugin marketplace update sectigo-io-tools\`."
+          } > notes.md
+          [ "$(sed -n '1,/^### How end users/p' notes.md | grep -c '[^[:space:]]')" -gt 1 ] \
+            || { echo "::error::No release notes found for $VERSION in CHANGELOG.md"; exit 1; }
+          echo "ZIP=$ZIP" >> "$GITHUB_ENV"
+
+      - name: GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v$VERSION" "$ZIP" --title "IO Project Assistant $VERSION" --notes-file notes.md --verify-tag
+
+      - name: Confirm what end users will receive
+        run: |
+          set -euo pipefail
+          git fetch -q origin main
+          shipped=$(git show "origin/main:$PLUGIN/.claude-plugin/plugin.json" | python3 -c "import json,sys;print(json.load(sys.stdin)['version'])")
+          [ "$shipped" = "$VERSION" ] || { echo "::error::main ships $shipped, expected $VERSION"; exit 1; }
+          git show origin/main:.claude-plugin/marketplace.json | python3 -c "
+          import json,sys
+          m = json.load(sys.stdin)
+          assert any(p['name'] == 'ioproject-assistant' for p in m['plugins']), 'plugin missing from the marketplace catalog'
+          print('marketplace', m['name'], 'lists ioproject-assistant')"
+          {
+            echo "## Deployed $VERSION to PROD"
+            echo "- main: \`$(git rev-parse --short origin/main)\`, tag \`v$VERSION\`, release with \`$ZIP\`"
+            echo "- Colleagues: \`/plugin marketplace update sectigo-io-tools\` and restart Claude"
+          } >> "$GITHUB_STEP_SUMMARY"

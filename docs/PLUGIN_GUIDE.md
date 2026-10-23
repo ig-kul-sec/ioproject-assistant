@@ -49,7 +49,7 @@ Nothing secret is in the plugin. Tokens live only on each person's computer in `
 3. Check the plugin: `claude plugin validate plugins/ioproject-assistant --strict`. It must say **Validation passed**.
 4. Try it yourself in a scratch folder: `claude --plugin-dir "<repo>/plugins/ioproject-assistant"`, then `/ioproject-assistant:setup`.
 5. **Raise the version** in `plugins/ioproject-assistant/.claude-plugin/plugin.json` (for example `0.3.2` → `0.3.3`). Colleagues only receive updates when this number changes.
-6. Commit and push to GitHub.
+6. Commit and push to `DEV`, then run the pipeline "Deployment from DEV to PROD" (A6). It repeats the checks, moves `main` to this version, tags it and publishes the release.
 
 ## A3. Choose how colleagues get it
 
@@ -129,6 +129,29 @@ Also check they have the access the report needs (see B0).
 - The report footer always names the plugin author and repository. The Outlook draft is CC'd to whoever runs it (their "Your work email" setting).
 
 ---
+
+## A6. Deployment pipeline: "Deployment from DEV to PROD"
+
+`DEV` is where you work, `main` is PROD. The repository is the marketplace, so a new version reaches colleagues when `main` holds a **higher** `version` in `plugin.json` and they update. The pipeline (`.github/workflows/deploy-dev-to-prod.yml`) does this safely and the same way every time.
+
+**Run it:** GitHub → **Actions** → **Deployment from DEV to PROD** → **Run workflow**. Enter the version (for example `0.4.2`). Untick **Publish to PROD** for a dry run that only checks.
+
+**Before you run it (on DEV):** set `version` in `plugin.json`, and turn the top changelog heading into a dated one (`## [0.4.2] - 2026-10-30`).
+
+| Stage | What happens |
+|---|---|
+| 1. Verify DEV | The version is `X.Y.Z`, equals `plugin.json` on DEV and is higher than PROD; the tag does not exist; the changelog has a dated section for it; `main` has nothing that DEV lacks (PROD only moves forward). No tracked secret files or token values, no `bin/` folder (claude.ai organization sync rejects it), no report output inside the plugin. `python -m pytest` must pass. `claude plugin validate --strict` runs too but is advisory. |
+| 2. Deploy (job "production") | Fast-forwards `main` to DEV, tags `vX.Y.Z`, packages the plugin folder as `ioproject-assistant-X.Y.Z.zip`, publishes a GitHub Release (notes from the changelog, zip attached), then checks that `main` ships that version and the marketplace lists the plugin. |
+
+**How each audience gets it**
+- **GitHub marketplace colleagues:** type `/plugin marketplace update sectigo-io-tools` and restart Claude, or leave auto-update on. Nothing else to do.
+- **Organization library (claude.ai):** download the zip from the release and upload it (admin approval applies). This step cannot be automated from GitHub.
+- **Shared folder:** replace the folder content with the zip's, then colleagues run the update command.
+
+**One-time setup in GitHub (repository Settings)**
+1. **Actions** must be enabled. The workflow file must be on `main` before it appears in the Actions list, so merge it once by hand.
+2. **Environments** → create `production` and add yourself (or a second person) under *Required reviewers* if you want an approval click before anything is published.
+3. If `main` is protected, allow `github-actions[bot]` to push to it (ruleset bypass), or the deploy stage fails at the push.
 
 # Part B: Using the plugin (colleagues)
 
