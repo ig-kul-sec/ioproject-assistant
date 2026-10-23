@@ -1,3 +1,4 @@
+import re
 import json
 import tempfile
 from pathlib import Path
@@ -169,17 +170,17 @@ def test_report_features(tmp_path):
     assert html.index("class='kpis'") < html.index("id='collapse-all'") < html.index("<h2>Projects at a glance")
     head = html[html.index("<header"):html.index("</header>")]
     assert "Sectigo&copy;" not in head  # both lines are at the end
-    assert html.rindex("IO Project Assistant</b>") > html.rindex("Sprint status")
+    assert html.rindex("IO Project Assistant</b>") > html.rindex("JIRA tickets")
     assert html.rindex("Sectigo&copy; 2026") > html.rindex("Version: ") and html.count("<footer>") == 1
     assert "class='about'" not in html  # same plain footer as the spending report
     assert '<details class="top fold" id="glance" open><summary class="top"><h2>Projects at a glance</h2>' in html
-    assert '<details class="top" id="sprint" open><summary class="top"><h2>Sprint status</h2>' in html
+    assert '<details class="top" id="sprint" open><summary class="top"><h2>JIRA tickets</h2>' in html
     assert "id='collapse-all'" in html and '<details class="card"' in html and "th.sortable" in html
     assert "I&amp;O PROJECT STATUS REPORT" in html
     assert "SharePoint Report Archive Link</a>" in html and "Confluence ITSM Parent Page</a>" in html
     assert "display/CO/ITSM+Freshservice" in html
     assert "AI AGENT FACTORY</a>" in html and html.index("AI AGENT FACTORY</a>") < html.index("SharePoint Report Archive Link") and "JIRA ScrumBoard</a>" in html and html.count("rapidView=485&amp;projectKey=IOSP") == 2
-    assert "Sprint status</h2></summary><p><a " in html and "JIRA ScrumBoard Link</a>" in html
+    assert "JIRA ScrumBoard Link</a>" in html and html.index("JIRA ScrumBoard Link</a>") < html.index("<h2>Sprint charts</h2>") < html.index("<h2>JIRA tickets</h2>")
     head = html[html.index("<header"):html.index("</header>")]
     assert head.index("Analysis period") < head.index("SharePoint Report Archive") < head.index("Generated:")
     assert "2026-09-11T" not in html
@@ -196,7 +197,7 @@ def test_contents_rail_links_sections_and_projects():
     html = report.render(data, "R")
     nav = html[html.index("<nav class='toc'"):html.index("</nav>")]
     assert html.index("<nav class='toc'") < html.index("<main>") and "class='wrap layout'" in html
-    for target in ("summary", "glance", "ops", "sprint", "gaps"):
+    for target in ("summary", "glance", "ops", "sprint-charts", "sprint", "gaps"):
         assert f"href='#{target}'" in nav and (f"id='{target}'" in html or f'id="{target}"' in html)
     assert nav.count("class='dot ") == 2 and "Rubrik</a>" in nav and "Oracle RAC</a>" in nav
     assert "href='#gaps'" not in report.render({"projects": []}, "R")
@@ -214,12 +215,12 @@ def test_dev_run_gets_red_dev_prefix_in_both_banners():
     assert "DEV:" not in spend.render(row, {}, "IOProjectAssistantReport_20261023_1400")
 
 
-def test_tabs_split_projects_sprint_and_gaps():
+def test_tabs_split_projects_operations_sprint_and_gaps():
     data = {"gaps": ["Jira: token expired"], "projects": [{"name": "Rubrik"}]}
     html = report.render(data, "R")
     bar = html[html.index("<div class='tabs'"):html.index("</div>", html.index("<div class='tabs'"))]
-    labels = [t for t in ("Projects", "Sprint management", "Data gaps") if f">{t}</button>" in bar]
-    assert labels == ["Projects", "Sprint management", "Data gaps"]
+    labels = [t for t in ("Projects", "Operations", "Sprint management", "Data gaps") if f">{t}</button>" in bar]
+    assert labels == ["Projects", "Operations", "Sprint management", "Data gaps"]
     assert html.index("class='tools'") < html.index("class='tabs'") < html.index("id='tab-projects'")
 
     def panel(ident):
@@ -227,6 +228,7 @@ def test_tabs_split_projects_sprint_and_gaps():
         ends = [i for i in (html.find("<section class='tabpanel'", start + 1), html.index("</main>")) if i > 0]
         return html[start:min(ends)]
     assert 'id="glance"' in panel("tab-projects") and "Rubrik" in panel("tab-projects")
+    assert 'id="ops"' in panel("tab-ops") and 'id="ops"' not in panel("tab-projects")
     assert 'id="sprint"' in panel("tab-sprint") and 'id="sprint"' not in panel("tab-projects")
     assert 'id="gaps"' in panel("tab-gaps") and 'id="gaps"' not in panel("tab-sprint")
     no_gaps = report.render({"projects": []}, "R")
@@ -295,7 +297,7 @@ def test_daily_ops_section():
     assert html.index("Recurring OCSP latency") < html.index("DNS connector TCP errors")  # newest first
     assert 'href="https://projects.sectigo.net/browse/IOSP-9"' in html and "</a> (In Progress)" in html
     assert 'href="https://projects.sectigo.net/browse/RM-5"' in html and 'href="https://teams.example/m/2"' in html
-    assert html.index("incidents</h2>") < html.index("Sprint status</h2>")
+    assert html.index("incidents</h2>") < html.index("Sprint charts</h2>")
     assert "No Daily Ops operational updates in this period." in report.render({"projects": []}, "IOProjectAssistantReport_20261016_0900")
 
 
@@ -310,3 +312,71 @@ def test_repeated_source_links_are_merged_or_numbered():
     assert "sources (2)" in html
     assert html.count("https://teams.example/m/1") == 1
     assert "Standup recap 10/14 (1)" in html and "Standup recap 10/14 (2)" in html
+
+
+def test_sprint_charts_show_status_and_load_per_employee():
+    tickets = [
+        {"key": "IOSP-1", "status": "Done", "assignee": "Ann"},
+        {"key": "IOSP-2", "status": "In Progress", "assignee": "Ann"},
+        {"key": "IOSP-3", "status": "Backlog", "assignee": "Bob"},
+        {"key": "IOSP-4", "status": "Backlog"},
+    ]
+    html = report.render({"sprint": {"name": "S1", "tickets": tickets}, "projects": []}, "R")
+    assert "<h2>Sprint charts</h2>" in html and "Tickets by status" in html and "Tickets by employee" in html
+    assert "2 employees account for 3 of 4 tickets" in html and "1 unassigned" in html
+    assert "Tickets by status" not in report.render({"sprint": {"name": "S1", "tickets": []}, "projects": []}, "R")
+
+
+TEAMS = {"as_of": "2026-10-23", "teams": [
+    {"name": "DBA", "manager": "Prajeet Singh Kahlon", "manager_email": "prajeet.singh@sectigo.com",
+     "members": [{"name": "Vlad Serbanescu", "email": "vlad.serbanescu@sectigo.com"}]},
+    {"name": "Network", "manager": "Jaime Larsen", "members": [{"name": "Shane Feola"}]},
+]}
+
+
+def test_sprint_charts_group_tickets_by_team_from_ardoq_roster():
+    tickets = [
+        {"key": "IOSP-1", "status": "Done", "assignee": "Vlad Serbanescu"},
+        {"key": "IOSP-2", "status": "Open", "assignee": "Prajeet Singh Kahlon"},
+        {"key": "IOSP-3", "status": "Open", "assignee": "shane  feola"},
+        {"key": "IOSP-4", "status": "Open", "assignee": "Karl Witt"},
+        {"key": "IOSP-5", "status": "Open"},
+    ]
+    html = report.render({"sprint": {"name": "S1", "tickets": tickets}, "org_teams": TEAMS, "projects": []}, "R")
+    assert "Tickets by team" in html and "DBA (Prajeet Singh Kahlon)" in html and "Network (Jaime Larsen)" in html
+    assert "Other: Karl Witt (1)" in html and "live for this run" in html
+    assert "<td>DBA</td><td>Prajeet Singh Kahlon</td><td>2</td><td>2</td><td>1</td><td>1</td><td>1.0</td>" in html
+    assert "static snapshot" not in html  # a live roster raises no data gap
+
+
+def test_static_roster_snapshot_is_flagged_as_data_gap():
+    data = {"sprint": {"name": "S1", "tickets": [{"key": "IOSP-1", "status": "Open", "assignee": "Calvin Cochran"}]},
+            "projects": []}
+    html = report.render(data, "R")
+    assert "SRE Tier 2 (Calvin Cochran)" in html and "static snapshot dated" in html
+    assert "Ardoq was not connected for this run" in html and "id='tab-gaps'" in html
+
+
+def test_sprint_statuses_follow_workflow_order():
+    names = ["Done", "QA", "Unassigned", "Rejected", "On Hold", "In Progress", "To Do", "Backlog"]
+    tickets = [{"key": f"IOSP-{i}", "status": s} for i, s in enumerate(names, 1)]
+    html = report.render({"sprint": {"name": "S1", "tickets": tickets}, "projects": []}, "R")
+    chart = html[html.index("Tickets by status"):html.index("Tickets by team")]
+    order = [m.group(1) for m in re.finditer(r"<span class='bl'>([^<]+)</span>", chart)]
+    assert order == ["Backlog", "To Do", "In Progress", "QA", "On Hold", "Unassigned", "Done", "Rejected"]
+    table = html[html.index("All 8 sprint tickets"):]
+    keys = [int(k) for k in re.findall(r"<td>IOSP-(\d+)</td>", table)][:8]
+    assert keys == [8, 7, 6, 2, 5, 3, 1, 4]
+
+
+def test_idle_employees_per_team_listed_without_tickets():
+    tickets = [
+        {"key": "IOSP-1", "status": "Done", "assignee": "Vlad Serbanescu"},
+        {"key": "IOSP-2", "status": "Open", "assignee": "shane feola"},
+    ]
+    html = report.render({"sprint": {"name": "S1", "tickets": tickets}, "org_teams": TEAMS, "projects": []}, "R")
+    section = html[html.index("Engineers without tickets assigned in sprint"):]
+    section = section[:section.index("</table>")]
+    assert "<td>DBA</td><td>Prajeet Singh Kahlon</td><td>0 of 1</td><td>everyone has a ticket</td>" in section
+    assert "<td>Network</td><td>Jaime Larsen</td><td>0 of 1</td><td>everyone has a ticket</td>" in section
+    assert "Vlad Serbanescu" not in section and "Shane Feola" not in section

@@ -41,6 +41,10 @@ Load `mcp__claude_ai_Microsoft_365__get_me` with ToolSearch and call it.
 - Works: show the signed-in name and email and confirm it is them.
 - Not found, or only `authenticate` is available: tell the user to open https://claude.ai → **Settings** → **Connectors** → **Microsoft 365** → **Connect**, sign in with their Sectigo account and accept, then restart Claude. If Microsoft 365 is not in the list, their Claude admin has to enable it for the organization. Claude must be signed in with the company claude.ai account (`/login`), not an API key.
 
+## 3b. Ardoq (team reporting lines)
+
+The sprint workload chart groups tickets by team using the reporting lines in Ardoq. The plugin bundles the Ardoq server, so ask the user to type `/mcp`, pick **ardoq** and sign in with their Sectigo account once. If they skip it, the report still works: it uses the bundled roster snapshot (`config/org-teams.json`) and lists a data gap saying Ardoq was not connected. An Ardoq account with access to the Entra Users workspace is needed for live data.
+
 ## 4. Report folder
 
 Reports are written to `output/` inside the folder Claude was opened in. Show the current folder (`pwd`). If it is the home folder, the Desktop or a code project, suggest a dedicated folder such as `Documents/IO Reports`, offer to create it, and explain they should choose that folder each time they start Claude for reports.

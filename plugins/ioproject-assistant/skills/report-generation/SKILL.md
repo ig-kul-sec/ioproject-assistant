@@ -43,13 +43,13 @@ Per-project fields used by the per-project view (all optional; `jira_base_url` d
 }
 ```
 
-`past_sprints` is a list (oldest first) of objects shaped like `sprint`, one for every sprint that has ended but is not closed in Jira yet; leave it empty when there are none. (A single `past_sprint` object is still accepted.) "Sprint status" then shows one collapsible subsection per past sprint, titled "Past sprint <name> (not closed yet)", followed by "Current sprint <name>". A project ticket's `sprint` is its sprint name; when it is missing the report uses the current or a past sprint if the key is in that sprint's ticket list, else "n/a".
+`past_sprints` is a list (oldest first) of objects shaped like `sprint`, one for every sprint that has ended but is not closed in Jira yet; leave it empty when there are none. (A single `past_sprint` object is still accepted.) The "JIRA tickets" section (after "Sprint charts") then shows one collapsible subsection per past sprint, titled "Past sprint <name> (not closed yet)", followed by "Current sprint <name>". A project ticket's `sprint` is its sprint name; when it is missing the report uses the current or a past sprint if the key is in that sprint's ticket list, else "n/a".
 
 Write Jira keys in full in every text field ("IOSP-1004 and IOSP-1005", never "IOSP-1004/1005"), so each key becomes a link. The renderer also links shorthand lists when it meets them.
 
 `jira_updates.create` has one entry per ticket. An action item that names several deliverables or separate vendors/teams (for example "Rubrik and Oracle support cases") becomes one entry for each, never one combined line.
 
-Daily Ops operational health and incidents (top-level `non_project`, from the Daily Ops Standup only): items discussed at the standup that belong to no project, such as system health, incidents, problems, issues, changes and maintenance. They render as the "Daily Ops operational health and incidents" section after the project cards and before Sprint status. Rows are newest first, with columns Date, Type, Item, Status / next step, Update by, Owner, Jira tickets and Source, and a "Daily Ops items" count tile in the summary.
+Daily Ops operational health and incidents (top-level `non_project`, from the Daily Ops Standup only): items discussed at the standup that belong to no project, such as system health, incidents, problems, issues, changes and maintenance. They render as the "Daily Ops operational health and incidents" section after the project cards and before the Sprint management tab. Rows are newest first, with columns Date, Type, Item, Status / next step, Update by, Owner, Jira tickets and Source, and a "Daily Ops items" count tile in the summary.
 
 ```json
 {"non_project": [{"date": "YYYY-MM-DD (latest standup it was discussed)", "type": "Incident | Problem | Issue | Change | Maintenance | Other",
@@ -69,7 +69,9 @@ Per-project section order: 1 Project updates (summary, with ticket links and ris
 
 `project_manager` and `technical_lead` print under the project name (n/a when unknown). Take them from the roadmap deck's Project review slide, else the Confluence page, else the Jira epic's roles; never guess. `change[].name` is the ticket's subject (summary); the renderer falls back to the project's `tickets` list.
 
-Header links: SharePoint Report Archive Link, Confluence ITSM Parent Page and JIRA ScrumBoard (`brand.JIRA_BOARD_URL`); the Sprint status section starts with a JIRA ScrumBoard Link.
+"Sprint charts" holds at-a-glance tiles, Tickets by status, Tickets by team and Tickets by employee. Teams (DBA, Network, SRE Tier 2, SRE Tier 3, Other = reporting to other managers) come from Ardoq reporting lines, never from the roadmap deck: optional top-level `org_teams` `{"source", "as_of", "teams": [{"name", "manager", "manager_email", "members": [{"name", "email"}]}]}` (written by `org-collector`); when absent the renderer uses `${CLAUDE_PLUGIN_ROOT}/config/org-teams.json` and adds a "static snapshot" data gap. Assignees are matched by name or email (case and accents ignored); the manager counts in the team's headcount.
+
+Header links: SharePoint Report Archive Link, Confluence ITSM Parent Page and JIRA ScrumBoard (`brand.JIRA_BOARD_URL`); the Sprint management tab starts with a JIRA ScrumBoard Link, then the "Sprint charts" and "JIRA tickets" sections.
 
 Presentation rules built into the renderer: every table sorts by clicking a column header; dates print as mm/dd (ISO values are kept for sorting); IOSP/RM/COR keys in any text become Jira links; project cards and their sections collapse and expand (plus Collapse all / Expand all); both reports show the SharePoint location (`SHAREPOINT_REPORT_FOLDER_URL`, default the AI Test SharePoint Folder) and the same footer (version, author, GitHub, sectigo.com).
 

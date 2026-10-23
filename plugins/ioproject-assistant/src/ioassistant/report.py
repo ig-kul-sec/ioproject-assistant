@@ -8,7 +8,7 @@ from zoneinfo import ZoneInfo
 from html import escape, unescape
 from pathlib import Path
 
-from . import brand, spend
+from . import brand, orgteams, spend
 
 NA = "n/a"
 
@@ -118,9 +118,18 @@ def _card(label, value, sub="") -> str:
     )
 
 
+STATUS_ORDER = ("backlog", "to do", "in progress", "qa", "on hold", "unassigned", "done")  # workflow order
+
+
+def _status_rank(status) -> int:
+    """Position of a Jira status in the workflow order; statuses not listed (Rejected, ...) sort after Done."""
+    name = re.sub(r"[\s_-]+", " ", str(status or "").strip().lower()).replace("todo", "to do")
+    return STATUS_ORDER.index(name) if name in STATUS_ORDER else len(STATUS_ORDER)
+
+
 def _sprint_body(sprint: dict) -> str:
     dur = _days(sprint.get("start"), sprint.get("end"))
-    tickets = sprint.get("tickets", [])
+    tickets = sorted(sprint.get("tickets", []), key=lambda t: _status_rank(t.get("status")))  # stable: Jira order within a status
     done = sum(1 for t in tickets if any(w in str(t.get("status") or "").lower() for w in DONE_WORDS))
     pct = f"{round(100 * done / len(tickets))}%" if tickets else NA
     rows = "".join(
@@ -137,15 +146,140 @@ def _sprint_body(sprint: dict) -> str:
     )
 
 
+def _bars(rows: list, total: int | None = None, stacked: bool = False) -> str:
+    """Horizontal bar chart in CSS. rows: (label, value) or, when stacked, (label, done, open)."""
+    top = max((sum(r[1:]) for r in rows), default=0) or 1
+    out = []
+    for r in rows:
+        label, vals = r[0], r[1:]
+        segs = "".join(
+            f"<i class='seg{' open' if stacked and k else ''}' style='width:{100 * v / top:.1f}%'></i>"
+            for k, v in enumerate(vals) if v
+        )
+        out.append(f"<div class='bar'><span class='bl'>{_t(label)}</span><span class='bt'>{segs}</span>"
+                   f"<span class='bv'>{sum(vals)}</span></div>")
+    return "<div class='bars'>" + "".join(out) + "</div>"
+
+
+def _team_workload(tickets: list, roster: dict) -> str:
+    """Tickets per team (reporting lines from Ardoq): stacked done/not-done bars plus a workload table."""
+    index = orgteams.team_index(roster)
+    teams = roster.get("teams", [])
+    stats = {t["name"]: [0, 0] for t in teams}
+    stats[orgteams.OTHER] = [0, 0]
+    others: dict = {}
+    for t in tickets:
+        who = t.get("assignee")
+        if not who:
+            continue
+        team = orgteams.team_of(index, who)
+        stats[team][0 if _is_done(t) else 1] += 1
+        if team == orgteams.OTHER:
+            others[who] = others.get(who, 0) + 1
+    info = {t["name"]: t for t in teams}
+    order = [t["name"] for t in teams] + [orgteams.OTHER]
+
+    def label(name: str) -> str:
+        return f"{name} ({info[name]['manager']})" if name in info and info[name].get("manager") else name
+
+    rows = "".join(
+        f"<tr><td>{_t(name)}</td><td>{_t(info[name].get('manager')) if name in info else 'reporting to other managers'}</td>"
+        + (f"<td>{orgteams.headcount(info[name])}</td>" if name in info else f"<td>{NA}</td>")
+        + f"<td>{sum(stats[name])}</td><td>{stats[name][0]}</td><td>{stats[name][1]}</td>"
+        + (f"<td>{sum(stats[name]) / orgteams.headcount(info[name]):.1f}</td>" if name in info else f"<td>{NA}</td>")
+        + "</tr>"
+        for name in order
+    )
+    other_note = (" Other: " + ", ".join(f"{escape(n)} ({c})" for n, c in sorted(others.items(), key=lambda kv: (-kv[1], kv[0])))
+                  + ".") if others else ""
+    asof = roster.get("as_of")
+    return (
+        "<p class='legend'><i class='seg'></i> done <i class='seg open'></i> not done</p>"
+        + _bars([(label(n), *stats[n]) for n in order], stacked=True)
+        + "<table><tr><th>Team</th><th>Manager</th><th>People</th><th>Tickets</th><th>Done</th><th>Not done</th>"
+          f"<th>Tickets per person</th></tr>{rows}</table>"
+        + f"<p class='note'>Teams follow the reporting lines in Ardoq (Organization structure), "
+          f"{'live for this run' if roster.get('live') else 'static snapshot dated ' + escape(str(asof or NA))}; "
+          f"the manager counts as part of the team. Other = assignees reporting to other managers. "
+          f"Unassigned tickets are not counted.{other_note}</p>"
+    )
+
+
+def _idle_employees(tickets: list, roster: dict) -> str:
+    """Per team, the engineers (Ardoq roster members) with no ticket in this sprint, whatever its status."""
+    idle = orgteams.idle(roster, [t.get("assignee") for t in tickets])
+    info = {t["name"]: t for t in roster.get("teams", [])}
+    rows = "".join(
+        f"<tr><td>{_t(name)}</td><td>{_t(info[name].get('manager'))}</td>"
+        f"<td>{len(people)} of {len(info[name].get('members', []))}</td>"
+        f"<td>{', '.join(escape(n) for n in people) or 'everyone has a ticket'}</td></tr>"
+        for name, people in idle.items()
+    )
+    total = sum(len(p) for p in idle.values())
+    return (f"<p>{total} engineers have no ticket in this sprint (Done tickets count as assigned).</p>"
+            f"<table><tr><th>Team</th><th>Manager</th><th>Without tickets</th><th>Engineers</th></tr>{rows}</table>"
+            "<p class='note'>Based on the Ardoq roster; managers are not counted as engineers. "
+            "Tickets are matched by name or email.</p>")
+
+
+def _sprint_charts(sprint: dict, roster: dict | None = None) -> str:
+    """Resource-assignment charts for one sprint: headline counts, tickets by status, by team, load per assignee."""
+    tickets = sprint.get("tickets", [])
+    if not tickets:
+        return ""
+    roster = roster if roster is not None else orgteams.load()
+    by_status: dict = {}
+    for t in tickets:
+        k = str(t.get("status") or "n/a")
+        by_status[k] = by_status.get(k, 0) + 1
+    people: dict = {}
+    for t in tickets:
+        who = t.get("assignee")
+        if who:
+            done_open = people.setdefault(who, [0, 0])
+            done_open[0 if _is_done(t) else 1] += 1
+    unassigned = sum(1 for t in tickets if not t.get("assignee"))
+    done = sum(1 for t in tickets if _is_done(t))
+    assigned = len(tickets) - unassigned
+    ranked = sorted(people.items(), key=lambda kv: (-sum(kv[1]), kv[0]))
+    busiest = ranked[0] if ranked else None
+    kpis = (
+        _card("Sprint tickets", len(tickets), f"{done} done")
+        + _card("People with tickets", len(people), f"{assigned} tickets assigned")
+        + _card("Unassigned tickets", unassigned, "no responsible person")
+        + _card("Highest load", sum(busiest[1]) if busiest else NA, escape(busiest[0]) if busiest else "")
+    )
+    status_rows = sorted(by_status.items(), key=lambda kv: (_status_rank(kv[0]), kv[0]))
+    return (
+        _sec(1, "Sprint at a glance", f"<div class='kpis'>{kpis}</div>")
+        + _sec(2, "Tickets by status", _bars(status_rows))
+        + _sec(3, "Tickets by team", _team_workload(tickets, roster))
+        + _sec(4, "Tickets by employee",
+               "<p class='legend'><i class='seg'></i> done <i class='seg open'></i> not done"
+               f" &middot; {len(people)} employees account for {assigned} of {len(tickets)} tickets"
+               + (f" &middot; {unassigned} unassigned" if unassigned else "") + "</p>"
+               + _bars([(n, d, o) for n, (d, o) in ranked], stacked=True)
+               + "<p class='note'>Counts tickets, not story points or effort.</p>")
+        + _sec(5, "Engineers without tickets assigned in sprint", _idle_employees(tickets, roster))
+    )
+
+
 def _sprint(sprint: dict, past: list[dict] | None = None) -> str:
-    """Board link, then collapsible subsections: each past sprint still active (oldest first), then the current one."""
-    board = _link("JIRA ScrumBoard Link", brand.JIRA_BOARD_URL)
+    """Collapsible subsections: each past sprint still active (oldest first), then the current one."""
     subs = [(f"Past sprint {s['name']} (not closed yet)" if s.get("name") else "Past sprint (not closed yet)", s)
             for s in past or []]
     subs += [(f"Current sprint {sprint['name']}" if sprint.get("name") else "Current sprint", sprint)] if sprint else []
     if not subs:
-        return f"<p>{board}</p><p>No sprint data.</p>"
-    return f"<p>{board}</p>" + "".join(_sec(i, title, _sprint_body(s)) for i, (title, s) in enumerate(subs, 1))
+        return "<p>No sprint data.</p>"
+    return "".join(_sec(i, title, _sprint_body(s)) for i, (title, s) in enumerate(subs, 1))
+
+
+def _sprint_management(sprint: dict, past: list[dict] | None = None, roster: dict | None = None) -> str:
+    """Sprint management tab: board link, then the "Sprint charts" and "JIRA tickets" sections (each foldable)."""
+    board = _link("JIRA ScrumBoard Link", brand.JIRA_BOARD_URL)
+    charts = _sprint_charts(sprint or {}, roster) or "<p>No sprint tickets.</p>"
+    return (f"<p>{board}</p>" + _top("Sprint charts", charts, ident="sprint-charts")
+            + _top("JIRA tickets", _sprint(sprint, past), ident="sprint"))
 
 
 def _links(links: dict) -> str:
@@ -380,7 +514,7 @@ def _contents(projects: list, has_gaps: bool) -> str:
         + group("Project status")
         + "".join(link(_anchor(p.get("name")), str(p.get("name") or NA), _rag(p)[1]) for p in projects)
         + group("More")
-        + link("ops", "Daily Ops health and incidents") + link("sprint", "Sprint status")
+        + link("ops", "Daily Ops health and incidents") + link("sprint-charts", "Sprint charts") + link("sprint", "JIRA tickets")
         + (link("gaps", "Data gaps") if has_gaps else "")
         + "</nav>"
     )
@@ -427,10 +561,18 @@ html{scroll-behavior:smooth}
 @media (max-width:900px){.layout{grid-template-columns:minmax(0,1fr)}nav.toc{display:none}}
 @media print{nav.toc{display:none}.layout{display:block}}
 p.tools{margin:20px 0 0}
-.tabs{display:flex;flex-wrap:wrap;gap:4px;margin:20px 0 0;border-bottom:2px solid var(--forest)}
-.tabs button{font:600 15px 'Urbanist',Arial,sans-serif;background:none;color:var(--forest);border:1px solid transparent;border-bottom:0;border-radius:8px 8px 0 0;padding:8px 18px;cursor:pointer}
-.tabs button:hover{background:var(--off-white)}
-.tabs button.on{background:var(--forest);color:var(--off-white)}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:24px 0 0;padding-top:4px;border-bottom:4px solid var(--forest)}
+.tabs button{font:700 17px 'Urbanist',Arial,sans-serif;background:var(--spearmint);color:var(--forest);border:2px solid var(--forest);border-bottom:0;border-radius:10px 10px 0 0;padding:12px 28px;cursor:pointer;box-shadow:0 -1px 3px rgba(0,0,0,.15)}
+.tabs button:hover{background:var(--forest);color:var(--spearmint)}
+.tabs button.on{background:var(--forest);color:var(--off-white);padding-bottom:14px;margin-bottom:-4px;box-shadow:inset 0 4px 0 var(--spearmint)}
+.bars{display:grid;gap:6px;margin:8px 0 4px}
+.bar{display:grid;grid-template-columns:minmax(120px,200px) 1fr 32px;align-items:center;gap:10px}
+.bl{font-weight:600;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bt{display:flex;height:20px;background:rgba(1,82,88,.08);border-radius:4px;overflow:hidden}
+.seg{display:inline-block;height:100%;background:var(--forest)}.seg.open{background:var(--spearmint)}
+.bv{font-weight:700;color:var(--forest)}
+.legend{font-size:13px;margin:6px 0}.legend .seg{width:12px;height:12px;vertical-align:-1px;margin-left:8px;border-radius:2px}
+.note{font-size:12px;opacity:.8}
 body.tabbed .tabpanel{display:none}body.tabbed .tabpanel.on{display:block}
 @media print{body.tabbed .tabpanel{display:block}.tabs{display:none}}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px}
@@ -531,7 +673,11 @@ def render(data: dict, title: str, compact: bool = False) -> str:
 def _render(data: dict, title: str, compact: bool) -> str:
     base = str(data.get("jira_base_url") or JIRA_BROWSE)
     projects = data.get("projects", [])
-    gaps = data.get("gaps", [])
+    roster = orgteams.load(data)
+    gaps = list(data.get("gaps", []))
+    if (data.get("sprint") or {}).get("tickets") and not roster["live"]:
+        gaps.append(f"Ardoq: team roster is the static snapshot dated {roster.get('as_of') or NA}; "
+                    "Ardoq was not connected for this run (sign in with /mcp to refresh it).")
     non_project = data.get("non_project") or []
     attention = sum(1 for p in projects if _rag(p)[1] in ("risk", "off"))
     jira_todo = sum(
@@ -578,16 +724,16 @@ def _render(data: dict, title: str, compact: bool) -> str:
         + _tool("expand-all", "Expand all", ICON_EXPAND)
         + _tool("expand-projects", "Expand Proj+SubItems", ICON_TREE)
         + "</p>"
-        + _tabs([("tab-projects", "Projects"), ("tab-sprint", "Sprint management")]
+        + _tabs([("tab-projects", "Projects"), ("tab-ops", "Operations"), ("tab-sprint", "Sprint management")]
                 + ([("tab-gaps", "Data gaps")] if gaps else []))
         + _panel("tab-projects",
                  _top("Projects at a glance",
                       "<table><tr><th>Project</th><th>Status</th><th>Progress</th><th>Timeline</th><th>Top risk</th></tr>"
                       f"{glance}</table>", fold=True, ident="glance")
                  + "<h2>Project status</h2>"
-                 f"{''.join(_project(p, base, compact, sprint_of) for p in projects)}"
-                 + _top(OPS_TITLE, _non_project(non_project, base), fold=True, ident="ops"))
-        + _panel("tab-sprint", _top("Sprint status", _sprint(sprint, past), ident="sprint"))
+                 f"{''.join(_project(p, base, compact, sprint_of) for p in projects)}")
+        + _panel("tab-ops", _top(OPS_TITLE, _non_project(non_project, base), fold=True, ident="ops"))
+        + _panel("tab-sprint", _sprint_management(sprint, past, roster))
         + (_panel("tab-gaps", gap_html) if gaps else "")
         + brand.footer()
         + "</main></div>" + brand.foot(base)
