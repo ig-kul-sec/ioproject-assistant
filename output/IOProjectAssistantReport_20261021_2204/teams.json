@@ -1,0 +1,103 @@
+{
+"window":{"from":"2026-10-20T00:00:00-04:00","to":"2026-10-21T15:04:24-04:00"},
+"links":{
+"standup_chat":"https://teams.microsoft.com/l/chat/19:meeting_NDAxMzEzOGEtZmUzYS00MTMxLTk3NTItODc1MGM1ZTBkZWQ2@thread.v2/conversations",
+"standup_20261020_email":"https://outlook.office365.com/owa/?ItemID=AAMkADE5NzU1Nzk4LTU2YjktNDIyZS05ZTI0LWU5NTA0MmIwMDM4OABGAAAAAADfiIpf9YlRQL%2BGNBNg%2BLIwBwBkE5XVjIpUS6tjkF1Bp8f3AAAAAAEMAABkE5XVjIpUS6tjkF1Bp8f3AAH%2BA93sAAA%3D&exvsurl=1&viewmodel=ReadMessageItem",
+"standup_20261021_email":"https://outlook.office365.com/owa/?ItemID=AAMkADE5NzU1Nzk4LTU2YjktNDIyZS05ZTI0LWU5NTA0MmIwMDM4OABGAAAAAADfiIpf9YlRQL%2BGNBNg%2BLIwBwBkE5XVjIpUS6tjkF1Bp8f3AAAAAAEMAABkE5XVjIpUS6tjkF1Bp8f3AAH%2BA938AAA%3D&exvsurl=1&viewmodel=ReadMessageItem",
+"rubrik_chat":"https://teams.microsoft.com/l/chat/19:meeting_YjU0ZDdlMWEtNjc1Mi00Nzg4LTlhZjItNDBmMWEzNmExNzFl@thread.v2/conversations",
+"rubrik_syncup_20261021_transcript":"https://outlook.office365.com/owa/?itemid=AAkBOQAICN8vBkAAwAAuAAAAAB2EAxGqZhHNm8gAqgAvxFoNAGQTldWMilRLq2OQXUGnx%2FcAAGgFxhYAABA%3D&exvsurl=1&path=/calendar/item",
+"rubrik_status_email_20261021":"https://outlook.office365.com/owa/?ItemID=AAMkADE5NzU1Nzk4LTU2YjktNDIyZS05ZTI0LWU5NTA0MmIwMDM4OABGAAAAAADfiIpf9YlRQL%2BGNBNg%2BLIwBwBkE5XVjIpUS6tjkF1Bp8f3AAAAAAEMAABkE5XVjIpUS6tjkF1Bp8f3AAH%2BA939AAA%3D&exvsurl=1&viewmodel=ReadMessageItem",
+"rubrik_chat_20261020_stop_backups":"https://teams.microsoft.com/l/message/19%3ameeting_YjU0ZDdlMWEtNjc1Mi00Nzg4LTlhZjItNDBmMWEzNmExNzFl%40thread.v2/1792527865875?context=%7B%22contextType%22:%22chat%22%7D",
+"rubrik_chat_20261020_dataguard":"https://teams.microsoft.com/l/message/19%3ameeting_YjU0ZDdlMWEtNjc1Mi00Nzg4LTlhZjItNDBmMWEzNmExNzFl%40thread.v2/1792528614080?context=%7B%22contextType%22:%22chat%22%7D",
+"chat_20261021_disks":"https://teams.microsoft.com/l/message/19%3ameeting_NDAxMzEzOGEtZmUzYS00MTMxLTk3NTItODc1MGM1ZTBkZWQ2%40thread.v2/1792585864041?context=%7B%22contextType%22:%22chat%22%7D",
+"chat_20261021_cor12428":"https://teams.microsoft.com/l/message/19%3ameeting_NDAxMzEzOGEtZmUzYS00MTMxLTk3NTItODc1MGM1ZTBkZWQ2%40thread.v2/1792586403868?context=%7B%22contextType%22:%22chat%22%7D",
+"chat_20261020_cor12351":"https://teams.microsoft.com/l/message/19%3ameeting_NDAxMzEzOGEtZmUzYS00MTMxLTk3NTItODc1MGM1ZTBkZWQ2%40thread.v2/1792501741843?context=%7B%22contextType%22:%22chat%22%7D",
+"alerts_20261021":"https://teams.microsoft.com/l/message/19%3abdf0714217d04f26857e66ad7dfd60d1%40thread.tacv2/1792609357944"
+},
+"projects":{
+"Rubrik DR backup":{
+"status_header":"RISK (status email 2026/10/21; the 10/14 email was ON-TRACK)",
+"notes":[
+"[standup transcript 2026-10-21] Calvin Cochran: Rubrik stable and green, logs hourly, nothing new. Still waiting on the shipment contract; latest word from legal was that they had not seen the attachments. Karl Witt: no good answer on how long legal approval takes.",
+"[standup transcript 2026-10-20] Calvin Cochran: daily run mode (logs hourly), looking OK; the contract is needed so the 3 appliances can be shipped.",
+"[rubrik transcript 2026-10-21] Calvin pinged Karen on 10/19 and still has no meaningful response; Karen said she would resend the attachments. Igor Kulyk suggested involving Mike to speed it up.",
+"[rubrik transcript 2026-10-21] The network team's Manchester prerequisites (switch ports 12x 1G IPMI and 24x 10G; IP ranges 10.17.4.0/27, 10.17.3.0/24, 10.17.88.0/24 and a CA subnet in MCR; DHCP reservations for IPMI; firewall rules; connectivity between the two clusters) are in the status email. Igor Kulyk will track it in a new Jira ticket.",
+"[rubrik transcript 2026-10-21] Prajeet Singh Kahlon: decommissioning the SASP standalone DB belongs to the Oracle RAC project, not Rubrik; Rubrik was a dependency and is now done.",
+"[rubrik transcript 2026-10-21] Appliance shutdown: SriChand Myla will open a Rubrik Support ticket for health checks and a shutdown procedure. Calvin wants the appliances left running until the shipping date is firm and shut down the day before.",
+"[rubrik transcript 2026-10-21] Earle Long: Manchester DBA background work is finished except backups. Manchester uses U04, so he is creating separate FlashBlade scripts and restoring the originals; Ray is asked to mount MNT RMAN from the CA backup server. Target: level 0/1 backup to the CA backup server by Sunday; backups scheduled for 6am like Secaucus.",
+"[rubrik transcript 2026-10-21] Secaucus DBA access and training is still wanted; users created around next week. Igor creates the Jira task assigned to Calvin (Sri has no Jira access); must be formalized as an access request for audit.",
+"[rubrik chat 2026-10-20] Earle Long and Prajeet Singh Kahlon stopped Oracle backups on scdpcasasp1 (no-archivelog, shutdown), commented the DB out of /etc/oratab and removed it from Data Guard (RAC standalone decommission).",
+"[status email 2026/10/21] Completed: IOSP-1012 (RAC backup enabled), RM-1658 (CA Backup VLAN on RAC hosts), RM-1661 (Oracle Wallet on prod RAC), IOSP-880 (validate RAC backup and replication, 10/17-10/20).",
+"[status email 2026/10/21] Timeline: IOSP-1010 shipment plan and contracts due 10/23; IOSP-1009 Manchester backup scripts 10/24; IOSP-1013 prepare appliances for shutdown 10/26; Oct 27-Nov 9 shipment IOSP-1015; Nov 9-16 rack/cable/power IOSP-1004 and IOSP-1005; Nov 16-Dec 6 commissioning IOSP-1006; Nov 30-Dec 6 production test IOSP-1007; Dec 7 fully production in Europe IOSP-1008. Manchester network configuration TBD.",
+"[status email 2026/10/21] IOSP-1010 due moved from 10/21-TBD (10/14 email) to 10/23; IOSP-1013 due from 10/21 to 10/26. Header changed from ON-TRACK to RISK."],
+"action_items":[
+{"text":"Prepare shipment plan and contracts; legal contract for shipment (IOSP-1010). Escalate if no ETA.","owner":"Karl Witt / Calvin Cochran","due":"2026-10-23"},
+{"text":"Create Rubrik Support ticket for health checks and shutdown procedure","owner":"SriChand Myla","due":"2026-10-21"},
+{"text":"Prepare Rubrik appliances for shutdown and Manchester deployment incl. network/IP preparation (IOSP-1013)","owner":"SriChand Myla, Calvin Cochran","due":"2026-10-26"},
+{"text":"Finish Manchester backup scripts and confirm level 0/1 backup to the CA backup server (IOSP-1009)","owner":"Earle Long","due":"2026-10-24"},
+{"text":"Create Jira ticket for Manchester network preparation (network team requirements list)","owner":"Igor Kulyk","due":"2026-10-21"},
+{"text":"Create Jira task: Secaucus DBA team access to Rubrik and training for RAC backups, assigned to Calvin Cochran; formalize as audit-ready access request","owner":"Igor Kulyk","due":"2026-10-21"},
+{"text":"Send follow-up of the 10/21 SyncUp","owner":"Igor Kulyk","due":"2026-10-21"}],
+"risks":[
+"BLOCKER: shipment contract. Legal has not produced it, no ETA; the Oct 27-Nov 9 shipping window and the Dec 7 production date depend on it.",
+"Appliance shutdown relies on a Rubrik Support procedure not received yet.",
+"Manchester network configuration is TBD; the Nov 9-16 rack/cable step depends on network readiness.",
+"Karl Witt (contract owner) was on-site in the UK and declined the 10/21 SyncUp, so contract follow-up may be slow."]},
+"HSM project":{
+"notes":["[standup transcript 2026-10-20] Gabriel Rovira: DBA-3622 is the only item blocking the HSM work; the vendor contact wants to finish by end of October and is chasing for the second time.",
+"[standup transcript 2026-10-21] Prajeet Singh Kahlon: DBA-3622 is done."],
+"action_items":[],"risks":["Resolved: the vendor's end-of-October target was at risk while DBA-3622 was open."]},
+"Oracle RAC (SASP)":{
+"notes":["[standup transcript 2026-10-20] Prajeet Singh Kahlon: RAC replication works, 0 seconds lag, functionally 100% done; housekeeping and OEM observability next. Wait two weeks before repurposing old servers; decommission the Manchester standalone first, Secaucus later. Prajeet will open an RM.",
+"[standup transcript 2026-10-21] Prajeet Singh Kahlon: post-setup in progress (image copies, reports, housekeeping), expected done this week or next. RM for decommissioning both standalone DBs created. Secaucus standalone removed from Data Guard on 10/20, can be dropped after one week.",
+"[rubrik chat 2026-10-20] Earle Long and Prajeet Singh Kahlon stopped backups and removed the Secaucus standalone SASP DB from Data Guard."],
+"action_items":[{"text":"Drop Secaucus standalone DB after one week","owner":"Prajeet Singh Kahlon","due":"2026-10-28"},
+{"text":"Finish RAC post-setup (backups, reports, housekeeping)","owner":"Prajeet Singh Kahlon","due":"2026-10-30"}],
+"risks":["OEL 7 to 8/9 upgrade depends on RAC finishing."]},
+"Postgres EDB DB migration":{
+"notes":["[standup transcript 2026-10-20] Gabriel Rovira: application cutover session planned for 10/21; hard to get accept/decline responses. Prajeet may not attend (clash with the Atlassian cloud migration); Mohammed (Mori Tech), Raymond and Andre can run it.",
+"[standup transcript 2026-10-21] Prajeet Singh Kahlon: working on SCM demo with 13 databases; expecting to cut over about 9 of 13 today, depending on application owner availability."],
+"action_items":[],"risks":["DBA availability for cutover sessions (Atlassian cloud migration clash); not all 13 SCM demo DBs may move on 10/21."]},
+"Network 2.0":{
+"notes":["[standup transcript 2026-10-20] Jaime Larsen: nothing new until the UK data center visit on 10/21.",
+"[standup transcript 2026-10-21] Jaime Larsen: the team is connecting circuits, has two items to troubleshoot and the Proxmox server to connect; better update on 10/22.",
+"[standup transcript 2026-10-21] Karl Witt asked whether Proxmox PVE-19-1 is the same as MCDP NPM 09; Jeff Novick: should not be; Jaime: it is 02. Both powered off. Karl verifies on 10/22 in the data center."],
+"action_items":[{"text":"Provide Network 2.0 update","owner":"Jaime Larsen","due":"2026-10-22"},
+{"text":"Confirm which Proxmox host is meant (PVE-19-1 vs MCDP NPM 09 / 02) before work","owner":"Karl Witt","due":"2026-10-22"}],
+"risks":["Possible wrong-host confusion on Proxmox in Manchester (powered off, low impact)."]},
+"Debian / OS end-of-life upgrades":{
+"notes":["[standup transcript 2026-10-20] Jeff Novick: the weekend P0 Debian 12 upgrades failed with 404 errors and were rolled back to Debian 11 when the window closed; all four P0s have the same issue; a new issue also appeared on the Bradford hosts. Firewall upgrades failed the same way (tickets spoken as 12019 and 12020); Jeff was updating the ticket.",
+"[standup transcript 2026-10-20] Aylin Saydag: the failed P0s will delay the P1s; she will tell Mike. Kostiantyn Nikonenko raised P2 Oracle Linux 7 to 8/9 upgrades; Prajeet: needs RAC finished first, unlikely to finish this year; InfoSec requires non-EOL OS. Calvin Cochran will look at how to organize it.",
+"[standup transcript 2026-10-21] Jeff Novick: firewall/AV work expected done by about end of week; AVS not for at least two weeks. Kostiantyn Nikonenko: applications and owners for the Bradford Kubernetes P1s not yet identified; SRE help needed."],
+"action_items":[{"text":"Look at how to organize the Oracle Linux (P2) upgrade","owner":"Calvin Cochran","due":null},
+{"text":"Tell Mike the P0 upgrades failed and the schedule will slip","owner":"Aylin Saydag","due":"2026-10-20"},
+{"text":"Identify applications and owners for the Kubernetes P1s in Bradford (with SRE help)","owner":"Kostiantyn Nikonenko","due":null},
+{"text":"Update the firewall upgrade ticket (was only updated in chat)","owner":"Jeff Novick","due":"2026-10-20"}],
+"risks":["Four P0 Debian upgrades failed and were rolled back; cause unknown.",
+"SRE capacity (Jeff Novick) is the constraint.",
+"Oracle Linux 7 to 8/9 upgrade will probably slip past year-end versus the InfoSec requirement."]}
+},
+"non_project":[
+{"date":"2026-10-21","type":"Incident","title":"OCSP investigation and other open incidents (64 total, 60 resolved, 2 tracking, 2 in progress)","detail":"OCSP waiting on additional troubleshooting after a public IP and subnet was provided. A second item is with engineering pending an update. INC 27238 (raised 10/20) waits for Jeff Novick's review ('maybe by Christmas').","status":"Open, waiting on troubleshooting, engineering and Jeff Novick","reported_by":"Eric Sambraus","owner":null,"tickets":[],"source":{"label":"Standup 2026-10-21 · transcript","url":"std21"}},
+{"date":"2026-10-21","type":"Problem","title":"Problem records: CRT.SH, Sectigo Network runbooks, PinPure storage recovery, SAS connection pool, dns.sectigo.com","detail":"CRT.SH stays on the list (Pingdom flatlined 10/21). Sectigo Network: pending runbooks for existing monitoring. PinPure: waiting on post-storage recovery runbooks (task 3514), likely the last action for that problem record. SAS: waiting on the connection pool. dns.sectigo.com: waiting on InfoSec, expected in November.","status":"Open, all pending team updates","reported_by":"Eric Sambraus","owner":null,"tickets":[],"source":{"label":"Standup 2026-10-21 · transcript","url":"std21"}},
+{"date":"2026-10-21","type":"Issue","title":"Pingdom: CRT.SH flatlined","detail":"Pingdom good except CRT.SH, which looks flatlined (10/21). On 10/20 Pingdom was good.","status":"Open, tracked under CRT.SH problem record","reported_by":"Eric Sambraus","owner":null,"tickets":[],"source":{"label":"Standup 2026-10-21 · transcript","url":"std21"}},
+{"date":"2026-10-21","type":"Issue","title":"Minor NetBox issue (night of 10/20)","detail":"Jeff Novick called it super minor; no further detail.","status":"Minor, no follow-up named","reported_by":"Jeff Novick","owner":null,"tickets":[],"source":{"label":"Standup 2026-10-21 · transcript","url":"std21"}},
+{"date":"2026-10-21","type":"Other","title":"Pure storage capacity","detail":"10/20: Secaucus 81%, Manchester 80%, Bradford 1 78%, Bradford 2 90% (dedup needed). 10/21: Secaucus 78%, Manchester 80%, Bradford 1 78%, Bradford 2 86%.","status":"Bradford 2 high but falling","reported_by":"Jeff Novick","owner":null,"tickets":[],"source":{"label":"Standup 2026-10-21 · transcript","url":"std21"}},
+{"date":"2026-10-21","type":"Maintenance","title":"Bradford data center hardware work: disk replacements, old server, offline signer, Nov 2 auditor visit","detail":"Karl Witt on-site: hard drives on hand but may not match sizes; Maarten Broekman assigns Alex as helper. Four disk replacements COR-12171 (mcdpcabkp), COR-12172 (mcdpinbkp), COR-12173 (bddpinbkp), COR-12175 (bddplgeswarm1) plus an offline signer boot issue; a 1950-class server fails silently at boot. Karl asked that Adam be in the data center on Nov 2 for two auditor visits.","status":"In progress, on-site work 10/21-10/22","reported_by":"Karl Witt","owner":null,"tickets":["COR-12171","COR-12172","COR-12173","COR-12175"],"source":{"label":"Standup 2026-10-21 · chat, Maarten Broekman on disks and offline signer (12:31 UTC)","url":"chat21disks"}},
+{"date":"2026-10-21","type":"Issue","title":"Certificate expiration on bddpinpure2; monitoring for VMC certificates","detail":"Maarten Broekman opened COR-12428 (certificate expiration warning on bddpinpure2). Elena wants more monitoring for VMC certificates.","status":"Ticket open","reported_by":"Maarten Broekman","owner":null,"tickets":["COR-12428"],"source":{"label":"Standup 2026-10-21 · chat, Maarten Broekman on COR-12428 (12:40 UTC)","url":"chat21cert"}},
+{"date":"2026-10-20","type":"Other","title":"Stale or unassigned tickets raised in chat","detail":"Maarten Broekman: COR-12317 due 10/21 and unassigned; COR-12399 (RM due 10/19, deployment not marked); COR-10963 due June 30, no comments, unassigned; COR-12351 (Cloudflare change, blocking sitelock engineering). Calvin Cochran is working on getting tickets assigned.","status":"Open, assignment pending","reported_by":"Maarten Broekman","owner":"Calvin Cochran","tickets":["COR-12317","COR-12399","COR-10963","COR-12351"],"source":{"label":"Standup 2026-10-20 · chat, Maarten Broekman on COR-12351 (13:09 UTC)","url":"chat20cor"}},
+{"date":"2026-10-20","type":"Change","title":"Sprint 42 close and rollover to sprint 43","detail":"Aylin Saydag walked the sprint 42 leftovers. Unfinished items roll into 43 (OS infrastructure automation, firewall analysis, Jeff Novick's items, shipment planning/contracts). Gabriel Rovira moves the tickets and closes 42; items in QA close on the 7-day timer.","status":"Rollover agreed, Gabriel Rovira to execute","reported_by":"Aylin Saydag","owner":"Gabriel Rovira","tickets":[],"source":{"label":"Standup 2026-10-20 · transcript","url":"std20"}},
+{"date":"2026-10-20","type":"Incident","title":"Weekend P0 OS upgrade failures (Debian 12) and firewall upgrade","detail":"Weekend P0 Debian 12 upgrades failed (404 errors) and were rolled back to Debian 11; firewall upgrades also failed. See the Debian / OS end-of-life project.","status":"Rolled back, root cause unknown","reported_by":"Jeff Novick","owner":"Jeff Novick","tickets":[],"source":{"label":"Standup 2026-10-20 · transcript","url":"std20"}}
+],
+"gaps":[
+"Teams: standup chat search is dominated by alert-bot messages; only Maarten Broekman, Eric Sambraus and Calvin Cochran were paged, and the Facilitator midpoint and closing recaps for 10/20 and 10/21 were not retrieved. Chat coverage is partial; both transcripts were read in full.",
+"Teams: standup transcript emails are titled 'Daily Ops Standup 20261021' and 'Daily Ops Standup 20261019 and 20261020' (no underscore); transcripts were read from email attachments, so source links point to the emails.",
+"Teams: 'Speaker 1' in both transcripts is unnamed and was attributed to Jeff Novick from context; several first names come from speech recognition and may be garbled.",
+"Teams: ticket numbers '12019' and '12020' (P0 Debian and firewall) were spoken without a project prefix; 'RM-743' was also heard but is ambiguous.",
+"Teams: Rubrik chat searched only for 'Rubrik', Earle Long and Igor Kulyk; only three Rubrik chat messages (Earle Long, 10/20) were collected.",
+"Teams: conflict: the Rubrik SyncUp says Earle Long's Manchester backup scripts finish 'by Sunday' (10/25); the status email lists IOSP-1009 at 10/24.",
+"Teams: conflict: Proxmox host named PVE-19-1 by Jaime Larsen vs MCDP NPM 09 / 02 by Jeff Novick; Karl Witt to resolve 10/22.",
+"Teams: automated alert channel messages (GKE CrashLoopBackOff, OOMKilled, ImagePullBackOff, SCM EUDC pod restarts, 10/21 after the standup) were not discussed at the standup and are left out of Daily Ops items.",
+"Teams: the 10/21 standup Incident recap listed INC 27238 and task 3514, which are ITSM records, not Jira keys."
+]
+}

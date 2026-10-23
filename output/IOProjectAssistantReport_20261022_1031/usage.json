@@ -1,0 +1,74 @@
+[
+ {
+  "agent": "teams-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 329025,
+  "output_tokens": 0,
+  "seconds": 368.7,
+  "note": "total tokens from the Agent usage block (no input/output split)"
+ },
+ {
+  "agent": "jira-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 36734,
+  "output_tokens": 0,
+  "seconds": 1580.1,
+  "note": "total tokens from the Agent usage block (no input/output split)"
+ },
+ {
+  "agent": "confluence-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 42591,
+  "output_tokens": 0,
+  "seconds": 600.8,
+  "note": "total tokens from the Agent usage block (no input/output split)"
+ },
+ {
+  "agent": "sharepoint-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 73019,
+  "output_tokens": 0,
+  "seconds": 137.3,
+  "note": "read mode; total tokens from the Agent usage block (no input/output split)"
+ },
+ {
+  "agent": "report-builder",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 29301,
+  "output_tokens": 0,
+  "seconds": 67.9,
+  "note": "total tokens from the Agent usage block (no input/output split)"
+ },
+ {
+  "agent": "sharepoint-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 272153,
+  "output_tokens": 0,
+  "seconds": 655.7,
+  "note": "upload mode; total tokens from the Agent usage block (no input/output split)"
+ },
+ {
+  "agent": "report-email-drafter",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 26814,
+  "output_tokens": 0,
+  "seconds": 68.7,
+  "note": "total tokens from the Agent usage block (no input/output split)"
+ },
+ {
+  "agent": "report-confluence-publisher",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 24273,
+  "output_tokens": 0,
+  "seconds": 92.5,
+  "note": "total tokens from the Agent usage block (no input/output split)"
+ },
+ {
+  "agent": "orchestrator",
+  "model": "claude-opus-5-5",
+  "input_tokens": 0,
+  "output_tokens": 0,
+  "seconds": 4374.5,
+  "note": "placeholder: measured wall-clock; tokens 0 until the launching session fills them in from the orchestrator's Agent usage block"
+ }
+]

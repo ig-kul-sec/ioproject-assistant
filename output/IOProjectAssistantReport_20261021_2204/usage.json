@@ -1,0 +1,42 @@
+[
+ {
+  "agent": "teams-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 273299,
+  "output_tokens": 0,
+  "seconds": 278.9,
+  "note": "total tokens from the Agent usage block (no input/output split)"
+ },
+ {
+  "agent": "jira-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 47859,
+  "output_tokens": 0,
+  "seconds": 642.8,
+  "note": "first run; reported writing jira.json but no file was created; total tokens from the Agent usage block (no input/output split)"
+ },
+ {
+  "agent": "confluence-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 44318,
+  "output_tokens": 0,
+  "seconds": 458.9,
+  "note": "total tokens from the Agent usage block (no input/output split)"
+ },
+ {
+  "agent": "sharepoint-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 67840,
+  "output_tokens": 0,
+  "seconds": 163.9,
+  "note": "read mode; total tokens from the Agent usage block (no input/output split)"
+ },
+ {
+  "agent": "jira-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 34960,
+  "output_tokens": 0,
+  "seconds": 318.0,
+  "note": "second run, wrote jira.json; total tokens from the Agent usage block (no input/output split)"
+ }
+]

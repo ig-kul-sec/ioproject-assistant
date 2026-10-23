@@ -1,0 +1,35 @@
+{
+  "roadmap": [
+    {"project": "Rubrik DR backup (IOSP-471)", "status": null, "rag": {"overall": null, "schedule": null, "scope": null, "cost": "G"}, "start": null, "end": "2026-12", "owner": null, "project_manager": "Igor Kulyk", "technical_lead": "Calvin Cochran",
+     "milestones": ["Next milestone: Oct 27 (shipment to Manchester)", "Production implementation: Dec 6 (full production in Europe)", "Project completion: December 2026"],
+     "notes": "Deck shows one Yellow among schedule/scope (extraction order ambiguous, see gaps) and Green cost; no overall status word. Next steps: IOSP-1010 shipment plan and contracts (blocker, by 10/23); IOSP-1013 appliance prep incl. network/IP (by 10/23); shipment to Manchester Oct 27 - Nov 9; rack and stack Nov 9-16; production prep Nov 16 - Dec 6. Risk: delay with appliance shipment plan and contracts."},
+    {"project": "Oracle RAC (SASP) (IOSP-541)", "status": "Off Track", "rag": {"overall": "Off Track", "schedule": "R", "scope": "G", "cost": "R"}, "start": null, "end": "2026-12-15", "owner": null, "project_manager": "Gabriel E Rovira", "technical_lead": "Prajeet Singh Kahlon",
+     "milestones": ["Next milestone: Manchester Servers, originally Aug 10, fact Oct 2", "Production implementation: Sept 30, Oct 2, Nov 13, Dec 15", "Overall completion: originally 2025; latest thinking Sept 30, Oct 2, Nov 13, Dec 15, Nov 27"],
+     "notes": "What's next: create Oracle RAC on Manchester (VM, OS, RDBMS), data migration, FarSync, add to DG, decom/repurpose old DB. Risk: Manchester server build overdue, pushes DBA work right. Completion dates on the slide are inconsistent (several values listed); latest listed end date is Dec 15 / Nov 27."},
+    {"project": "Postgres DB migration (EDB) (IOSP-955)", "status": "On-Track", "rag": {"overall": "On-Track", "schedule": "G", "scope": "G", "cost": "Y"}, "start": null, "end": "2027-03-01", "owner": null, "project_manager": "Gabriel E Rovira", "technical_lead": "Prajeet Singh Kahlon",
+     "milestones": ["Next milestone: Non-Prod Migration Wave 2, originally Sept 15, fact Oct 30", "Production implementation: Feb 1 (2027)", "Overall completion: originally Dec 30; latest thinking Feb 1, March 1 2027"],
+     "notes": "What's next: cut-over of apps to new EDB NON-PROD, decom migrated servers, data replication on NON-PROD 90%, PEM and BARMAN config. Risks: resource priorities (keep-the-lights-on vs project), delays in NON-PROD cut-over. Dependency: Manchester and Secaucus servers (Proxmox)."},
+    {"project": "HSM (IOSP-399)", "status": "Off Track", "rag": {"overall": "Off Track", "schedule": "R", "scope": "R", "cost": "R"}, "start": null, "end": "2026-10-30", "owner": null, "project_manager": "Gabriel E Rovira", "technical_lead": "Rik Furness / Edino Moniz",
+     "milestones": ["Next milestone: Completion of Prod SignerWeb, originally Oct 2, fact Oct 2", "Production implementation: Oct 30", "Overall completion: originally 2025; latest thinking Oct 30"],
+     "notes": "What's next: monitor SignerWeb + HSM env, migrate IoT, TSA, CertStatus, decom/repurpose old HSM devices, decom utimaco and luna servers, documentation. Issue: SignerWeb scope creep from new architecture complexity. Risk: compliance priorities vs this project."},
+    {"project": "Network 2.0 (Manchester) (IOSP-477)", "status": "On-Track", "rag": {"overall": "On-Track", "schedule": "G", "scope": "G", "cost": "G"}, "start": null, "end": null, "owner": null, "project_manager": "Kos", "technical_lead": "Jaime Larsen / Network",
+     "milestones": ["Proxmox migration in Manchester: first server Oct 19, rest by Oct 30", "Oracle migration in Manchester: Dec 02", "Rubrik and Pure migration: middle of December 2026", "Secaucus migration: no date"],
+     "notes": "Slide gives PM as 'Kos' (appears to be Kostiantyn Nikonenko, not confirmed on the slide). Dependency: notify about Oracle migration two weeks early. Issues and risks TBD. IOSP-477 is the ticket on the slide; the caller listed no key."},
+    {"project": "Debian / EOL OS upgrades (IOSP-498)", "status": "On-Track (Migration EOL/EOS OSs); Paused (Debian OS lifecycle management)", "rag": {"overall": "On-Track", "schedule": "G", "scope": "G", "cost": "G"}, "start": null, "end": "2026-12-31", "owner": null, "project_manager": "Kostiantyn Nikonenko", "technical_lead": "Jeff Novick",
+     "milestones": ["P0: Oct 30 (on-track)", "P1: Nov 13 (at-risk)", "P2: EOY 2026, TBD", "Debian lifecycle: readiness for upgrade originally EOY 2026, on track; negotiations with app owners Sept-Oct"],
+     "notes": "Two slides map here. Migration EOL/EOS OSs (Jira SIGSR-5): On-Track, G/G/G. Debian OS lifecycle management (Confluence, IOSP-806, Planner): Paused (low priority), G/G/G, needs refresh/restart of priority and timeline. Risks: Bradford k8s upgrades need app owner confirmation and maintenance window; 39 Gentoo machines deferred, dependent on non-I&O work. End date for EOL = P2 'EOY 2026' (TBD). Accomplishments excluded."}
+  ],
+  "files": [
+    {"project": "All projects", "name": "I&O Project Roadmap.pptx (modified 2026-10-22, in window)", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Presentations/I&O Project Roadmap.pptx"}
+  ],
+  "uploaded": [],
+  "gaps": [
+    "SHAREPOINT_PMO_FOLDER_URL, SHAREPOINT_ROADMAP_URL and SHAREPOINT_REPORT_FOLDER_URL are empty in defaults.env (no .env override seen). The roadmap deck was located by searching the IOProjectTeam site Presentations folder instead.",
+    "PMO folder could not be identified (folder search for PMO / Project Management Office returned no project folder). No per-project SharePoint folders or project documents were found, so no project documents changed in the window are listed. Only the roadmap deck itself changed (2026-10-22).",
+    "Slide text was read via text extraction; RAG letters sit next to labels in extraction order. Interpreted as value-before-label (the only reading giving each project three values). Rubrik is the exception: only one Yellow (schedule or scope, unclear) and one Green (cost) were extracted; overall status word and one value are missing. Postgres Yellow read as Cost (a previous run read it as Scope). Verify against the slides.",
+    "Overall RAG for Rubrik is not extractable. Overall status for others is taken from the status word (On-Track / Off Track / Paused).",
+    "No start dates on any Project review slide. Owner field is not on the slides (PM and TL only).",
+    "Network 2.0 PM is shown as 'Kos' only. Debian/EOL maps to two slides with differing status (On-Track vs Paused). Oracle RAC completion dates list several conflicting values.",
+    "IT Service Management and AI POC Observability slides are not in the discussed project list and were omitted. Accomplishments blocks, Other updates and Appendix were not used."
+  ]
+}

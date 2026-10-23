@@ -137,10 +137,12 @@ def _sprint_body(sprint: dict) -> str:
     )
 
 
-def _sprint(sprint: dict, past: dict | None = None) -> str:
-    """Board link, then collapsible subsections: the past sprint (only while not closed yet), then the current one."""
+def _sprint(sprint: dict, past: list[dict] | None = None) -> str:
+    """Board link, then collapsible subsections: each past sprint still active (oldest first), then the current one."""
     board = _link("JIRA ScrumBoard Link", brand.JIRA_BOARD_URL)
-    subs = ([("Past sprint (not closed yet)", past)] if past else []) + ([("Current sprint", sprint)] if sprint else [])
+    subs = [(f"Past sprint {s['name']} (not closed yet)" if s.get("name") else "Past sprint (not closed yet)", s)
+            for s in past or []]
+    subs += [(f"Current sprint {sprint['name']}" if sprint.get("name") else "Current sprint", sprint)] if sprint else []
     if not subs:
         return f"<p>{board}</p><p>No sprint data.</p>"
     return f"<p>{board}</p>" + "".join(_sec(i, title, _sprint_body(s)) for i, (title, s) in enumerate(subs, 1))
@@ -362,6 +364,7 @@ def _contents(projects: list, has_gaps: bool) -> str:
 
     return (
         "<nav class='toc' aria-label='Contents'>"
+        + link("top", "Go to the top")
         + group("Overview") + link("summary", "Summary") + link("glance", "Projects at a glance")
         + group("Project status")
         + "".join(link(_anchor(p.get("name")), str(p.get("name") or NA), _rag(p)[1]) for p in projects)
@@ -520,8 +523,8 @@ def _render(data: dict, title: str, compact: bool) -> str:
     )
     sprint = data.get("sprint") or {}
     tickets = sprint.get("tickets", [])
-    past = data.get("past_sprint") or {}
-    sprint_of = {str(t.get("key")): past.get("name") for t in past.get("tickets") or [] if past.get("name")}
+    past = [s for s in data.get("past_sprints") or [data.get("past_sprint")] if s]
+    sprint_of = {str(t.get("key")): s.get("name") for s in past for t in s.get("tickets") or [] if s.get("name")}
     sprint_of.update({str(t.get("key")): sprint.get("name") for t in tickets if sprint.get("name")})  # current wins
     done = sum(1 for t in tickets if any(w in str(t.get("status") or "").lower() for w in DONE_WORDS))
     kpis = (
@@ -545,7 +548,7 @@ def _render(data: dict, title: str, compact: bool) -> str:
     )
     return (
         brand.head(title, EXTRA_CSS, fonts=not compact)
-        + "<body>"
+        + "<body id='top'>"
         + brand.banner("I&O PROJECT STATUS REPORT", f"Generated: {_stamp(data.get('generated_at'))}",
                        _range(data.get("window")), compact=compact, note_html=brand.header_links(),
                        subtitle_last=True)

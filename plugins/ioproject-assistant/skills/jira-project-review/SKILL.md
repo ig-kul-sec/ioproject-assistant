@@ -17,7 +17,7 @@ Spaces:
 For each discussed project (by key from the Teams collector, otherwise by epic/name search):
 1. Epic + child tickets: key, summary, status, assignee, start date, due/end date, URL, and `sprint` (the name of the active sprint the ticket is in, else its latest sprint, null if none; use the Agile "Sprint" field, whose id comes from `/rest/api/2/field`).
 2. Changes and comments with `updated >= <window.from>` (the analysis window passed by the orchestrator; default since Monday 00:00 America/New_York) (author, time, short text).
-3. Active IOSP sprint: name, start, end, duration in days, tickets as above. Also report `past_sprint` (same shape) when another sprint on the board has ended but is still not closed (state active, end date in the past); otherwise null.
+3. Active IOSP sprint: name, start, end, duration in days, tickets as above. Also report `past_sprints` (a list, oldest first, each the same shape) with every other sprint on the board that has ended but is still not closed (state active, end date in the past); otherwise an empty list.
 
 **Always-included epics** (reviewed every run, in addition to whatever the Teams collector reports; never replace the discussed-project list):
 - **Rubrik DR backup: IOSP-471** (https://projects.sectigo.net/browse/IOSP-471). Fetch the epic itself (summary, status, description/objectives, assignee, dates) and all child issues (`"Epic Link" = IOSP-471`, plus issue links to RM and COR tickets such as RM-1658, RM-1660). Apply steps 1 and 2 to it. Report it as the project "Rubrik DR backup".
@@ -34,7 +34,7 @@ Use read-only REST calls (`/rest/api/2/search`, `/rest/agile/1.0/board/{id}/spri
 {
   "sprint": {"name": "", "start": "YYYY-MM-DD", "end": "YYYY-MM-DD", "tickets": [
     {"key": "", "url": "", "summary": "", "status": "", "assignee": "", "due": null}]},
-  "past_sprint": null,
+  "past_sprints": [],
   "projects": [{"name": "", "changes": [{"key": "", "who": "", "when": "", "text": ""}],
     "tickets": [{"key": "", "url": "", "name": "", "status": "", "sprint": null, "assignee": "", "start": null, "end": null,
                  "epic": false, "related": [{"key": "", "url": ""}]}]}],

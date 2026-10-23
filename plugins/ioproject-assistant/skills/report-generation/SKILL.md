@@ -12,7 +12,7 @@ description: Merged-data schema and rendering of the clickable HTML status repor
   "generated_at": "ISO",
   "window": {"from": "ISO with offset", "to": "ISO with offset"},
   "sprint": {"name": "", "start": "", "end": "", "tickets": [{"key": "", "url": "", "name": "ticket subject", "status": "", "assignee": "", "due": ""}]},
-  "past_sprint": null,
+  "past_sprints": [],
   "projects": [{
     "name": "", "status": "On track | At risk | Off track", "notes": [], "progress": "", "timeline": "", "dates": {"start": "", "end": ""},
     "action_items": [{"text": "", "owner": "", "due": ""}], "risks": [],
@@ -43,7 +43,7 @@ Per-project fields used by the per-project view (all optional; `jira_base_url` d
 }
 ```
 
-`past_sprint` has the same shape as `sprint`; set it only for a sprint that has ended but is not closed in Jira yet, otherwise leave it null. "Sprint status" then shows two collapsible subsections, Past sprint (not closed yet) first and Current sprint second. A project ticket's `sprint` is its sprint name; when it is missing the report uses the current or past sprint if the key is in that sprint's ticket list, else "n/a".
+`past_sprints` is a list (oldest first) of objects shaped like `sprint`, one for every sprint that has ended but is not closed in Jira yet; leave it empty when there are none. (A single `past_sprint` object is still accepted.) "Sprint status" then shows one collapsible subsection per past sprint, titled "Past sprint <name> (not closed yet)", followed by "Current sprint <name>". A project ticket's `sprint` is its sprint name; when it is missing the report uses the current or a past sprint if the key is in that sprint's ticket list, else "n/a".
 
 Write Jira keys in full in every text field ("IOSP-1004 and IOSP-1005", never "IOSP-1004/1005"), so each key becomes a link. The renderer also links shorthand lists when it meets them.
 

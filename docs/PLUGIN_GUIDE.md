@@ -364,7 +364,7 @@ flowchart TD
 ```
 
 1. **Start.** The user types `/ioproject-assistant:run-report`. The skill checks Python, the token file, the Microsoft 365 connector and the folder path.
-2. **Run id and window.** The orchestrator names the run `IOProjectAssistantReport_<yyyymmdd>_<hhmm>`. The analysis window is Monday 00:00 America/New_York until now, unless the user gave another period.
+2. **Run id and window.** The orchestrator names the run `IOProjectAssistantReport_<yyyymmdd>_<hhmm>`, with date and time in America/New_York (not the computer's local time). The analysis window is Monday 00:00 America/New_York until now, unless the user gave another period.
 3. **Teams first.** `teams-collector` decides which projects were discussed. Its project list drives every later step.
 4. **Jira, Confluence and SharePoint in parallel.** Each collector gets the project list. If the Jira agent can't start, a general agent retries once with the same read-only rules.
 5. **Merge.** The orchestrator writes `data.json`. Status comes only from evidence: roadmap RAG first, then Jira dates. "Jira updates needed" lists only gaps a source proves.

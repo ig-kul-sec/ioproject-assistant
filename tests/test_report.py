@@ -115,9 +115,13 @@ def test_sprint_status_subsections(tmp_path):
     cur = {"name": "I&O 26.43", "start": "2026-10-19", "end": "2026-10-23", "tickets": [{"key": "IOSP-1", "status": "Open"}]}
     past = {"name": "I&O 26.42", "start": "2026-10-12", "end": "2026-10-16", "tickets": [{"key": "IOSP-2", "status": "Open"}]}
     both = _render_data(tmp_path, {"sprint": cur, "past_sprint": past})
-    assert both.index("Past sprint (not closed yet)</summary>") < both.index("Current sprint</summary>")
+    assert both.index("Past sprint I&amp;O 26.42 (not closed yet)</summary>") < both.index("Current sprint I&amp;O 26.43</summary>")
     assert both.count('<details class="sub" open><summary class="sec"><span>1</span> Past sprint') == 1
     assert "I&amp;O 26.42</b>" in both and "I&amp;O 26.43</b>" in both
+    older = {"name": "I&O 26.41", "start": "2026-10-05", "end": "2026-10-09", "tickets": [{"key": "IOSP-3", "status": "Open"}]}
+    many = _render_data(tmp_path, {"sprint": cur, "past_sprints": [older, past]})
+    assert many.index("Past sprint I&amp;O 26.41") < many.index("Past sprint I&amp;O 26.42") < many.index("Current sprint I&amp;O 26.43</summary>")
+    assert "<span>3</span> Current sprint" in many
     only = _render_data(tmp_path, {"sprint": cur})
     assert "Past sprint" not in only and "<span>1</span> Current sprint" in only
 
@@ -196,6 +200,8 @@ def test_contents_rail_links_sections_and_projects():
         assert f"href='#{target}'" in nav and (f"id='{target}'" in html or f'id="{target}"' in html)
     assert nav.count("class='dot ") == 2 and "Rubrik</a>" in nav and "Oracle RAC</a>" in nav
     assert "href='#gaps'" not in report.render({"projects": []}, "R")
+    assert nav.index("href='#top'") < nav.index("href='#summary'") and "Go to the top</a>" in nav
+    assert "id='top'" in html
 
 
 def test_compact_build_is_smaller_and_restores_links(tmp_path):
