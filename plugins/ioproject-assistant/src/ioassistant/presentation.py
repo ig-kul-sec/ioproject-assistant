@@ -159,7 +159,7 @@ var h=parseInt(location.hash.slice(1),10);show(isNaN(h)?0:h-1);
 
 
 def _latest_usage() -> tuple[str, list[dict]] | None:
-    runs = sorted(OUTPUT_DIR.glob("IOProjectAssistantReport_*/usage.json"))
+    runs = sorted(OUTPUT_DIR.glob("*IOProjectAssistantReport_*/usage.json"))
     if not runs:
         return None
     return runs[-1].parent.name, json.loads(runs[-1].read_text(encoding="utf-8"))

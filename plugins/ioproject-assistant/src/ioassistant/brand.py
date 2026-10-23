@@ -89,15 +89,25 @@ def head(title: str, extra_css: str = "", fonts: bool = True) -> str:
     )
 
 
+DEV_PREFIX = "DEV_"
+
+
+def is_dev(run_id: str) -> bool:
+    """Runs started from the DEV branch carry the DEV_ prefix in their run id (and so in every file name)."""
+    return str(run_id).startswith(DEV_PREFIX)
+
+
 def banner(title: str, subtitle: str, range_line: str = "", compact: bool = False, note_html: str = "",
-           subtitle_last: bool = False, tail_html: str = "") -> str:
-    """Header band. subtitle_last puts the subtitle (e.g. the Generated line) after the range and link lines."""
+           subtitle_last: bool = False, tail_html: str = "", dev: bool = False) -> str:
+    """Header band. subtitle_last puts the subtitle (e.g. the Generated line) after the range and link lines.
+    dev puts a red "DEV:" in front of the title."""
     # wordmark for the Forest band. Compact builds (connector upload, text only) carry no logo: a model cannot
     # retype the base64 faithfully, and an approximated logo would break the brand rules.
     logo = "" if compact else _data_uri("sectigo-logo-light.png", "image/png")
     img = f"<img src='{logo}' alt='Sectigo'>" if logo else ""
+    mark = "<span style='color:#ff3b30'>DEV:</span> " if dev else ""
     return (
-        f"<header class='top'><div class='wrap'>{img}<h1>{escape(title)}</h1>"
+        f"<header class='top'><div class='wrap'>{img}<h1>{mark}{escape(title)}</h1>"
         + ("" if subtitle_last else f"<p>{escape(subtitle)}</p>")
         + (f"<p class='range'>{escape(range_line)}</p>" if range_line else "")
         + (f"<p class='store'>{note_html}</p>" if note_html else "")

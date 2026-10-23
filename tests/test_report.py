@@ -204,6 +204,16 @@ def test_contents_rail_links_sections_and_projects():
     assert "id='top'" in html
 
 
+def test_dev_run_gets_red_dev_prefix_in_both_banners():
+    dev = report.render({"projects": []}, "DEV_IOProjectAssistantReport_20261023_1400")
+    assert "<h1><span style='color:#ff3b30'>DEV:</span> I&amp;O PROJECT STATUS REPORT</h1>" in dev
+    prod = report.render({"projects": []}, "IOProjectAssistantReport_20261023_1400")
+    assert "DEV:" not in prod
+    row = [{"agent": "a", "model": "m", "input_tokens": 1, "output_tokens": 1, "seconds": 1.0}]
+    assert "DEV:</span>" in spend.render(row, {}, "DEV_IOProjectAssistantReport_20261023_1400")
+    assert "DEV:" not in spend.render(row, {}, "IOProjectAssistantReport_20261023_1400")
+
+
 def test_compact_build_is_smaller_and_restores_links(tmp_path):
     data = {"projects": [{"name": "P", "summary": [{"text": "see IOSP-9 and https://x.test", "tickets": ["IOSP-9"]}]}]}
     full = report.render(data, "R", compact=False)

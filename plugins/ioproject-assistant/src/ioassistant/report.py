@@ -551,7 +551,7 @@ def _render(data: dict, title: str, compact: bool) -> str:
         + "<body id='top'>"
         + brand.banner("I&O PROJECT STATUS REPORT", f"Generated: {_stamp(data.get('generated_at'))}",
                        _range(data.get("window")), compact=compact, note_html=brand.header_links(),
-                       subtitle_last=True)
+                       subtitle_last=True, dev=brand.is_dev(title))
         + "<div class='wrap layout'>"
         + _contents(projects, bool(gaps))
         + "<main>"

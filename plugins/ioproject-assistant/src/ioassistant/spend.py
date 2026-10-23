@@ -51,7 +51,7 @@ def render(rows: list[dict], pricing: dict, title: str, compact: bool = False) -
         brand.head(f"{title} spending", fonts=not compact)
         + "<body>"
         + brand.banner("I&O assistant run spending", title, compact=compact,
-                       note_html=brand.sharepoint_note(f"{title}_spending.html"))
+                       note_html=brand.sharepoint_note(f"{title}_spending.html"), dev=brand.is_dev(title))
         + "<main class='wrap'><h2>Usage by agent</h2>"
         "<table><tr><th>Agent</th><th>Model</th><th>Tokens</th><th>Seconds</th><th>Est. cost (USD)</th></tr>"
         f"{body}<tfoot><tr class='total'><td><b>Total</b></td><td></td><td><b>{tokens:,}</b></td>"
