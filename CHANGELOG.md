@@ -6,6 +6,11 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
+## [0.4.2] - 2026-10-23
+
+### Added
+- Deployment pipeline "Deployment from DEV to PROD" (GitHub Actions): checks DEV, moves `main` (PROD) to it, tags the release and publishes a GitHub Release with the packaged plugin. Maintainer tooling only: the plugin itself is unchanged from 0.4.1.
+
 ## [0.4.1] - 2026-10-23
 
 ### Added
