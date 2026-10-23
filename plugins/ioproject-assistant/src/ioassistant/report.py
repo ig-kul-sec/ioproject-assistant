@@ -3,7 +3,8 @@ from __future__ import annotations
 
 import json
 import re
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
+from urllib.parse import quote
 from zoneinfo import ZoneInfo
 from html import escape, unescape
 from pathlib import Path
@@ -118,6 +119,37 @@ def _card(label, value, sub="") -> str:
     )
 
 
+def _sprint_url(name) -> str:
+    """Jira issue navigator listing the tickets of a sprint, newest update first."""
+    jql = f'sprint = "{name}" order by updated DESC'
+    return f"{JIRA_BROWSE.rsplit('browse/', 1)[0]}issues/?jql={quote(jql)}"
+
+
+def _sprint_changes(sprint: dict) -> str:
+    """Tickets added to or removed from the sprint on its 2nd day or later, with date and who did it."""
+    changes = sprint.get("changes") or []
+    try:
+        day2 = _md((date.fromisoformat(sprint["start"]) + timedelta(days=1)).isoformat())
+    except (KeyError, TypeError, ValueError):
+        day2 = NA
+    added = sum(1 for c in changes if c.get("action") == "added")
+    if not changes:
+        return f"<p>No tickets were added to or removed from the sprint from day 2 ({day2}) onward.</p>"
+    rows = "".join(
+        f"<tr>{_date_td(c.get('date'))}<td>{_t(str(c.get('action') or '').capitalize())}</td>"
+        f"<td>{_link(c.get('key'), c.get('url'))}</td><td>{_t(c.get('name'))}</td><td>{_t(c.get('status'))}</td>"
+        f"<td>{_t(c.get('assignee'))}</td><td>{_t(c.get('by'))}</td><td>{_t(c.get('other_sprint'))}</td></tr>"
+        for c in changes
+    )
+    return (
+        f"<p>From day 2 of the sprint ({day2}) onward: {added} added, {len(changes) - added} removed.</p>"
+        "<table><tr><th>Date</th><th>Action</th><th>Ticket</th><th>Ticket name</th><th>Status</th>"
+        "<th>Responsible</th><th>Done by</th><th>Other sprint</th></tr>" + rows + "</table>"
+        "<p class='note'>From the Jira change history of the Sprint field. A ticket moved between sprints shows as "
+        "removed from one and added to the other; 'Other sprint' is where it came from or went to.</p>"
+    )
+
+
 STATUS_ORDER = ("backlog", "to do", "in progress", "qa", "on hold", "unassigned", "done")  # workflow order
 
 
@@ -138,7 +170,9 @@ def _sprint_body(sprint: dict) -> str:
         for t in tickets
     )
     return (
-        f"<p><b>{_t(sprint.get('name'))}</b>: {_t(_md(sprint.get('start')))} to {_t(_md(sprint.get('end')))}"
+        (f"<p>{_link('JIRA Tickets Link: Sprint ' + str(sprint['name']), _sprint_url(sprint['name']))}</p>"
+         if sprint.get("name") else "")
+        + f"<p><b>{_t(sprint.get('name'))}</b>: {_t(_md(sprint.get('start')))} to {_t(_md(sprint.get('end')))}"
         f" ({dur if dur is not None else NA} days). {done} of {len(tickets)} tickets done ({pct}).</p>"
         f"<details class=\"sub\"><summary>All {len(tickets)} sprint tickets</summary>"
         "<table><tr><th>Ticket</th><th>Ticket name</th><th>Status</th><th>Responsible</th><th>Due</th></tr>"
@@ -146,8 +180,9 @@ def _sprint_body(sprint: dict) -> str:
     )
 
 
-def _bars(rows: list, total: int | None = None, stacked: bool = False) -> str:
-    """Horizontal bar chart in CSS. rows: (label, value) or, when stacked, (label, done, open)."""
+def _bars(rows: list, total: bool = False, stacked: bool = False) -> str:
+    """Horizontal bar chart in CSS. rows: (label, value) or, when stacked, (label, done, open).
+    total=True adds a closing "Total" row (no bar) with the sum of all rows."""
     top = max((sum(r[1:]) for r in rows), default=0) or 1
     out = []
     for r in rows:
@@ -158,7 +193,22 @@ def _bars(rows: list, total: int | None = None, stacked: bool = False) -> str:
         )
         out.append(f"<div class='bar'><span class='bl'>{_t(label)}</span><span class='bt'>{segs}</span>"
                    f"<span class='bv'>{sum(vals)}</span></div>")
+    if total:
+        out.append(f"<div class='bar total'><span class='bl'>Total</span><span class='bt'></span>"
+                   f"<span class='bv'>{sum(sum(r[1:]) for r in rows)}</span></div>")
     return "<div class='bars'>" + "".join(out) + "</div>"
+
+
+UNASSIGNED = "Unassigned"
+
+
+def _done_open(tickets: list) -> tuple:
+    """(done, not done) ticket counts."""
+    done = sum(1 for t in tickets if _is_done(t))
+    return done, len(tickets) - done
+
+
+NOTES = {orgteams.OTHER: "reporting to other managers", UNASSIGNED: "no assignee"}
 
 
 def _team_workload(tickets: list, roster: dict) -> str:
@@ -167,46 +217,49 @@ def _team_workload(tickets: list, roster: dict) -> str:
     teams = roster.get("teams", [])
     stats = {t["name"]: [0, 0] for t in teams}
     stats[orgteams.OTHER] = [0, 0]
+    stats[UNASSIGNED] = [0, 0]
     others: dict = {}
     for t in tickets:
         who = t.get("assignee")
-        if not who:
-            continue
-        team = orgteams.team_of(index, who)
+        team = orgteams.team_of(index, who) if who else UNASSIGNED
         stats[team][0 if _is_done(t) else 1] += 1
         if team == orgteams.OTHER:
             others[who] = others.get(who, 0) + 1
     info = {t["name"]: t for t in teams}
-    order = [t["name"] for t in teams] + [orgteams.OTHER]
+    order = [t["name"] for t in teams] + [orgteams.OTHER, UNASSIGNED]
 
     def label(name: str) -> str:
         return f"{name} ({info[name]['manager']})" if name in info and info[name].get("manager") else name
 
     rows = "".join(
-        f"<tr><td>{_t(name)}</td><td>{_t(info[name].get('manager')) if name in info else 'reporting to other managers'}</td>"
+        f"<tr><td>{_t(name)}</td><td>{_t(info[name].get('manager')) if name in info else NOTES.get(name, NA)}</td>"
         + (f"<td>{orgteams.headcount(info[name])}</td>" if name in info else f"<td>{NA}</td>")
         + f"<td>{sum(stats[name])}</td><td>{stats[name][0]}</td><td>{stats[name][1]}</td>"
         + (f"<td>{sum(stats[name]) / orgteams.headcount(info[name]):.1f}</td>" if name in info else f"<td>{NA}</td>")
         + "</tr>"
         for name in order
+    ) + (
+        f"<tr class='total'><td><b>Total</b></td><td></td><td>{sum(orgteams.headcount(t) for t in teams)}</td>"
+        f"<td><b>{sum(sum(s) for s in stats.values())}</b></td><td><b>{sum(s[0] for s in stats.values())}</b></td>"
+        f"<td><b>{sum(s[1] for s in stats.values())}</b></td><td>{NA}</td></tr>"
     )
     other_note = (" Other: " + ", ".join(f"{escape(n)} ({c})" for n, c in sorted(others.items(), key=lambda kv: (-kv[1], kv[0])))
                   + ".") if others else ""
     asof = roster.get("as_of")
     return (
         "<p class='legend'><i class='seg'></i> done <i class='seg open'></i> not done</p>"
-        + _bars([(label(n), *stats[n]) for n in order], stacked=True)
+        + _bars([(label(n), *stats[n]) for n in order], total=True, stacked=True)
         + "<table><tr><th>Team</th><th>Manager</th><th>People</th><th>Tickets</th><th>Done</th><th>Not done</th>"
           f"<th>Tickets per person</th></tr>{rows}</table>"
         + f"<p class='note'>Teams follow the reporting lines in Ardoq (Organization structure), "
           f"{'live for this run' if roster.get('live') else 'static snapshot dated ' + escape(str(asof or NA))}; "
-          f"the manager counts as part of the team. Other = assignees reporting to other managers. "
-          f"Unassigned tickets are not counted.{other_note}</p>"
+          f"the manager counts as part of the team. Other = assignees reporting to other managers; "
+          f"Unassigned = tickets with no assignee, so the total matches all sprint tickets.{other_note}</p>"
     )
 
 
 def _idle_employees(tickets: list, roster: dict) -> str:
-    """Per team, the engineers (Ardoq roster members) with no ticket in this sprint, whatever its status."""
+    """Per team, the employees (Ardoq roster members) with no ticket in this sprint, whatever its status."""
     idle = orgteams.idle(roster, [t.get("assignee") for t in tickets])
     info = {t["name"]: t for t in roster.get("teams", [])}
     rows = "".join(
@@ -216,9 +269,9 @@ def _idle_employees(tickets: list, roster: dict) -> str:
         for name, people in idle.items()
     )
     total = sum(len(p) for p in idle.values())
-    return (f"<p>{total} engineers have no ticket in this sprint (Done tickets count as assigned).</p>"
-            f"<table><tr><th>Team</th><th>Manager</th><th>Without tickets</th><th>Engineers</th></tr>{rows}</table>"
-            "<p class='note'>Based on the Ardoq roster; managers are not counted as engineers. "
+    return (f"<p>{total} employees have no ticket in this sprint (Done tickets count as assigned).</p>"
+            f"<table><tr><th>Team</th><th>Manager</th><th>Without tickets</th><th>Employees</th></tr>{rows}</table>"
+            "<p class='note'>Based on the Ardoq roster; managers are not counted as employees. "
             "Tickets are matched by name or email.</p>")
 
 
@@ -228,6 +281,7 @@ def _sprint_charts(sprint: dict, roster: dict | None = None) -> str:
     if not tickets:
         return ""
     roster = roster if roster is not None else orgteams.load()
+    team_idx = orgteams.team_index(roster)
     by_status: dict = {}
     for t in tickets:
         k = str(t.get("status") or "n/a")
@@ -252,15 +306,19 @@ def _sprint_charts(sprint: dict, roster: dict | None = None) -> str:
     status_rows = sorted(by_status.items(), key=lambda kv: (_status_rank(kv[0]), kv[0]))
     return (
         _sec(1, "Sprint at a glance", f"<div class='kpis'>{kpis}</div>")
-        + _sec(2, "Tickets by status", _bars(status_rows))
+        + _sec(2, "Tickets by status", _bars(status_rows, total=True))
         + _sec(3, "Tickets by team", _team_workload(tickets, roster))
-        + _sec(4, "Tickets by employee",
+        + _sec(4, "Employees without tickets assigned in sprint", _idle_employees(tickets, roster))
+        + _sec(5, "Tickets by employee",
                "<p class='legend'><i class='seg'></i> done <i class='seg open'></i> not done"
                f" &middot; {len(people)} employees account for {assigned} of {len(tickets)} tickets"
                + (f" &middot; {unassigned} unassigned" if unassigned else "") + "</p>"
-               + _bars([(n, d, o) for n, (d, o) in ranked], stacked=True)
+               + _bars([(f"{n} ({orgteams.team_of(team_idx, n)})", d, o) for n, (d, o) in ranked]
+                       + ([(UNASSIGNED, *_done_open([t for t in tickets if not t.get("assignee")]))] if unassigned else []),
+                       total=True, stacked=True)
                + "<p class='note'>Counts tickets, not story points or effort.</p>")
-        + _sec(5, "Engineers without tickets assigned in sprint", _idle_employees(tickets, roster))
+        + (_sec(6, "Tickets added or removed from the sprint (day 2 onward)", _sprint_changes(sprint))
+           if sprint.get("changes") is not None else "")
     )
 
 
@@ -571,6 +629,7 @@ p.tools{margin:20px 0 0}
 .bt{display:flex;height:20px;background:rgba(1,82,88,.08);border-radius:4px;overflow:hidden}
 .seg{display:inline-block;height:100%;background:var(--forest)}.seg.open{background:var(--spearmint)}
 .bv{font-weight:700;color:var(--forest)}
+.bar.total{border-top:1px solid var(--forest);padding-top:4px}.bar.total .bt{background:none}
 .legend{font-size:13px;margin:6px 0}.legend .seg{width:12px;height:12px;vertical-align:-1px;margin-left:8px;border-radius:2px}
 .note{font-size:12px;opacity:.8}
 body.tabbed .tabpanel{display:none}body.tabbed .tabpanel.on{display:block}

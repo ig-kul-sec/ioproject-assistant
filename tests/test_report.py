@@ -363,7 +363,7 @@ def test_sprint_statuses_follow_workflow_order():
     html = report.render({"sprint": {"name": "S1", "tickets": tickets}, "projects": []}, "R")
     chart = html[html.index("Tickets by status"):html.index("Tickets by team")]
     order = [m.group(1) for m in re.finditer(r"<span class='bl'>([^<]+)</span>", chart)]
-    assert order == ["Backlog", "To Do", "In Progress", "QA", "On Hold", "Unassigned", "Done", "Rejected"]
+    assert order == ["Backlog", "To Do", "In Progress", "QA", "On Hold", "Unassigned", "Done", "Rejected", "Total"]
     table = html[html.index("All 8 sprint tickets"):]
     keys = [int(k) for k in re.findall(r"<td>IOSP-(\d+)</td>", table)][:8]
     assert keys == [8, 7, 6, 2, 5, 3, 1, 4]
@@ -375,8 +375,116 @@ def test_idle_employees_per_team_listed_without_tickets():
         {"key": "IOSP-2", "status": "Open", "assignee": "shane feola"},
     ]
     html = report.render({"sprint": {"name": "S1", "tickets": tickets}, "org_teams": TEAMS, "projects": []}, "R")
-    section = html[html.index("Engineers without tickets assigned in sprint"):]
+    section = html[html.index("Employees without tickets assigned in sprint"):]
     section = section[:section.index("</table>")]
     assert "<td>DBA</td><td>Prajeet Singh Kahlon</td><td>0 of 1</td><td>everyone has a ticket</td>" in section
     assert "<td>Network</td><td>Jaime Larsen</td><td>0 of 1</td><td>everyone has a ticket</td>" in section
     assert "Vlad Serbanescu" not in section and "Shane Feola" not in section
+
+
+def test_totals_cover_all_tickets_and_employees_show_their_team():
+    tickets = [
+        {"key": "IOSP-1", "status": "Done", "assignee": "Vlad Serbanescu"},
+        {"key": "IOSP-2", "status": "Open", "assignee": "Karl Witt"},
+        {"key": "IOSP-3", "status": "Open"},
+        {"key": "IOSP-4", "status": "Backlog"},
+    ]
+    html = report.render({"sprint": {"name": "S1", "tickets": tickets}, "org_teams": TEAMS, "projects": []}, "R")
+    status = html[html.index("Tickets by status"):html.index("Tickets by team")]
+    team = html[html.index("Tickets by team"):html.index("Tickets by employee")]
+    assert "<span class='bl'>Total</span><span class='bt'></span><span class='bv'>4</span>" in status
+    assert "<span class='bl'>Total</span><span class='bt'></span><span class='bv'>4</span>" in team
+    assert "<td>Unassigned</td><td>no assignee</td><td>n/a</td><td>2</td>" in team
+    assert "<td><b>Total</b></td><td></td><td>4</td><td><b>4</b></td><td><b>1</b></td><td><b>3</b></td>" in team
+    assert "Vlad Serbanescu (DBA)" in html and "Karl Witt (Other)" in html
+
+
+def test_employee_chart_has_unassigned_row_and_total():
+    tickets = [
+        {"key": "IOSP-1", "status": "Done", "assignee": "Vlad Serbanescu"},
+        {"key": "IOSP-2", "status": "Open", "assignee": "Karl Witt"},
+        {"key": "IOSP-3", "status": "Open"},
+        {"key": "IOSP-4", "status": "Done"},
+    ]
+    html = report.render({"sprint": {"name": "S1", "tickets": tickets}, "org_teams": TEAMS, "projects": []}, "R")
+    emp = html[html.index("Tickets by employee"):html.index("<h2>JIRA tickets</h2>")]
+    assert "<span class='bl'>Unassigned</span>" in emp and "<span class='bv'>2</span></div>" in emp
+    assert "<span class='bl'>Total</span><span class='bt'></span><span class='bv'>4</span>" in emp
+    no_gap = report.render({"sprint": {"name": "S1", "tickets": tickets[:2]}, "org_teams": TEAMS, "projects": []}, "R")
+    assert "<span class='bl'>Unassigned</span>" not in no_gap[no_gap.index("Tickets by employee"):no_gap.index("<h2>JIRA tickets</h2>")]
+
+
+def _issue(key, *histories):
+    return {"key": key, "fields": {"summary": f"{key} task", "status": {"name": "Open"}, "assignee": {"displayName": "Ann"}},
+            "changelog": {"histories": [
+                {"created": c, "author": {"displayName": by},
+                 "items": [{"field": "Sprint", "from": f, "fromString": fs, "to": t, "toString": ts}]}
+                for c, by, f, fs, t, ts in histories]}}
+
+
+def test_sprint_changes_from_day_two_with_date_and_author():
+    from ioassistant import sprintchanges
+    issues = [
+        _issue("IOSP-1", ("2026-10-19T10:00:00.000+0100", "Day One", None, None, "1017", "S2")),       # day 1: ignored
+        _issue("IOSP-2", ("2026-10-20T12:00:00.000+0100", "Gabriel Rovira", "1016", "S1", "1016, 1017", "S1, S2")),
+        _issue("IOSP-3", ("2026-10-21T09:30:00.000+0100", "Maarten Broekman", "1016, 1017", "S1, S2", "1016", "S1"),
+               ("2026-10-22T09:30:00.000+0100", "Calvin Cochran", "1016", "S1", "1018", "S3")),            # unrelated: ignored
+        _issue("IOSP-4", ("2026-10-21T10:00:00.000+0100", "Ann", "1017", "S2", "1018", "S3")),
+    ]
+    rows = sprintchanges.extract(issues, 1017, "2026-10-19")
+    assert [(r["key"], r["action"], r["date"], r["by"], r["other_sprint"]) for r in rows] == [
+        ("IOSP-2", "added", "2026-10-20", "Gabriel Rovira", "S1"),
+        ("IOSP-3", "removed", "2026-10-21", "Maarten Broekman", "S1"),
+        ("IOSP-4", "removed", "2026-10-21", "Ann", "S3"),
+    ]
+
+
+def test_sprint_changes_section_and_sprint_link():
+    sprint = {"name": "I&O 26.43", "start": "2026-10-19", "tickets": [{"key": "IOSP-9", "status": "Open"}],
+              "changes": [{"key": "IOSP-2", "url": "https://j/IOSP-2", "name": "Patch", "status": "Open", "assignee": "Ann",
+                           "action": "added", "date": "2026-10-20", "by": "Gabriel Rovira", "other_sprint": "I&O 26.42"}]}
+    html = report.render({"sprint": sprint, "projects": []}, "R")
+    sec = html[html.index("Tickets added or removed from the sprint"):]
+    sec = sec[:sec.index("</table>")]
+    assert "from day 2 of the sprint (10/20) onward: 1 added, 0 removed" in sec.lower().replace("from day 2", "from day 2")
+    assert "<td>10/20</td>" in sec or 'data-s="2026-10-20">10/20</td>' in sec
+    assert "Gabriel Rovira" in sec and "<td>Added</td>" in sec
+    assert ">JIRA Tickets Link: Sprint I&amp;O 26.43</a>" in html
+    assert "issues/?jql=sprint%20%3D%20%22I%26O%2026.43%22%20order%20by%20updated%20DESC" in html
+    assert "Tickets added or removed" not in report.render({"sprint": {**sprint, "changes": None}, "projects": []}, "R")
+
+
+def test_ticket_created_straight_into_sprint_counts_as_added_by_creator():
+    from ioassistant import sprintchanges
+    new = {"key": "COR-9", "fields": {"summary": "New", "status": {"name": "Open"}, "created": "2026-10-22T19:23:11.365+0100",
+                                      "creator": {"displayName": "Maarten Broekman"}}, "changelog": {"histories": []}}
+    old = {**new, "key": "COR-8", "fields": {**new["fields"], "created": "2026-10-19T09:00:00.000+0100"}}
+    rows = sprintchanges.extract([new, old], 1017, "2026-10-19", members={"COR-9", "COR-8"})
+    assert [(r["key"], r["action"], r["date"], r["by"]) for r in rows] == [("COR-9", "added", "2026-10-22", "Maarten Broekman")]
+
+
+def test_sprint_changes_failure_leaves_data_file_untouched(tmp_path, monkeypatch):
+    import pytest
+    from ioassistant import sprintchanges
+
+    def boom(*args):
+        raise SystemExit("Jira answered HTTP 401 (for 401/403 check JIRA_API_TOKEN)")
+
+    monkeypatch.setattr(sprintchanges, "fetch", boom)
+    path = tmp_path / "data.json"
+    path.write_bytes(b'{\r\n "sprint": {"name": "S1", "start": "2026-10-19"}\r\n}')
+    before = path.read_bytes()
+    with pytest.raises(SystemExit):
+        sprintchanges.build(path)
+    assert path.read_bytes() == before
+
+
+def test_sprint_changes_keeps_the_data_file_layout(tmp_path, monkeypatch):
+    from ioassistant import sprintchanges
+    monkeypatch.setattr(sprintchanges, "fetch", lambda *a: [{"key": "COR-1", "action": "added", "date": "2026-10-20"}])
+    path = tmp_path / "data.json"
+    path.write_bytes(b'{\r\n "sprint": {\r\n  "name": "S\xc3\xa9",\r\n  "start": "2026-10-19"\r\n }\r\n}')
+    sprintchanges.build(path)
+    raw = path.read_bytes()
+    assert b"\r\n" in raw and b"\n" not in raw.replace(b"\r\n", b"") and "S\u00e9".encode() in raw
+    assert json.loads(raw)["sprint"]["changes"][0]["key"] == "COR-1"

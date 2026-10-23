@@ -299,7 +299,7 @@ IO Project Assistant is a **Claude Code plugin**. It has no server and no databa
 |---|---|---|
 | Entry points | Two skills the user types: `run-report`, `setup` | `skills/run-report`, `skills/setup` |
 | Coordination | One **orchestrator** agent (Claude Opus) that runs the pipeline | `agents/orchestrator.md` |
-| Data collection | Four **collector** agents (Claude Sonnet), one per source | `agents/*-collector.md` |
+| Data collection | Five **collector** agents (Claude Sonnet), one per source (Teams, Jira, Confluence, SharePoint, Ardoq) | `agents/*-collector.md` |
 | Rendering | Python package `ioassistant` (standard library only) that turns merged JSON into HTML, email and Confluence bodies | `src/ioassistant/` |
 | Publishing | Agents that upload to SharePoint and create the Outlook draft and the Confluence page | `sharepoint-collector` (upload mode), `report-email-drafter`, `report-confluence-publisher` |
 | Know-how | Skills holding the detailed rules each agent follows (schemas, API calls, limits) | `skills/*/SKILL.md` |
@@ -322,6 +322,7 @@ All agents are launched as `ioproject-assistant:<name>`.
 | `teams-collector` | Sonnet | Reads the Daily Ops StandUp chat, the Rubrik Project SyncUp chat and transcript, and "RUBRIK - Project Status" emails; decides which projects were discussed; extracts notes, action items and risks | Microsoft 365: Teams chat list and search, read resource, calendar search, email search | Nothing |
 | `jira-collector` | Sonnet | Epics, child tickets, changes and comments in the window, active IOSP sprint; always includes Rubrik epic IOSP-471 | Bash (curl GET), WebFetch | Nothing |
 | `confluence-collector` | Sonnet | Project pages: title, URL, last editor, last modified, and status, timeline and risk sections | Bash (curl GET) | Nothing |
+| `org-collector` | Sonnet | Reporting lines from Ardoq (who reports to the DBA, Network, SRE Tier 2 and SRE Tier 3 managers) for the sprint charts by team. Without an Ardoq sign-in it returns nothing and the report uses the bundled snapshot `config/org-teams.json` and lists a data gap | Ardoq MCP server bundled in `.mcp.json` (each user signs in once with `/mcp`) | Nothing |
 | `sharepoint-collector` | Sonnet | **Read mode:** roadmap deck "Project review" slides (RAG status, dates, PM, tech lead) and PMO folder files. **Upload mode:** uploads the two finished reports | Microsoft 365: SharePoint search, folder search, read resource, upload file | 2 files in the AI Test SharePoint Folder (never overwrites) |
 | `report-builder` | Sonnet | Renders the status report and spending report with the Python package | Bash (python), Read, Write | Local HTML files |
 | `report-email-drafter` | Sonnet | Creates the Outlook draft with SharePoint links, CC'd to the user | Microsoft 365: Outlook create draft | 1 unsent draft |
@@ -352,9 +353,13 @@ flowchart TD
     T --> J["jira-collector"]
     T --> C["confluence-collector"]
     T --> S["sharepoint-collector (read)"]
+    T --> OC["org-collector: Ardoq reporting lines"]
     J --> M["Merge into data.json: status, summary, Jira updates needed"]
     C --> M
     S --> M
+    OC --> M
+    M --> SC["cli sprint-changes: tickets added/removed from day 2"]
+    SC --> RB
     M --> RB["report-builder: status report + spending report"]
     RB --> UP["sharepoint-collector (upload): compact copies, size-checked"]
     UP --> E["report-email-drafter: unsent Outlook draft"]
@@ -407,8 +412,10 @@ Tables sort by column, cards collapse, and Jira keys are links.
 
 | Module | Role |
 |---|---|
-| `cli.py` | Command line: `report`, `spend`, `confluence`, `email`, `presentation` (`--compact` for upload copies) |
+| `cli.py` | Command line: `report`, `spend`, `confluence`, `email`, `presentation`, `sprint-changes` (`--compact` for upload copies) |
 | `report.py` | Status report HTML renderer |
+| `orgteams.py` | Team roster (Ardoq reporting lines): live `org_teams` from the run, else `config/org-teams.json`; matches Jira assignees to teams |
+| `sprintchanges.py` | `sprint-changes` command: reads the Jira change history (read-only) and adds `sprint.changes`, the tickets added to or removed from the sprint on day 2 or later |
 | `spend.py` | Spending report and cost calculation (`config/pricing.json`) |
 | `brand.py` | Sectigo 2026 palette, fonts, logo, footer and fixed URLs |
 | `emaildraft.py` | Outlook draft subject and body |
@@ -431,6 +438,7 @@ Run it as `PYTHONPATH="<plugin>/src" python -m ioassistant.cli <command> <json>`
 | Jira scrum board | https://projects.sectigo.net/secure/RapidBoard.jspa?rapidView=485&projectKey=IOSP&view=planning.nodetail&issueLimit=100 |
 | Rubrik DR backup epic | https://projects.sectigo.net/browse/IOSP-471 |
 | Confluence | https://confluence.comodoca.net/ |
+| Ardoq (organization structure) | https://sectigo.us.ardoq.com/mcp/ (MCP server bundled in the plugin; Entra Users workspace, "Manager Of" references) |
 | I&O Project Roadmap deck | SharePoint site IOProjectTeam, `Presentations/I&O Project Roadmap.pptx` |
 | PMO folder | SharePoint (`SHAREPOINT_PMO_FOLDER_URL`) |
 

@@ -6,6 +6,17 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
+## [0.4.1] - 2026-10-23
+
+### Added
+- "Tickets added or removed from the sprint (day 2 onward)" in Sprint charts: date, ticket, status, responsible and who made the change, from the Jira change history (new `sprint-changes` CLI command, run by the orchestrator; a ticket created straight into the sprint counts as added by its creator). Omitted, with a data gap, when Jira cannot be read.
+- "JIRA Tickets Link: Sprint <name>" at the top of the current and past sprint subsections (Jira issue navigator for that sprint).
+- Total rows in Tickets by status and Tickets by team, an Unassigned row in Tickets by team and Tickets by employee (the totals now equal all sprint tickets), and the team name next to each employee.
+
+### Changed
+- Sprint tickets and the status chart follow the workflow order: Backlog, To Do, In Progress, QA, On Hold, Unassigned, Done (other statuses after Done).
+- "Engineers without tickets assigned in sprint" is now "Employees without tickets assigned in sprint", has a Manager column, no longer counts managers as employees, and comes before Tickets by employee.
+
 ## [0.4.0] - 2026-10-23
 
 ### Added
