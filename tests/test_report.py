@@ -214,6 +214,25 @@ def test_dev_run_gets_red_dev_prefix_in_both_banners():
     assert "DEV:" not in spend.render(row, {}, "IOProjectAssistantReport_20261023_1400")
 
 
+def test_tabs_split_projects_sprint_and_gaps():
+    data = {"gaps": ["Jira: token expired"], "projects": [{"name": "Rubrik"}]}
+    html = report.render(data, "R")
+    bar = html[html.index("<div class='tabs'"):html.index("</div>", html.index("<div class='tabs'"))]
+    labels = [t for t in ("Projects", "Sprint management", "Data gaps") if f">{t}</button>" in bar]
+    assert labels == ["Projects", "Sprint management", "Data gaps"]
+    assert html.index("class='tools'") < html.index("class='tabs'") < html.index("id='tab-projects'")
+
+    def panel(ident):
+        start = html.index(f"id='{ident}'")
+        ends = [i for i in (html.find("<section class='tabpanel'", start + 1), html.index("</main>")) if i > 0]
+        return html[start:min(ends)]
+    assert 'id="glance"' in panel("tab-projects") and "Rubrik" in panel("tab-projects")
+    assert 'id="sprint"' in panel("tab-sprint") and 'id="sprint"' not in panel("tab-projects")
+    assert 'id="gaps"' in panel("tab-gaps") and 'id="gaps"' not in panel("tab-sprint")
+    no_gaps = report.render({"projects": []}, "R")
+    assert "tab-gaps" not in no_gaps and "Sprint management" in no_gaps
+
+
 def test_compact_build_is_smaller_and_restores_links(tmp_path):
     data = {"projects": [{"name": "P", "summary": [{"text": "see IOSP-9 and https://x.test", "tickets": ["IOSP-9"]}]}]}
     full = report.render(data, "R", compact=False)

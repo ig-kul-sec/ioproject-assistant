@@ -198,8 +198,16 @@ document.querySelectorAll('table').forEach(function(t){
 var JB='@@JB@@';
 document.querySelectorAll('a.j').forEach(function(a){a.href=JB+a.textContent.trim()});
 document.querySelectorAll('a[href^=http]').forEach(function(a){a.target='_blank';a.rel='noopener'});
-function openTo(){var id=decodeURIComponent(location.hash.slice(1));var e=id&&document.getElementById(id);
- while(e){if(e.tagName==='DETAILS')e.open=true;e=e.parentElement}}
+var tabs=document.querySelectorAll('.tabs button'),panels=document.querySelectorAll('.tabpanel');
+function showTab(id){panels.forEach(function(p){p.classList.toggle('on',p.id===id)});
+ tabs.forEach(function(b){var on=b.getAttribute('data-tab')===id;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)})}
+if(panels.length){document.body.classList.add('tabbed');showTab(panels[0].id);
+ tabs.forEach(function(b){b.addEventListener('click',function(){showTab(b.getAttribute('data-tab'))})})}
+function openTo(){var id=decodeURIComponent(location.hash.slice(1));var t=id&&document.getElementById(id),e=t,moved=false;
+ while(e){if(e.tagName==='DETAILS')e.open=true;
+  if(e.classList&&e.classList.contains('tabpanel')&&!e.classList.contains('on')){showTab(e.id);moved=true}
+  e=e.parentElement}
+ if(moved&&t)t.scrollIntoView()}
 window.addEventListener('hashchange',openTo);openTo();
 function all(open){document.querySelectorAll('details').forEach(function(d){d.open=open})}
 var c=document.getElementById('collapse-all'),x=document.getElementById('expand-all'),pj=document.getElementById('expand-projects');

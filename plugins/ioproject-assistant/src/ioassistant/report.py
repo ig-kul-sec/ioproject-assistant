@@ -302,6 +302,17 @@ def _tool(ident: str, label: str, icon: str) -> str:
             f"{escape(label)}</button>")
 
 
+def _tabs(items: list) -> str:
+    """Tab bar under the Collapse/Expand buttons; the page script shows one panel at a time (all show without it)."""
+    return "<div class='tabs' role='tablist'>" + "".join(
+        f"<button role='tab' data-tab='{ident}'>{escape(label)}</button>" for ident, label in items
+    ) + "</div>"
+
+
+def _panel(ident: str, body: str) -> str:
+    return f"<section class='tabpanel' id='{ident}' role='tabpanel'>{body}</section>"
+
+
 NON_PROJECT_TYPES = ("Incident", "Problem", "Issue", "Change", "Maintenance", "Other")
 
 
@@ -416,6 +427,12 @@ html{scroll-behavior:smooth}
 @media (max-width:900px){.layout{grid-template-columns:minmax(0,1fr)}nav.toc{display:none}}
 @media print{nav.toc{display:none}.layout{display:block}}
 p.tools{margin:20px 0 0}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;margin:20px 0 0;border-bottom:2px solid var(--forest)}
+.tabs button{font:600 15px 'Urbanist',Arial,sans-serif;background:none;color:var(--forest);border:1px solid transparent;border-bottom:0;border-radius:8px 8px 0 0;padding:8px 18px;cursor:pointer}
+.tabs button:hover{background:var(--off-white)}
+.tabs button.on{background:var(--forest);color:var(--off-white)}
+body.tabbed .tabpanel{display:none}body.tabbed .tabpanel.on{display:block}
+@media print{body.tabbed .tabpanel{display:block}.tabs{display:none}}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px}
 .kpi{background:var(--forest);color:var(--off-white);border-radius:12px;padding:18px 20px}
 .kpi-v{font:700 36px/1 'Urbanist',Arial,sans-serif;color:var(--spearmint)}
@@ -561,14 +578,17 @@ def _render(data: dict, title: str, compact: bool) -> str:
         + _tool("expand-all", "Expand all", ICON_EXPAND)
         + _tool("expand-projects", "Expand Proj+SubItems", ICON_TREE)
         + "</p>"
-        + _top("Projects at a glance",
-               "<table><tr><th>Project</th><th>Status</th><th>Progress</th><th>Timeline</th><th>Top risk</th></tr>"
-               f"{glance}</table>", fold=True, ident="glance")
-        + "<h2>Project status</h2>"
-        f"{''.join(_project(p, base, compact, sprint_of) for p in projects)}"
-        + _top(OPS_TITLE, _non_project(non_project, base), fold=True, ident="ops")
-        + _top("Sprint status", _sprint(sprint, past), ident="sprint")
-        + gap_html
+        + _tabs([("tab-projects", "Projects"), ("tab-sprint", "Sprint management")]
+                + ([("tab-gaps", "Data gaps")] if gaps else []))
+        + _panel("tab-projects",
+                 _top("Projects at a glance",
+                      "<table><tr><th>Project</th><th>Status</th><th>Progress</th><th>Timeline</th><th>Top risk</th></tr>"
+                      f"{glance}</table>", fold=True, ident="glance")
+                 + "<h2>Project status</h2>"
+                 f"{''.join(_project(p, base, compact, sprint_of) for p in projects)}"
+                 + _top(OPS_TITLE, _non_project(non_project, base), fold=True, ident="ops"))
+        + _panel("tab-sprint", _top("Sprint status", _sprint(sprint, past), ident="sprint"))
+        + (_panel("tab-gaps", gap_html) if gaps else "")
         + brand.footer()
         + "</main></div>" + brand.foot(base)
     )

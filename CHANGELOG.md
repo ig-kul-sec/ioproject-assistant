@@ -10,6 +10,7 @@ tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DE
 
 ### Added
 - Contents rail on the status report, with a "Go to the top" link.
+- Tabs under the Collapse/Expand buttons: Projects, Sprint management and Data gaps (Sprint status and Data gaps moved into their tabs).
 - Spending report totals row, footer links, sprint column and sprint subsections.
 - Runs from the `DEV` branch use the `DEV_` file-name prefix and show a red "DEV:" before the report title.
 - This changelog.
