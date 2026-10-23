@@ -2,11 +2,11 @@
 
 Release notes for the IO Project Assistant plugin. Format: [Keep a Changelog](https://keepachangelog.com/).
 
-Workflow: add entries under `[Unreleased]` on `DEV` as you commit. When `DEV` is merged into `main` (PROD), rename
-`[Unreleased]` to the version and date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
+Workflow: add entries under the in-development version at the top on `DEV` as you commit. When `DEV` is merged into `main` (PROD), rename
+`[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
-## [Unreleased]
+## [0.4.0] - in development (DEV)
 
 ### Added
 - Contents rail on the status report, with a "Go to the top" link.
@@ -17,9 +17,6 @@ tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DE
 ### Changed
 - Report and spending file names use America/New_York time for `hhmm`.
 - Middle dots are written as entities in the compact build.
-
-## [0.3.3] - 2026-10-20
-- Release 0.3.3 (see git history for details).
 
 ## [0.3.2] - 2026-10-20
 - Release 0.3.2 (see git history for details).
