@@ -488,3 +488,26 @@ def test_sprint_changes_keeps_the_data_file_layout(tmp_path, monkeypatch):
     raw = path.read_bytes()
     assert b"\r\n" in raw and b"\n" not in raw.replace(b"\r\n", b"") and "S\u00e9".encode() in raw
     assert json.loads(raw)["sprint"]["changes"][0]["key"] == "COR-1"
+
+
+def test_sprint_tickets_merge_takes_jira_list_and_keeps_collector_fields():
+    from ioassistant import sprinttickets
+    issues = [{"key": "COR-1", "fields": {"summary": "A", "status": {"name": "QA"}, "assignee": None, "duedate": "2026-10-30"}},
+              {"key": "COR-2", "fields": {"summary": "B", "status": {"name": "Backlog"}, "assignee": {"displayName": "X Y"}}}]
+    rows = sprinttickets.merge([{"key": "COR-1", "name": "old", "epic": "IOSP-9"}, {"key": "GONE-1"}], issues, "https://j")
+    assert [r["key"] for r in rows] == ["COR-1", "COR-2"]
+    assert rows[0] == {"key": "COR-1", "url": "https://j/browse/COR-1", "name": "A", "status": "QA", "assignee": None,
+                       "due": "2026-10-30", "epic": "IOSP-9"}
+    assert rows[1]["assignee"] == "X Y" and rows[1]["due"] is None
+
+
+def test_sprint_tickets_fetch_pages_and_checks_the_total(monkeypatch):
+    import pytest
+    from ioassistant import sprinttickets
+    monkeypatch.setattr(sprinttickets, "PAGE", 2)
+    data = [{"key": f"COR-{n}"} for n in range(5)]
+    monkeypatch.setattr(sprinttickets, "_get", lambda site, path, p, t: {"total": 5, "issues": data[p["startAt"]:p["startAt"] + 2]})
+    assert len(sprinttickets.fetch("https://j", 1, "t")) == 5
+    monkeypatch.setattr(sprinttickets, "_get", lambda site, path, p, t: {"total": 9, "issues": data[p["startAt"]:p["startAt"] + 2]})
+    with pytest.raises(SystemExit):
+        sprinttickets.fetch("https://j", 1, "t")

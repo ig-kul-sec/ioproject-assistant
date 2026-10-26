@@ -6,6 +6,14 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
+## [0.5.2] - 2026-10-26
+
+### Fixed
+- The sprint ticket lists could be incomplete: the Jira agent returned 30 of the 79 tickets in sprint I&O 26.44 (for example COR-12052 was missing), so the sprint charts and team workload undercounted. A new `sprint-tickets` command (`sprinttickets.py`) now reads every ticket of the current sprint and of each open past sprint from Jira, pages through all results and fails when the count does not match the sprint total. The orchestrator runs it after `data.json` is written; on failure it adds a "Sprint tickets: ..." gap and keeps the collector's list.
+
+### Changed
+- Guide: Jira Cloud connection and `DEV_` run prefix documented, release examples use 0.5.2, version history added (C8).
+
 ## [0.5.1] - 2026-10-26
 
 ### Changed

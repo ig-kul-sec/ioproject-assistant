@@ -462,6 +462,7 @@ Tables sort by column, cards collapse, and Jira keys are links.
 | `report.py` | Status report HTML renderer |
 | `orgteams.py` | Team roster (Ardoq reporting lines): live `org_teams` from the run, else `config/org-teams.json`; matches Jira assignees to teams |
 | `sprintchanges.py` | `sprint-changes` command: reads the Jira change history (read-only) and adds `sprint.changes`, the tickets added to or removed from the sprint on day 2 or later |
+| `sprinttickets.py` | `sprint-tickets` command: reads every ticket of the current and open past sprints from Jira (read-only, paged, count checked) and replaces `tickets` in `data.json` |
 | `spend.py` | Spending report and cost calculation (`config/pricing.json`) |
 | `transcript_usage.py` | Sums an agent's real token usage from its Claude Code transcript (prototype for a hook that fills `usage.json` without the model reporting its own tokens) |
 | `brand.py` | Sectigo 2026 palette, fonts, logo, footer and fixed URLs |
@@ -516,10 +517,11 @@ Run it as `PYTHONPATH="<plugin>/src" python -m ioassistant.cli <command> <json>`
 
 ## C8. Version history
 
-Full notes are in `CHANGELOG.md`. Current version: **0.5.1**.
+Full notes are in `CHANGELOG.md`. Current version: **0.5.2**.
 
 | Version | Date | What changed |
 |---|---|---|
+| 0.5.2 | 2026-10-26 | Sprint ticket lists are complete: a new `sprint-tickets` step reads every ticket of the sprint (and open past sprints) from Jira and checks the count, so the charts no longer miss tickets (79 in the sprint, 30 were reported). |
 | 0.5.1 | 2026-10-26 | Confluence moved to Confluence Cloud (sectigo.atlassian.net/wiki, space CO). Same `JIRA_EMAIL` + `JIRA_API_TOKEN` as Jira; `CONFLUENCE_API_TOKEN` is no longer needed. |
 | 0.5.0 | 2026-10-26 | Jira moved to Jira Cloud (sectigo.atlassian.net). Sign-in is Atlassian email plus API token (basic auth), so **colleagues must add `JIRA_EMAIL`** (setup asks for it). Scrum board is now 318 (was 485). |
 | 0.4.5 | 2026-10-26 | Report footer shows the real release version (a test keeps it in step with `plugin.json`). |
