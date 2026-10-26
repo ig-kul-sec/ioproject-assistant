@@ -12,13 +12,13 @@ This guide has three parts:
 
 You type one command. About 10-20 minutes later you have:
 
-1. A **clickable status report** (HTML) of every I&O project discussed this week: status, updates, risks, action items, Jira tickets and links to sources.
+1. A **clickable status report** (HTML) of every I&O project discussed in the period: status, updates, risks, action items, Jira tickets and links to sources. It has four tabs: **Projects**, **Operations** (Daily Ops health and incidents), **Sprint management** (sprint charts by status, team and employee, who has no tickets, what was added or removed after day 1, and the full ticket list) and **Data gaps**.
 2. A **spending report** showing roughly what the run cost in AI usage.
 3. Both reports **uploaded to SharePoint** (AI Test SharePoint Folder).
 4. An **Outlook draft** with the SharePoint links, CC'd to you. It is **never sent automatically**; you check it and press Send yourself.
 5. A **Confluence draft page** under ITSM Freshservice with the same links.
 
-It reads (never changes) the Daily Ops StandUp and Rubrik Project SyncUp Teams chats, the "RUBRIK - Project Status" emails, Jira (IOSP, RM, COR), Confluence and the I&O Project Roadmap deck. The only things it writes are the two SharePoint files, the unsent draft and the one new Confluence page.
+It reads (never changes) the Daily Ops StandUp and Rubrik Project SyncUp Teams chats, the "RUBRIK - Project Status" emails, Jira (IOSP, RM, COR), Confluence, the I&O Project Roadmap deck and the reporting lines in Ardoq (used to group sprint tickets by team). The only things it writes are the two SharePoint files, the unsent draft and the one new Confluence page.
 
 ---
 
@@ -31,12 +31,15 @@ The GitHub repository `ig-kul-sec/ioproject-assistant` is now both a **marketpla
 ```
 ioproject-assistant/                      <- repository = marketplace "sectigo-io-tools"
 ├─ .claude-plugin/marketplace.json        <- the catalog (lists one plugin)
+├─ .github/workflows/                     <- deployment pipeline "Deployment from DEV to PROD" (A6)
 ├─ plugins/ioproject-assistant/           <- the plugin colleagues install
 │  ├─ .claude-plugin/plugin.json          <- name, version, the "Your work email" question
-│  ├─ agents/                             <- orchestrator + 7 helper agents
+│  ├─ .mcp.json                           <- bundles the Ardoq MCP server (each user signs in once)
+│  ├─ agents/                             <- orchestrator + 8 helper agents (incl. org-collector)
 │  ├─ skills/                             <- instructions, incl. run-report and setup
 │  ├─ src/ioassistant/                    <- report rendering (Python, no extra packages)
-│  └─ config/                             <- prices, non-secret default settings
+│  └─ config/                             <- prices, default settings, org-teams.json (team roster snapshot)
+├─ CHANGELOG.md                           <- release notes; the pipeline publishes them with each release
 ├─ tests/  docs/  output/                 <- stay with you; not installed by colleagues
 ```
 
@@ -48,7 +51,7 @@ Nothing secret is in the plugin. Tokens live only on each person's computer in `
 2. Run the tests: `python -m pytest`. All must pass.
 3. Check the plugin: `claude plugin validate plugins/ioproject-assistant --strict`. It must say **Validation passed**.
 4. Try it yourself in a scratch folder: `claude --plugin-dir "<repo>/plugins/ioproject-assistant"`, then `/ioproject-assistant:setup`.
-5. **Raise the version** in `plugins/ioproject-assistant/.claude-plugin/plugin.json` (for example `0.3.2` → `0.3.3`). Colleagues only receive updates when this number changes.
+5. **Raise the version** in `plugins/ioproject-assistant/.claude-plugin/plugin.json` (for example `0.4.1` → `0.4.2`) and give the top section of `CHANGELOG.md` that version and date (`## [0.4.2] - 2026-10-30`). Colleagues only receive updates when the version number changes.
 6. Commit and push to `DEV`, then run the pipeline "Deployment from DEV to PROD" (A6). It repeats the checks, moves `main` to this version, tags it and publishes the release.
 
 ## A3. Choose how colleagues get it
@@ -126,6 +129,8 @@ Also check they have the access the report needs (see B0).
 
 - **Rubrik SyncUp transcript:** only the meeting organizer (you) can read it. For colleagues it is skipped automatically and shown as a data gap; the chat and status emails are still used.
 - **Daily Ops StandUp transcript:** read from the "Daily Ops Standup_<yyyymmdd>" emails that link the downloaded transcript (`Daily Ops Standup_<yyyymmdd>.docx` in OneDrive › Attachments). Keep sending one per standup; a day without it falls back to the chat and shows as a data gap.
+- **Team roster (Ardoq):** the "Tickets by team" charts use the reporting lines in Ardoq (Entra Users, "Manager Of" references) for the DBA, Network, SRE Tier 2 and SRE Tier 3 managers. When Ardoq is signed in, the `org-collector` agent refreshes the roster on every run. Otherwise the report uses the saved snapshot `plugins/ioproject-assistant/config/org-teams.json` and lists a data gap that gives its date. When the organization changes, ask Claude to refresh that file from Ardoq, review the diff and release a new version.
+- **Ardoq sign-in is per person.** The plugin bundles the Ardoq server (`.mcp.json`) but not anyone's login. A colleague without an Ardoq account, or without access to the Entra Users workspace, still gets the full report with the snapshot roster.
 - The report footer always names the plugin author and repository. The Outlook draft is CC'd to whoever runs it (their "Your work email" setting).
 
 ---
@@ -167,6 +172,7 @@ You do steps B0-B7 **once**. After that, making a report is B8 only.
   - **Jira** (projects.sectigo.net) and **Confluence** (confluence.comodoca.net)
   - the **I&O Project Roadmap** on SharePoint (IOProjectTeam site)
   - write access to the **AI Test SharePoint Folder** and to the Confluence space **CO**
+  - optional: an **Ardoq** account with access to the Entra Users workspace (for the live team chart; see B7)
 
   Missing access will not break the run; the missing part shows up as a "data gap" in the report.
 
@@ -252,6 +258,9 @@ Replace each `paste_..._here` with the matching token: no spaces, no quotes. Sav
 
 > **Never paste a token into the Claude chat.** Only put it in that Notepad file.
 
+**Ardoq (optional, once)**
+The plugin includes the Ardoq connection. In Claude type `/mcp`, choose **ardoq** and sign in with your Sectigo account in the browser. It is used only to read who reports to the DBA, Network and SRE managers, so the sprint charts can show tickets per team. If you skip it, the report still works with a saved team list and shows a data gap saying so.
+
 Claude then tests the tokens and Microsoft 365 and shows a checklist. When everything is ✅ you're ready.
 
 ## B8. Make a report (every time)
@@ -265,6 +274,7 @@ Claude then tests the tokens and Microsoft 365 and shows a checklist. When every
    ```
    /ioproject-assistant:run-report since 2026-10-12
    ```
+   (a start date, or "from 2026-10-20 to now"; times are New York time).
 3. **Approve the requests.** Claude asks permission before it reads Teams, runs the report program or contacts Jira, Confluence, SharePoint or Outlook. Read each one and click **Allow** (or *Allow for this session* to be asked less often). Nothing is ever sent or deleted.
 4. Wait 10-20 minutes. You can do other work meanwhile, but keep the Claude window open.
 5. Claude ends with a short summary:
@@ -276,7 +286,7 @@ Claude then tests the tokens and Microsoft 365 and shows a checklist. When every
 
 ## B9. After the run
 
-1. **Open the report:** click the SharePoint link, or open the `.html` file in `Documents\IO Reports\output\...` by double-clicking it. Click column headers to sort, and click project names to expand them.
+1. **Open the report:** click the SharePoint link, or open the `.html` file in `Documents\IO Reports\output\...` by double-clicking it. Use the four tabs under the summary tiles (**Projects**, **Operations**, **Sprint management**, **Data gaps**) and the contents list on the left. Click column headers to sort, and click project names to expand them. In **Sprint management**, start with the JIRA ScrumBoard link, then the sprint charts and the ticket list.
 2. **Check the Outlook draft:** open Outlook → **Drafts**. Add the recipients, review the text, and click **Send** when happy. The report file cannot be attached automatically, which is why the email contains the SharePoint link. If you want the file attached, drag it in from the `output` folder.
 3. **Check the Confluence page:** it is titled `TEST: IO Project Assistant Report <date> <time> (Draft)` under ITSM Freshservice. Edit or delete it as you would any page.
 
@@ -286,6 +296,7 @@ When the owner announces a new version:
 
 - **Organization library:** nothing to do, or click **Update** in `/plugin` if offered.
 - **GitHub or shared folder:** type `/plugin marketplace update sectigo-io-tools`, then close and reopen Claude.
+- After an update that adds something new (for example the Ardoq connection in 0.4.x), check the release notes. Where a one-time sign-in is needed, `/mcp` shows it.
 
 ## B11. Troubleshooting
 
@@ -299,6 +310,9 @@ When the owner announces a new version:
 | "No such file or directory" when writing the report | Folder path too long | Use a short folder such as `C:\IOReports` (B4) |
 | "No transcript email" for a standup date | No "Daily Ops Standup_<yyyymmdd>" email with the transcript link was received | Email the downloaded transcript link with that subject; until then the chat is used |
 | SharePoint upload failed | No write access to the AI Test SharePoint Folder | Ask the folder owner for access; the local report is still in `output` |
+| Data gap "Ardoq: team roster is the static snapshot" | Ardoq is not signed in, so the team chart uses the saved team list | Type `/mcp`, choose **ardoq** and sign in; the next run uses live data |
+| Data gap "Sprint changes: Jira answered HTTP 401" (or 403) | The Jira token is wrong or expired | Make a new Jira token (B7); the "added or removed from the sprint" section is left out until then |
+| Data gap "Sprint changes: Jira not reachable" | Not on the Sectigo network | Connect to VPN and run again |
 | CC address is wrong or shows `${user_config...}` | Work email not set | Type `/config`, find **ioproject-assistant → Your work email**, and fix it |
 | The run is taking very long | Many chats in the period | Wait up to 30 minutes; for quicker runs choose a shorter period |
 
@@ -306,7 +320,7 @@ Still stuck? Copy the last message Claude showed (never a token) and send it to 
 
 ## B12. Good to know
 
-- **Safe by design:** the assistant never sends emails, never changes Jira tickets, never edits or deletes existing Confluence pages, and never overwrites SharePoint files.
+- **Safe by design:** the assistant never sends emails, never changes Jira tickets, never edits or deletes existing Confluence pages, never overwrites SharePoint files, and only reads from Ardoq.
 - **Your data stays yours:** it reads Teams and Outlook as you, with your permissions only.
 - **Cost:** each run uses AI credits. The spending report shows a rough estimate per run.
 - **Tokens:** stored only in `C:\Users\<you>\.ioassistant\secrets.env`. If your laptop is replaced, create new tokens on the new one. Revoke old tokens in Jira/Confluence under Personal Access Tokens.
@@ -327,7 +341,8 @@ IO Project Assistant is a **Claude Code plugin**. It has no server and no databa
 | Rendering | Python package `ioassistant` (standard library only) that turns merged JSON into HTML, email and Confluence bodies | `src/ioassistant/` |
 | Publishing | Agents that upload to SharePoint and create the Outlook draft and the Confluence page | `sharepoint-collector` (upload mode), `report-email-drafter`, `report-confluence-publisher` |
 | Know-how | Skills holding the detailed rules each agent follows (schemas, API calls, limits) | `skills/*/SKILL.md` |
-| Connections | Microsoft 365 connector (Teams, Outlook, SharePoint) from claude.ai; Jira and Confluence REST APIs with personal access tokens | claude.ai settings; `~/.ioassistant/secrets.env` |
+| Connections | Microsoft 365 connector (Teams, Outlook, SharePoint) from claude.ai; Jira and Confluence REST APIs with personal access tokens; the **Ardoq MCP server** (organization structure) bundled with the plugin, signed in per user | claude.ai settings; `~/.ioassistant/secrets.env`; `.mcp.json` and `/mcp` |
+| Release | GitHub Actions pipeline "Deployment from DEV to PROD": checks DEV, moves `main` (PROD), tags and publishes the release and plugin zip | `.github/workflows/deploy-dev-to-prod.yml` (A6) |
 
 Design principles:
 
@@ -357,12 +372,12 @@ All agents are launched as `ioproject-assistant:<name>`.
 | Skill | Used by | What it defines |
 |---|---|---|
 | `run-report` | User | Pre-flight checks, launching the orchestrator, final spending figures, plain-language summary |
-| `setup` | User | Python, tokens, Microsoft 365 connector, folder and CC email checks |
+| `setup` | User | Python, tokens, Microsoft 365 connector, Ardoq sign-in, folder and CC email checks |
 | `teams-standup-collection` | teams-collector | Paging through Teams chat search, filtering by chat, transcripts and status emails; output JSON |
 | `jira-project-review` | jira-collector | Jira spaces, scrum board 485, always-included epic, REST calls; output JSON |
 | `confluence-review` | confluence-collector | CQL search and page reads; output JSON |
 | `sharepoint-roadmap` | sharepoint-collector | Roadmap rules (Project review slides only, skip Accomplishments); size-checked upload rules |
-| `report-generation` | orchestrator, report-builder | `data.json` schema, section order, status rules, presentation rules |
+| `report-generation` | orchestrator, report-builder | `data.json` schema (including `org_teams` and `sprint.changes`), tabs and section order, sprint chart rules, status rules, presentation rules |
 | `spend-tracking` | orchestrator, report-builder, run-report | `usage.json` format, pricing, how the orchestrator's own usage is filled in |
 | `outlook-report-draft` | report-email-drafter | Draft subject and body, CC, never send, attachment limit |
 | `confluence-report-page` | report-confluence-publisher | Parent page lookup, title check, single create call |
@@ -395,8 +410,9 @@ flowchart TD
 1. **Start.** The user types `/ioproject-assistant:run-report`. The skill checks Python, the token file, the Microsoft 365 connector and the folder path.
 2. **Run id and window.** The orchestrator names the run `IOProjectAssistantReport_<yyyymmdd>_<hhmm>`, with date and time in America/New_York (not the computer's local time). The analysis window is Monday 00:00 America/New_York until now, unless the user gave another period.
 3. **Teams first.** `teams-collector` decides which projects were discussed. Its project list drives every later step.
-4. **Jira, Confluence and SharePoint in parallel.** Each collector gets the project list. If the Jira agent can't start, a general agent retries once with the same read-only rules.
-5. **Merge.** The orchestrator writes `data.json`. Status comes only from evidence: roadmap RAG first, then Jira dates. "Jira updates needed" lists only gaps a source proves.
+4. **Jira, Confluence, SharePoint and Ardoq in parallel.** Each collector gets the project list; `org-collector` reads the reporting lines from Ardoq. If the Jira agent can't start, a general agent retries once with the same read-only rules. If Ardoq is not signed in, `org-collector` returns nothing and the run goes on with the saved team list.
+5. **Merge.** The orchestrator writes `data.json`. Status comes only from evidence: roadmap RAG first, then Jira dates. "Jira updates needed" lists only gaps a source proves. The live roster is stored as `org_teams`.
+5a. **Sprint changes.** `python -m ioassistant.cli sprint-changes` (no AI involved) reads the Jira change history of the current sprint and adds `sprint.changes`: tickets added to or removed from the sprint on its 2nd day or later, with date and who did it. If Jira cannot be read, the section is left out and a data gap is recorded.
 6. **Render.** `report-builder` produces the full status report and the spending report.
 7. **Upload.** Compact copies (no embedded fonts or logo) are built and uploaded with a byte-count check. Existing files are never overwritten; a name clash adds `_2`.
 8. **Draft and page, in parallel.** These run only after a successful upload: the Outlook draft (never sent) and the Confluence draft page (never overwrites).
@@ -410,8 +426,8 @@ All files go in `output/<RUN_ID>/` inside the folder Claude was opened in.
 
 | File | Content |
 |---|---|
-| `teams.json`, `jira.json`, `confluence.json`, `sharepoint.json` | Raw collector results |
-| `data.json` | Merged report data (schema in the `report-generation` skill) |
+| `teams.json`, `jira.json`, `confluence.json`, `sharepoint.json`, `org_teams.json` | Raw collector results (`org_teams.json`: reporting lines from Ardoq; absent when Ardoq was not signed in) |
+| `data.json` | Merged report data (schema in the `report-generation` skill), including `org_teams` and `sprint.changes` |
 | `usage.json` | One row per agent: model, tokens, seconds |
 | `<RUN_ID>.html` | Full status report: Sectigo brand, embedded fonts, self-contained |
 | `<RUN_ID>_spending.html` | Spending report with estimated USD cost |
@@ -419,7 +435,9 @@ All files go in `output/<RUN_ID>/` inside the folder Claude was opened in.
 | `upload/<RUN_ID>_email.html` | Outlook draft body |
 | `upload/<RUN_ID>_confluence.xhtml` | Confluence page body (storage format) |
 
-The report starts with a header: links to the SharePoint archive, the Confluence parent page and the Jira scrum board, plus the analysis period. Below it come summary tiles, projects at a glance, sprint status, and a card per project. Each card has these sections:
+The report starts with a header: links to the SharePoint archive, the Confluence parent page and the Jira scrum board, plus the analysis period. Below it come summary tiles, a contents list on the left, and four tabs.
+
+**Projects:** projects at a glance, then a card per project with these sections:
 - updates
 - Jira updates needed
 - sources
@@ -428,7 +446,13 @@ The report starts with a header: links to the SharePoint archive, the Confluence
 - Confluence page
 - Jira tickets
 
-After the project cards, a **Daily Ops operational health and incidents** table lists Daily Ops Standup items that belong to no project: health, incidents, problems, issues, changes and maintenance. It shows the date, type, item, status, who gave the update, owner, related Jira tickets with their status, and the source link.
+**Operations:** the **Daily Ops operational health and incidents** table lists Daily Ops Standup items that belong to no project: health, incidents, problems, issues, changes and maintenance. It shows the date, type, item, status, who gave the update, owner, related Jira tickets with their status, and the source link.
+
+**Sprint management:** a JIRA ScrumBoard link, then two sections.
+- **Sprint charts**: (1) sprint at a glance; (2) tickets by status in workflow order (Backlog, To Do, In Progress, QA, On Hold, Unassigned, Done) with a total; (3) tickets by team (DBA, Network, SRE Tier 2, SRE Tier 3, Other, Unassigned) with a total and tickets per person; (4) employees without tickets in the sprint, per team and manager; (5) tickets by employee with their team, an Unassigned row and a total; (6) tickets added to or removed from the sprint from day 2 onward, with date and who did it. Teams come from Ardoq, never from the roadmap deck.
+- **JIRA tickets**: for the current sprint and any past sprint that is not closed yet, a "JIRA Tickets Link: Sprint <name>" link to Jira and the full ticket list in the same status order.
+
+**Data gaps:** everything a source could not provide in this run, including a note when the team list is the saved snapshot.
 
 Tables sort by column, cards collapse, and Jira keys are links.
 
@@ -481,6 +505,10 @@ Run it as `PYTHONPATH="<plugin>/src" python -m ioassistant.cli <command> <json>`
 | Source code and marketplace | https://github.com/ig-kul-sec/ioproject-assistant |
 | Plugin manifest | `plugins/ioproject-assistant/.claude-plugin/plugin.json` |
 | Marketplace catalog | `.claude-plugin/marketplace.json` (`sectigo-io-tools`) |
+| Ardoq connection | `plugins/ioproject-assistant/.mcp.json` (HTTP MCP server `https://sectigo.us.ardoq.com/mcp/`, OAuth sign-in per user via `/mcp`) |
+| Team roster snapshot | `plugins/ioproject-assistant/config/org-teams.json` (DBA, Network, SRE Tier 2, SRE Tier 3 from Ardoq; used when Ardoq is not signed in) |
+| Deployment pipeline | `.github/workflows/deploy-dev-to-prod.yml` (A6); `main` is PROD |
+| Release notes | `CHANGELOG.md` |
 | Model prices | `plugins/ioproject-assistant/config/pricing.json` (rough USD per million tokens) |
 | Default settings | `plugins/ioproject-assistant/config/defaults.env` (a `.env` in the working folder overrides it) |
 | Tokens | `~/.ioassistant/secrets.env` on each user's machine (never in the repo) |

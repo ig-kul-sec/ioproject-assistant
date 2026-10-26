@@ -1,0 +1,81 @@
+[
+ {
+  "agent": "teams-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 291769,
+  "output_tokens": 0,
+  "seconds": 302.6,
+  "note": "total tokens from the Agent usage block (no input/output split)"
+ },
+ {
+  "agent": "org-collector",
+  "model": "claude-opus-5-5",
+  "input_tokens": 84151,
+  "output_tokens": 0,
+  "seconds": 116.7,
+  "note": "general-purpose fallback (org-collector agent type not loaded); total tokens from the Agent usage block (no input/output split)"
+ },
+ {
+  "agent": "sharepoint-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 85010,
+  "output_tokens": 0,
+  "seconds": 273.1,
+  "note": "read mode; total tokens from the Agent usage block (no input/output split)"
+ },
+ {
+  "agent": "confluence-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 40839,
+  "output_tokens": 0,
+  "seconds": 331.6,
+  "note": "total tokens from the Agent usage block (no input/output split)"
+ },
+ {
+  "agent": "jira-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 61861,
+  "output_tokens": 0,
+  "seconds": 472.0,
+  "note": "total tokens from the Agent usage block (no input/output split)"
+ },
+ {
+  "agent": "report-builder",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 28380,
+  "output_tokens": 0,
+  "seconds": 52.0,
+  "note": "render not completed: its Bash call was denied by the permission system; total tokens from the Agent usage block"
+ },
+ {
+  "agent": "sharepoint-collector",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 167285,
+  "output_tokens": 0,
+  "seconds": 400.1,
+  "note": "upload mode; total tokens from the Agent usage block (no input/output split)"
+ },
+ {
+  "agent": "report-email-drafter",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 26652,
+  "output_tokens": 0,
+  "seconds": 81.5,
+  "note": "one unsent draft; total tokens from the Agent usage block (no input/output split)"
+ },
+ {
+  "agent": "report-confluence-publisher",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 24296,
+  "output_tokens": 0,
+  "seconds": 93.1,
+  "note": "one new page; total tokens from the Agent usage block (no input/output split)"
+ },
+ {
+  "agent": "orchestrator",
+  "model": "claude-opus-5-5",
+  "input_tokens": 153345,
+  "output_tokens": 0,
+  "seconds": 2033.7
+ }
+]
