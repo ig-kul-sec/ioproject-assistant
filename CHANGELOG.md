@@ -9,7 +9,10 @@ tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DE
 ## [0.4.4] - 2026-10-26
 
 ### Changed
-- Release of the 0.4.3 changes through the deployment pipeline. 0.4.3 reached `main` through pull request #1, so it has no tag or release. No plugin changes.
+- Release of the 0.4.3 changes through the deployment pipeline. 0.4.3 reached `main` through pull request #1, so it has no tag or release.
+
+### Fixed
+- The report and spending report footer showed a stale version (0.3.2); it now shows the release version, and a test keeps it in step with `plugin.json`.
 
 ## [0.4.3] - 2026-10-26
 

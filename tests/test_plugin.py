@@ -16,6 +16,14 @@ def test_manifests_point_at_the_plugin():
     assert (ROOT / entry["source"]).resolve() == PLUGIN.resolve()
 
 
+def test_report_footer_version_matches_the_manifest():
+    # the reports print ioassistant.__version__; it must track plugin.json on every release
+    from ioassistant import __version__
+
+    manifest = json.loads((PLUGIN / ".claude-plugin" / "plugin.json").read_text(encoding="utf-8"))
+    assert __version__ == manifest["version"]
+
+
 def test_skill_front_matter_is_valid():
     for skill in PLUGIN.glob("skills/*/SKILL.md"):
         text = skill.read_text(encoding="utf-8")
