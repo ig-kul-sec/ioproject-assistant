@@ -19,6 +19,8 @@ For each discussed project (by key from the Teams collector, otherwise by epic/n
 2. Changes and comments with `updated >= <window.from>` (the analysis window passed by the orchestrator; default since Monday 00:00 America/New_York) (author, time, short text).
 3. Active IOSP sprint: name, start, end, duration in days, tickets as above. Also report `past_sprints` (a list, oldest first, each the same shape) with every other sprint on the board that has ended but is still not closed (state active, end date in the past); otherwise an empty list.
 
+**Sprint tickets are complete, never condensed.** `sprint.tickets` (and each `past_sprints[].tickets`) lists every ticket in the sprint, whatever its project, status or assignee: fetch them with `sprint = <sprint id>` (`/rest/agile/1.0/sprint/{id}/issue` or `/rest/api/2/search/jql`), follow `nextPageToken` until the last page, and compare the count with the sprint's total before returning. Do not filter to project-relevant or notable tickets and do not merge ranges into one row: the report's totals and charts count these tickets. If a page fails, return what was read and add a gap with the missing count.
+
 **Always-included epics** (reviewed every run, in addition to whatever the Teams collector reports; never replace the discussed-project list):
 - **Rubrik DR backup: IOSP-471** (https://sectigo.atlassian.net/browse/IOSP-471). Fetch the epic itself (summary, status, description/objectives, assignee, dates) and all child issues (`"Epic Link" = IOSP-471`, plus issue links to RM and COR tickets such as RM-1658, RM-1660). Apply steps 1 and 2 to it. Report it as the project "Rubrik DR backup".
 
