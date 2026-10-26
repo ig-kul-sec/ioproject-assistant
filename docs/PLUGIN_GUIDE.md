@@ -51,7 +51,7 @@ Nothing secret is in the plugin. Tokens live only on each person's computer in `
 2. Run the tests: `python -m pytest`. All must pass.
 3. Check the plugin: `claude plugin validate plugins/ioproject-assistant --strict`. It must say **Validation passed**.
 4. Try it yourself in a scratch folder: `claude --plugin-dir "<repo>/plugins/ioproject-assistant"`, then `/ioproject-assistant:setup`.
-5. **Raise the version** in `plugins/ioproject-assistant/.claude-plugin/plugin.json` (for example `0.4.1` → `0.4.2`) and give the top section of `CHANGELOG.md` that version and date (`## [0.4.2] - 2026-10-30`). Colleagues only receive updates when the version number changes.
+5. **Raise the version** in `plugins/ioproject-assistant/.claude-plugin/plugin.json` (for example `0.5.1` → `0.5.2`) and give the top section of `CHANGELOG.md` that version and date (`## [0.5.2] - 2026-10-30`). Colleagues only receive updates when the version number changes.
 6. Commit and push to `DEV`, then run the pipeline "Deployment from DEV to PROD" (A6). It repeats the checks, moves `main` to this version, tags it and publishes the release.
 
 ## A3. Choose how colleagues get it
@@ -139,9 +139,9 @@ Also check they have the access the report needs (see B0).
 
 `DEV` is where you work, `main` is PROD. The repository is the marketplace, so a new version reaches colleagues when `main` holds a **higher** `version` in `plugin.json` and they update. The pipeline (`.github/workflows/deploy-dev-to-prod.yml`) does this safely and the same way every time.
 
-**Run it:** GitHub → **Actions** → **Deployment from DEV to PROD** → **Run workflow**. Enter the version (for example `0.4.2`). Untick **Publish to PROD** for a dry run that only checks.
+**Run it:** GitHub → **Actions** → **Deployment from DEV to PROD** → **Run workflow**. Enter the version (for example `0.5.2`). Untick **Publish to PROD** for a dry run that only checks.
 
-**Before you run it (on DEV):** set `version` in `plugin.json`, and turn the top changelog heading into a dated one (`## [0.4.2] - 2026-10-30`).
+**Before you run it (on DEV):** set `version` in `plugin.json`, and turn the top changelog heading into a dated one (`## [0.5.2] - 2026-10-30`).
 
 | Stage | What happens |
 |---|---|
@@ -339,7 +339,7 @@ IO Project Assistant is a **Claude Code plugin**. It has no server and no databa
 | Rendering | Python package `ioassistant` (standard library only) that turns merged JSON into HTML, email and Confluence bodies | `src/ioassistant/` |
 | Publishing | Agents that upload to SharePoint and create the Outlook draft and the Confluence page | `sharepoint-collector` (upload mode), `report-email-drafter`, `report-confluence-publisher` |
 | Know-how | Skills holding the detailed rules each agent follows (schemas, API calls, limits) | `skills/*/SKILL.md` |
-| Connections | Microsoft 365 connector (Teams, Outlook, SharePoint) from claude.ai; Jira and Confluence REST APIs with personal access tokens; the **Ardoq MCP server** (organization structure) bundled with the plugin, signed in per user | claude.ai settings; `~/.ioassistant/secrets.env`; `.mcp.json` and `/mcp` |
+| Connections | Microsoft 365 connector (Teams, Outlook, SharePoint) from claude.ai; Jira Cloud and Confluence Cloud REST APIs (sectigo.atlassian.net) with the user's Atlassian email plus one API token (`JIRA_EMAIL`, `JIRA_API_TOKEN`; basic auth); the **Ardoq MCP server** (organization structure) bundled with the plugin, signed in per user | claude.ai settings; `~/.ioassistant/secrets.env`; `.mcp.json` and `/mcp` |
 | Release | GitHub Actions pipeline "Deployment from DEV to PROD": checks DEV, moves `main` (PROD), tags and publishes the release and plugin zip | `.github/workflows/deploy-dev-to-prod.yml` (A6) |
 
 Design principles:
@@ -406,7 +406,7 @@ flowchart TD
 ```
 
 1. **Start.** The user types `/ioproject-assistant:run-report`. The skill checks Python, the token file, the Microsoft 365 connector and the folder path.
-2. **Run id and window.** The orchestrator names the run `IOProjectAssistantReport_<yyyymmdd>_<hhmm>`, with date and time in America/New_York (not the computer's local time). The analysis window is Monday 00:00 America/New_York until now, unless the user gave another period.
+2. **Run id and window.** The orchestrator names the run `IOProjectAssistantReport_<yyyymmdd>_<hhmm>`, with date and time in America/New_York (not the computer's local time). When the plugin runs from the `DEV` branch the name starts with `DEV_` and the report shows a red "DEV:" before the title; `main` (PROD) has no prefix. The analysis window is Monday 00:00 America/New_York until now, unless the user gave another period.
 3. **Teams first.** `teams-collector` decides which projects were discussed. Its project list drives every later step.
 4. **Jira, Confluence, SharePoint and Ardoq in parallel.** Each collector gets the project list; `org-collector` reads the reporting lines from Ardoq. If the Jira agent can't start, a general agent retries once with the same read-only rules. If Ardoq is not signed in, `org-collector` returns nothing and the run goes on with the saved team list.
 5. **Merge.** The orchestrator writes `data.json`. Status comes only from evidence: roadmap RAG first, then Jira dates. "Jira updates needed" lists only gaps a source proves. The live roster is stored as `org_teams`.
@@ -463,6 +463,7 @@ Tables sort by column, cards collapse, and Jira keys are links.
 | `orgteams.py` | Team roster (Ardoq reporting lines): live `org_teams` from the run, else `config/org-teams.json`; matches Jira assignees to teams |
 | `sprintchanges.py` | `sprint-changes` command: reads the Jira change history (read-only) and adds `sprint.changes`, the tickets added to or removed from the sprint on day 2 or later |
 | `spend.py` | Spending report and cost calculation (`config/pricing.json`) |
+| `transcript_usage.py` | Sums an agent's real token usage from its Claude Code transcript (prototype for a hook that fills `usage.json` without the model reporting its own tokens) |
 | `brand.py` | Sectigo 2026 palette, fonts, logo, footer and fixed URLs |
 | `emaildraft.py` | Outlook draft subject and body |
 | `confluence.py` | Confluence page title and body |
@@ -512,3 +513,19 @@ Run it as `PYTHONPATH="<plugin>/src" python -m ioassistant.cli <command> <json>`
 | Tokens | `~/.ioassistant/secrets.env` on each user's machine (never in the repo) |
 | User setting | "Your work email" (`cc_email`), set at install, changeable in `/config` |
 | Owner / author | Igor Kulyk, igor.kulyk@sectigo.com |
+
+## C8. Version history
+
+Full notes are in `CHANGELOG.md`. Current version: **0.5.1**.
+
+| Version | Date | What changed |
+|---|---|---|
+| 0.5.1 | 2026-10-26 | Confluence moved to Confluence Cloud (sectigo.atlassian.net/wiki, space CO). Same `JIRA_EMAIL` + `JIRA_API_TOKEN` as Jira; `CONFLUENCE_API_TOKEN` is no longer needed. |
+| 0.5.0 | 2026-10-26 | Jira moved to Jira Cloud (sectigo.atlassian.net). Sign-in is Atlassian email plus API token (basic auth), so **colleagues must add `JIRA_EMAIL`** (setup asks for it). Scrum board is now 318 (was 485). |
+| 0.4.5 | 2026-10-26 | Report footer shows the real release version (a test keeps it in step with `plugin.json`). |
+| 0.4.4 | 2026-10-26 | 0.4.3 shipped through the deployment pipeline; plugin unchanged. |
+| 0.4.3 | 2026-10-26 | Guide updated; `output/` no longer tracked in git. |
+| 0.4.2 | 2026-10-23 | Deployment pipeline "Deployment from DEV to PROD" (A6). |
+| 0.4.1 | 2026-10-23 | Sprint changes (tickets added/removed from day 2), sprint ticket links, total and Unassigned rows, workflow status order, "Employees without tickets" with manager. |
+| 0.4.0 | 2026-10-23 | Sprint charts, teams from Ardoq (`org-collector`, `.mcp.json`, snapshot `org-teams.json`), tabs (Projects, Operations, Sprint management, Data gaps), contents rail, `DEV_` prefix, New York time in file names. |
+| 0.3.x | 2026-10-19/20 | Earlier releases (see git history). |
