@@ -121,7 +121,7 @@ AUTHOR_EMAIL = "igor.kulyk@sectigo.com"
 REPO_URL = "https://github.com/ig-kul-sec/ioproject-assistant"
 GUIDE_URL = "https://claude.ai/artifact/PvvZeQj7adETgzUuCpRhog?sk=sheeUB2-jY3qJTuYhUBMTQ"
 JIRA_BOARD_URL = "https://sectigo.atlassian.net/jira/software/c/projects/IOSP/boards/318/backlog"
-CONFLUENCE_PARENT_URL = "https://confluence.comodoca.net/display/CO/ITSM+Freshservice"
+CONFLUENCE_PARENT_URL = "https://sectigo.atlassian.net/wiki/spaces/CO/pages/94177160/ITSM+Freshservice"
 REPORT_FOLDER_URL = (
     "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared%20Documents/"
     "ITSM%20Freshservice/Archive/AI%20Test%20SharePoint%20Folder"

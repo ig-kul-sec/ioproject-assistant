@@ -169,7 +169,7 @@ You do steps B0-B7 **once**. After that, making a report is B8 only.
 - A **Sectigo Claude account** with Claude Code access. Ask your manager if unsure.
 - Access to:
   - the **Daily Ops StandUp** Teams chat (and the Rubrik Project SyncUp chat, if you cover Rubrik)
-  - **Jira** (sectigo.atlassian.net) and **Confluence** (confluence.comodoca.net)
+  - **Jira** (sectigo.atlassian.net) and **Confluence** (sectigo.atlassian.net/wiki)
   - the **I&O Project Roadmap** on SharePoint (IOProjectTeam site)
   - write access to the **AI Test SharePoint Folder** and to the Confluence space **CO**
   - optional: an **Ardoq** account with access to the Entra Users workspace (for the live team chart; see B7)
@@ -236,23 +236,20 @@ In the chat box type:
 /ioproject-assistant:setup
 ```
 
-Claude checks everything and walks you through what is missing. The one manual part is creating your **two access tokens**. These are like passwords that let the assistant read Jira and Confluence as you.
+Claude checks everything and walks you through what is missing. The one manual part is creating your **Atlassian access token**. It works like a password that lets the assistant read Jira and Confluence as you.
 
 **Jira token**
 1. Open https://id.atlassian.com/manage-profile/security/api-tokens in your browser (sign in with your Sectigo account).
 2. Click **Create API token**.
 3. Name it `IO Project Assistant`, click **Create**, and **copy** the token. You also need the email you sign in with.
 
-**Confluence token**
-1. Open https://confluence.comodoca.net/.
-2. Click your picture → **Settings** → **Personal Access Tokens** → **Create token**, and **copy** the token.
+**Confluence:** nothing more to create. The same email and token also work for https://sectigo.atlassian.net/wiki/.
 
 **Where to put them:** Claude opens a small file in Notepad that looks like this:
 
 ```
 JIRA_EMAIL=paste_your_atlassian_email_here
 JIRA_API_TOKEN=paste_your_jira_token_here
-CONFLUENCE_API_TOKEN=paste_your_confluence_token_here
 ```
 
 Replace each `paste_..._here` with your email or token: no spaces, no quotes. Save (Ctrl+S), close Notepad, and type **done** in Claude.
@@ -324,7 +321,7 @@ Still stuck? Copy the last message Claude showed (never a token) and send it to 
 - **Safe by design:** the assistant never sends emails, never changes Jira tickets, never edits or deletes existing Confluence pages, never overwrites SharePoint files, and only reads from Ardoq.
 - **Your data stays yours:** it reads Teams and Outlook as you, with your permissions only.
 - **Cost:** each run uses AI credits. The spending report shows a rough estimate per run.
-- **Tokens:** stored only in `C:\Users\<you>\.ioassistant\secrets.env`. If your laptop is replaced, create new tokens on the new one. Revoke old tokens in Jira/Confluence under Personal Access Tokens.
+- **Tokens:** stored only in `C:\Users\<you>\.ioassistant\secrets.env`. If your laptop is replaced, create new tokens on the new one. Revoke old tokens at https://id.atlassian.com/manage-profile/security/api-tokens.
 
 ---
 
@@ -486,7 +483,7 @@ Run it as `PYTHONPATH="<plugin>/src" python -m ioassistant.cli <command> <json>`
 | Jira | https://sectigo.atlassian.net/ (spaces IOSP, RM, COR) |
 | Jira scrum board | https://sectigo.atlassian.net/jira/software/c/projects/IOSP/boards/318/backlog |
 | Rubrik DR backup epic | https://sectigo.atlassian.net/browse/IOSP-471 |
-| Confluence | https://confluence.comodoca.net/ |
+| Confluence | https://sectigo.atlassian.net/wiki/ |
 | Ardoq (organization structure) | https://sectigo.us.ardoq.com/mcp/ (MCP server bundled in the plugin; Entra Users workspace, "Manager Of" references) |
 | I&O Project Roadmap deck | SharePoint site IOProjectTeam, `Presentations/I&O Project Roadmap.pptx` |
 | PMO folder | SharePoint (`SHAREPOINT_PMO_FOLDER_URL`) |
@@ -496,7 +493,7 @@ Run it as `PYTHONPATH="<plugin>/src" python -m ioassistant.cli <command> <json>`
 | Resource | Location |
 |---|---|
 | Report archive (SharePoint) | https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared%20Documents/ITSM%20Freshservice/Archive/AI%20Test%20SharePoint%20Folder |
-| Confluence parent page | https://confluence.comodoca.net/display/CO/ITSM+Freshservice (space CO) |
+| Confluence parent page | https://sectigo.atlassian.net/wiki/spaces/CO/pages/94177160/ITSM+Freshservice (space CO) |
 | Outlook | Drafts folder of the user running the report |
 
 **Project and configuration**

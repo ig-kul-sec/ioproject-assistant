@@ -178,7 +178,7 @@ def test_report_features(tmp_path):
     assert "id='collapse-all'" in html and '<details class="card"' in html and "th.sortable" in html
     assert "I&amp;O PROJECT STATUS REPORT" in html
     assert "SharePoint Report Archive Link</a>" in html and "Confluence ITSM Parent Page</a>" in html
-    assert "display/CO/ITSM+Freshservice" in html
+    assert "wiki/spaces/CO/pages/94177160/ITSM+Freshservice" in html
     assert "AI AGENT FACTORY</a>" in html and html.index("AI AGENT FACTORY</a>") < html.index("SharePoint Report Archive Link") and "JIRA ScrumBoard</a>" in html and html.count("boards/318/backlog") == 2
     assert "JIRA ScrumBoard Link</a>" in html and html.index("JIRA ScrumBoard Link</a>") < html.index("<h2>Sprint charts</h2>") < html.index("<h2>JIRA tickets</h2>")
     head = html[html.index("<header"):html.index("</header>")]

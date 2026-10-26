@@ -15,23 +15,23 @@ Run `python --version`. Python 3.10 or newer passes. Otherwise tell the user:
 
 No extra packages are needed.
 
-## 2. Jira and Confluence tokens
+## 2. Atlassian token (Jira and Confluence)
 
 The file is `~/.ioassistant/secrets.env` (in the user's home folder, outside any project).
 
 1. If it does not exist, create it (never overwrite an existing one):
    ```bash
-   mkdir -p "$HOME/.ioassistant" && [ -e "$HOME/.ioassistant/secrets.env" ] || printf 'JIRA_EMAIL=paste_your_atlassian_email_here\nJIRA_API_TOKEN=paste_your_jira_token_here\nCONFLUENCE_API_TOKEN=paste_your_confluence_token_here\n' > "$HOME/.ioassistant/secrets.env"
+   mkdir -p "$HOME/.ioassistant" && [ -e "$HOME/.ioassistant/secrets.env" ] || printf 'JIRA_EMAIL=paste_your_atlassian_email_here\nJIRA_API_TOKEN=paste_your_jira_token_here\n' > "$HOME/.ioassistant/secrets.env"
    ```
-2. Explain how to create each token (Jira is an Atlassian Cloud API token, Confluence a personal access token on our own server):
+2. Explain how to create the token (one Atlassian Cloud API token covers both Jira and Confluence):
    - **Jira:** open https://id.atlassian.com/manage-profile/security/api-tokens → **Create API token** → name it "IO Project Assistant" → **Create** → copy the token. Also put the email you sign in to https://sectigo.atlassian.net/ with in `JIRA_EMAIL`.
-   - **Confluence:** open https://confluence.comodoca.net/ → your avatar → **Settings** → **Personal Access Tokens** → **Create token** → copy it.
+   - **Confluence:** the same email and token work for https://sectigo.atlassian.net/wiki/; nothing more to create.
 3. Open the file for them: Windows `notepad "$HOME/.ioassistant/secrets.env"`; Mac `open -e "$HOME/.ioassistant/secrets.env"`. They replace each `paste_..._here` with the email or token (no spaces, no quotes), save and close Notepad, then tell you "done".
 4. Test without showing the tokens; print only the HTTP status:
    ```bash
    set -a; . "$HOME/.ioassistant/secrets.env"; set +a
    curl -s -o /dev/null -w "Jira %{http_code}\n" -u "$JIRA_EMAIL:$JIRA_API_TOKEN" https://sectigo.atlassian.net/rest/api/3/myself
-   curl -s -o /dev/null -w "Confluence %{http_code}\n" -H "Authorization: Bearer $CONFLUENCE_API_TOKEN" https://confluence.comodoca.net/rest/api/user/current
+   curl -s -o /dev/null -w "Confluence %{http_code}\n" -u "$JIRA_EMAIL:$JIRA_API_TOKEN" https://sectigo.atlassian.net/wiki/rest/api/space/CO
    ```
    200 = working. 401/403 = the token is wrong or expired (make a new one). No answer / 000 = not on the company network or VPN.
 

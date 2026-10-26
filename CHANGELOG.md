@@ -6,6 +6,11 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
+## [0.5.1] - 2026-10-26
+
+### Changed
+- Confluence moved to Confluence Cloud (https://sectigo.atlassian.net/wiki/, space CO). It uses the same `JIRA_EMAIL` + `JIRA_API_TOKEN` as Jira (basic auth), so `CONFLUENCE_API_TOKEN` is no longer needed. REST calls use `/wiki/rest/api/...`; the ITSM Freshservice parent page is https://sectigo.atlassian.net/wiki/spaces/CO/pages/94177160/ITSM+Freshservice.
+
 ## [0.5.0] - 2026-10-26
 
 ### Changed
