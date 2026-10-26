@@ -6,13 +6,15 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
+## [0.4.5] - 2026-10-26
+
+### Fixed
+- The report and spending report footer showed a stale version (0.3.2); it now shows the release version, and a test keeps it in step with `plugin.json`.
+
 ## [0.4.4] - 2026-10-26
 
 ### Changed
 - Release of the 0.4.3 changes through the deployment pipeline. 0.4.3 reached `main` through pull request #1, so it has no tag or release.
-
-### Fixed
-- The report and spending report footer showed a stale version (0.3.2); it now shows the release version, and a test keeps it in step with `plugin.json`.
 
 ## [0.4.3] - 2026-10-26
 
