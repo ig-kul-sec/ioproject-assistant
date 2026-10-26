@@ -24,11 +24,11 @@ description: Merged-data schema and rendering of the clickable HTML status repor
 
 `window` is the analysis period, printed at the top as `Analysis period: yyyy.mm.dd - yyyy.mm.dd hh:mm EDT` (24-hour clock, America/New_York, zone label EST/EDT as in force). `generated_at` prints as `Generated: yyyy.mm.dd hh:mm EDT`.
 
-Per-project fields used by the per-project view (all optional; `jira_base_url` defaults to https://projects.sectigo.net/browse/):
+Per-project fields used by the per-project view (all optional; `jira_base_url` defaults to https://sectigo.atlassian.net/browse/):
 
 ```json
 {
-  "jira_base_url": "https://projects.sectigo.net/browse/",
+  "jira_base_url": "https://sectigo.atlassian.net/browse/",
   "projects": [{
     "project_manager": "Name", "technical_lead": "Name",
     "summary": [{"text": "", "tickets": ["IOSP-1012"]}],
@@ -55,7 +55,7 @@ Daily Ops operational health and incidents (top-level `non_project`, from the Da
 {"non_project": [{"date": "YYYY-MM-DD (latest standup it was discussed)", "type": "Incident | Problem | Issue | Change | Maintenance | Other",
   "title": "", "detail": "", "status": "current state or next step",
   "reported_by": "person who gave the latest update at the standup (null if unknown)", "owner": null,
-  "tickets": [{"key": "IOSP-123", "url": "https://projects.sectigo.net/browse/IOSP-123", "status": "In Progress"}],
+  "tickets": [{"key": "IOSP-123", "url": "https://sectigo.atlassian.net/browse/IOSP-123", "status": "In Progress"}],
   "source": {"label": "Standup 2026-10-14 · closing recap (13:24 UTC)", "url": ""}}]}
 ```
 

@@ -353,7 +353,7 @@ def _ul(items: list[str]) -> str:
     return "<ul>" + "".join(items) + "</ul>" if items else f"<p>{NA}</p>"
 
 
-JIRA_BROWSE = "https://projects.sectigo.net/browse/"
+JIRA_BROWSE = "https://sectigo.atlassian.net/browse/"
 KEY_RE = re.compile(r"^[A-Z][A-Z0-9]+-\d+$")
 SOURCE_TYPES = ("teams", "sharepoint", "confluence", "jira")
 

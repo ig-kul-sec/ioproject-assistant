@@ -5,9 +5,9 @@ description: Review JIRA tickets in the IOSP, RM and COR spaces for discussed pr
 
 # JIRA project review
 
-Instance: `JIRA_BASE_URL` (https://projects.sectigo.net/). The token is `JIRA_API_TOKEN` in `~/.ioassistant/secrets.env` (outside the repo). Send it as `Authorization: Bearer <token>` (personal access token). Load it in the shell command that makes the call; never print it, log it or write it to any project file.
+Instance: `JIRA_BASE_URL` (https://sectigo.atlassian.net/). The token is `JIRA_API_TOKEN` in `~/.ioassistant/secrets.env` (outside the repo). Jira Cloud uses basic auth: send `curl -u "$JIRA_EMAIL:$JIRA_API_TOKEN"` (account email plus Atlassian API token; both in `secrets.env`). Load it in the shell command that makes the call; never print it, log it or write it to any project file.
 
-Scrum board (planning view, linked from the report header and under Sprint status): https://projects.sectigo.net/secure/RapidBoard.jspa?rapidView=485&projectKey=IOSP&view=planning.nodetail&issueLimit=100 (board id 485, project IOSP). Read the active sprint from this board.
+Scrum board (backlog view, linked from the report header and under Sprint status): https://sectigo.atlassian.net/jira/software/c/projects/IOSP/boards/318/backlog (board id 318, "I&O Scrum", project IOSP). Read the active sprint from this board.
 
 Spaces:
 - **IOSP**: epics, tasks, weekly scrum boards. The active sprint feeds the SPRINT STATUS section.
@@ -15,18 +15,18 @@ Spaces:
 - **COR**: projects managed in COR.
 
 For each discussed project (by key from the Teams collector, otherwise by epic/name search):
-1. Epic + child tickets: key, summary, status, assignee, start date, due/end date, URL, and `sprint` (the name of the active sprint the ticket is in, else its latest sprint, null if none; use the Agile "Sprint" field, whose id comes from `/rest/api/2/field`).
+1. Epic + child tickets: key, summary, status, assignee, start date, due/end date, URL, and `sprint` (the name of the active sprint the ticket is in, else its latest sprint, null if none; use the Agile "Sprint" field, whose id is `customfield_10020`, see `/rest/api/3/field`).
 2. Changes and comments with `updated >= <window.from>` (the analysis window passed by the orchestrator; default since Monday 00:00 America/New_York) (author, time, short text).
 3. Active IOSP sprint: name, start, end, duration in days, tickets as above. Also report `past_sprints` (a list, oldest first, each the same shape) with every other sprint on the board that has ended but is still not closed (state active, end date in the past); otherwise an empty list.
 
 **Always-included epics** (reviewed every run, in addition to whatever the Teams collector reports; never replace the discussed-project list):
-- **Rubrik DR backup: IOSP-471** (https://projects.sectigo.net/browse/IOSP-471). Fetch the epic itself (summary, status, description/objectives, assignee, dates) and all child issues (`"Epic Link" = IOSP-471`, plus issue links to RM and COR tickets such as RM-1658, RM-1660). Apply steps 1 and 2 to it. Report it as the project "Rubrik DR backup".
+- **Rubrik DR backup: IOSP-471** (https://sectigo.atlassian.net/browse/IOSP-471). Fetch the epic itself (summary, status, description/objectives, assignee, dates) and all child issues (`"Epic Link" = IOSP-471`, plus issue links to RM and COR tickets such as RM-1658, RM-1660). Apply steps 1 and 2 to it. Report it as the project "Rubrik DR backup".
 
 Return every project's tickets as the structured `tickets` list in the output JSON: the epic itself (`epic: true`) plus all child tickets, including closed ones, with `start`/`end` from the start-date and due-date fields (null when empty), the assignee's display name, and `related` from issue links and linked RM/COR tickets (key + browse URL).
 
 **Daily Ops items** (when the orchestrator passes the Teams collector's `non_project` list): for each item, find related tickets in IOSP, RM and COR. First fetch every key the item already lists. Then run a narrow text search on the item's distinctive terms, e.g. `project in (IOSP, RM, COR) AND text ~ "\"DNS connector\"" AND updated >= -30d ORDER BY updated DESC`, and keep at most 3 matches. Keep a match only if its summary clearly refers to the same system or incident; never pad with loosely related tickets. Return each item's `title` with `tickets` (`key`, `url`, `status`, `summary`); an item with no confident match gets an empty list.
 
-Use read-only REST calls (`/rest/api/2/search`, `/rest/agile/1.0/board/{id}/sprint`). If the API is unreachable, fall back to the connector/browser if available, else record a gap.
+Use read-only REST calls (`/rest/api/2/search/jql` (the old `/rest/api/2/search` is removed on Cloud; it pages with `nextPageToken`, not `startAt`), `/rest/agile/1.0/board/{id}/sprint`). If the API is unreachable, fall back to the connector/browser if available, else record a gap.
 
 ## Output JSON
 

@@ -65,8 +65,8 @@ def test_per_project_view(tmp_path):
     run.mkdir()
     (run / "data.json").write_text(json.dumps(data), encoding="utf-8")
     html = report.build(run / "data.json").read_text(encoding="utf-8")
-    assert 'href="https://projects.sectigo.net/browse/IOSP-1012"' in html  # summary ref
-    assert 'href="https://projects.sectigo.net/browse/RM-5"' in html  # related ticket
+    assert 'href="https://sectigo.atlassian.net/browse/IOSP-1012"' in html  # summary ref
+    assert 'href="https://sectigo.atlassian.net/browse/RM-5"' in html  # related ticket
     assert html.index("IOSP-471</a>") < html.index("IOSP-1</a>")  # active before done
     assert "Add backup VLAN IPs" in html and "Move start to 10/18" in html
     assert html.index("What to do</th>") < html.index("Reason/Comment</th>") and "Agreed in the SyncUp" in html
@@ -97,8 +97,8 @@ def _render_data(tmp_path, data):
 def test_shorthand_ticket_lists_are_linked(tmp_path):
     data = {"projects": [{"name": "P", "summary": [{"text": "Status email: IOSP-1004/1005 moved; also RM-1658, 1661 and COR-5, 12 hosts"}]}]}
     html = _render_data(tmp_path, data)
-    assert 'IOSP-1004</a>/<a href="https://projects.sectigo.net/browse/IOSP-1005"' in html
-    assert 'RM-1658</a>, <a href="https://projects.sectigo.net/browse/RM-1661"' in html
+    assert 'IOSP-1004</a>/<a href="https://sectigo.atlassian.net/browse/IOSP-1005"' in html
+    assert 'RM-1658</a>, <a href="https://sectigo.atlassian.net/browse/RM-1661"' in html
     assert "COR-5</a>, 12 hosts" in html  # different digit count: left as plain text
 
 
@@ -144,8 +144,8 @@ def test_analysis_period_and_generated_format():
 def test_text_dates_and_ticket_links():
     out = report._rich("RM-1553 (due 09-11) and COR-11600 (due 2026-08-29) overdue; UTF-8 stays")
     assert "(due 09/11)" in out and "(due 08/29)" in out
-    assert 'href="https://projects.sectigo.net/browse/RM-1553"' in out
-    assert 'href="https://projects.sectigo.net/browse/COR-11600"' in out
+    assert 'href="https://sectigo.atlassian.net/browse/RM-1553"' in out
+    assert 'href="https://sectigo.atlassian.net/browse/COR-11600"' in out
     assert "UTF-8" in out and "browse/UTF" not in out
 
 
@@ -179,7 +179,7 @@ def test_report_features(tmp_path):
     assert "I&amp;O PROJECT STATUS REPORT" in html
     assert "SharePoint Report Archive Link</a>" in html and "Confluence ITSM Parent Page</a>" in html
     assert "display/CO/ITSM+Freshservice" in html
-    assert "AI AGENT FACTORY</a>" in html and html.index("AI AGENT FACTORY</a>") < html.index("SharePoint Report Archive Link") and "JIRA ScrumBoard</a>" in html and html.count("rapidView=485&amp;projectKey=IOSP") == 2
+    assert "AI AGENT FACTORY</a>" in html and html.index("AI AGENT FACTORY</a>") < html.index("SharePoint Report Archive Link") and "JIRA ScrumBoard</a>" in html and html.count("boards/318/backlog") == 2
     assert "JIRA ScrumBoard Link</a>" in html and html.index("JIRA ScrumBoard Link</a>") < html.index("<h2>Sprint charts</h2>") < html.index("<h2>JIRA tickets</h2>")
     head = html[html.index("<header"):html.index("</header>")]
     assert head.index("Analysis period") < head.index("SharePoint Report Archive") < head.index("Generated:")
@@ -241,7 +241,7 @@ def test_compact_build_is_smaller_and_restores_links(tmp_path):
     small = report.render(data, "R", compact=True)
     assert len(small) < len(full) and '<a class="j">IOSP-9</a>' in small
     assert 'target="_blank"' not in small and "a.j" in small and "browse/IOSP-9" in full
-    assert "var JB='https://projects.sectigo.net/browse/'" in small
+    assert "var JB='https://sectigo.atlassian.net/browse/'" in small
 
 
 def test_spending_report_footer_and_sharepoint(tmp_path):
@@ -286,7 +286,7 @@ def test_daily_ops_section():
     data = {"projects": [], "non_project": [
         {"date": "2026-10-14", "type": "Incident", "title": "DNS connector TCP errors", "detail": "Matches the maintenance window",
          "status": "Owner to confirm", "reported_by": "Calvin Cochran", "owner": None,
-         "tickets": [{"key": "IOSP-9", "url": "https://projects.sectigo.net/browse/IOSP-9", "status": "In Progress"}, "RM-5"],
+         "tickets": [{"key": "IOSP-9", "url": "https://sectigo.atlassian.net/browse/IOSP-9", "status": "In Progress"}, "RM-5"],
          "source": {"label": "Standup 2026-10-14 · closing recap (13:24 UTC)", "url": "https://teams.example/m/2"}},
         {"date": "2026-10-16", "type": "Problem", "title": "Recurring OCSP latency", "status": "RCA open"},
     ]}
@@ -295,8 +295,8 @@ def test_daily_ops_section():
     assert "2 items from the Daily Ops Standup (Incident: 1, Problem: 1)" in html
     assert "<th>Update by</th>" in html and "Calvin Cochran" in html
     assert html.index("Recurring OCSP latency") < html.index("DNS connector TCP errors")  # newest first
-    assert 'href="https://projects.sectigo.net/browse/IOSP-9"' in html and "</a> (In Progress)" in html
-    assert 'href="https://projects.sectigo.net/browse/RM-5"' in html and 'href="https://teams.example/m/2"' in html
+    assert 'href="https://sectigo.atlassian.net/browse/IOSP-9"' in html and "</a> (In Progress)" in html
+    assert 'href="https://sectigo.atlassian.net/browse/RM-5"' in html and 'href="https://teams.example/m/2"' in html
     assert html.index("incidents</h2>") < html.index("Sprint charts</h2>")
     assert "No Daily Ops operational updates in this period." in report.render({"projects": []}, "IOProjectAssistantReport_20261016_0900")
 

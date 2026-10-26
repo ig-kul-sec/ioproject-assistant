@@ -1,6 +1,7 @@
 """Tickets added to or removed from the active sprint after its first day, from the Jira change history."""
 from __future__ import annotations
 
+import base64
 import json
 import os
 import urllib.error
@@ -12,8 +13,8 @@ from urllib.parse import urlsplit
 from zoneinfo import ZoneInfo
 
 TZ = ZoneInfo("America/New_York")  # same zone as the report
-BOARD_ID = 485
-JIRA_SITE = "https://projects.sectigo.net"
+BOARD_ID = 318
+JIRA_SITE = "https://sectigo.atlassian.net"
 PAGE = 100
 SECRETS = Path.home() / ".ioassistant" / "secrets.env"
 
@@ -75,21 +76,27 @@ def extract(issues: list, sprint_id, start: str, base: str = JIRA_SITE, members=
     return sorted(rows, key=lambda r: (r["date"], str(r["key"]), r["action"]))
 
 
-def _token() -> str:
-    token = os.environ.get("JIRA_API_TOKEN")
-    if not token and SECRETS.exists():
+def _secret(name: str) -> str:
+    value = os.environ.get(name)
+    if not value and SECRETS.exists():
         for line in SECRETS.read_text(encoding="utf-8").splitlines():
-            name, _, value = line.partition("=")
-            if name.strip() == "JIRA_API_TOKEN":
-                token = value.strip().strip("\"'")
-    if not token:
-        raise SystemExit("JIRA_API_TOKEN is not set (see ~/.ioassistant/secrets.env)")
-    return token
+            key, _, val = line.partition("=")
+            if key.strip() == name:
+                value = val.strip().strip("\"'")
+    if not value:
+        raise SystemExit(f"{name} is not set (see ~/.ioassistant/secrets.env)")
+    return value
+
+
+def _token() -> str:
+    """Jira Cloud basic auth: base64 of '<account email>:<API token>'."""
+    pair = f"{_secret('JIRA_EMAIL')}:{_secret('JIRA_API_TOKEN')}"
+    return base64.b64encode(pair.encode("utf-8")).decode("ascii")
 
 
 def _get(site: str, path: str, params: dict, token: str) -> dict:
     url = f"{site}{path}?{urllib.parse.urlencode(params)}"
-    req = urllib.request.Request(url, headers={"Authorization": f"Bearer {token}", "Accept": "application/json"})
+    req = urllib.request.Request(url, headers={"Authorization": f"Basic {token}", "Accept": "application/json"})
     with urllib.request.urlopen(req, timeout=120) as resp:  # read-only GET
         return json.loads(resp.read().decode("utf-8"))
 
@@ -120,7 +127,7 @@ def fetch(site: str, sprint_name: str, start: str) -> list:
                     break
                 at += PAGE
     except urllib.error.HTTPError as exc:
-        raise SystemExit(f"Jira answered HTTP {exc.code} (for 401/403 check JIRA_API_TOKEN)")
+        raise SystemExit(f"Jira answered HTTP {exc.code} (for 401/403 check JIRA_EMAIL and JIRA_API_TOKEN)")
     except OSError as exc:  # network, VPN
         raise SystemExit(f"Jira not reachable: {exc}")
     return extract(list(issues.values()), match["id"], start, site, members)

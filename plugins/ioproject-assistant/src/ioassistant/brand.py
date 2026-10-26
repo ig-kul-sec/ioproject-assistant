@@ -120,10 +120,7 @@ def banner(title: str, subtitle: str, range_line: str = "", compact: bool = Fals
 AUTHOR_EMAIL = "igor.kulyk@sectigo.com"
 REPO_URL = "https://github.com/ig-kul-sec/ioproject-assistant"
 GUIDE_URL = "https://claude.ai/artifact/PvvZeQj7adETgzUuCpRhog?sk=sheeUB2-jY3qJTuYhUBMTQ"
-JIRA_BOARD_URL = (
-    "https://projects.sectigo.net/secure/RapidBoard.jspa?rapidView=485&projectKey=IOSP"
-    "&view=planning.nodetail&issueLimit=100"
-)
+JIRA_BOARD_URL = "https://sectigo.atlassian.net/jira/software/c/projects/IOSP/boards/318/backlog"
 CONFLUENCE_PARENT_URL = "https://confluence.comodoca.net/display/CO/ITSM+Freshservice"
 REPORT_FOLDER_URL = (
     "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared%20Documents/"

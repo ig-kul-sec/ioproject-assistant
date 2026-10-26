@@ -6,6 +6,12 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
+## [0.5.0] - 2026-10-26
+
+### Changed
+- Jira moved to Jira Cloud (https://sectigo.atlassian.net/, same ticket keys). Authentication is now the Atlassian account email plus an API token (basic auth) instead of a Bearer personal access token: add `JIRA_EMAIL` next to `JIRA_API_TOKEN` in `~/.ioassistant/secrets.env` (the setup skill asks for both).
+- The I&O Scrum board is board 318 (was 485); the report's JIRA ScrumBoard links, the sprint-changes section and the Jira collector instructions use it. The collector uses `/rest/api/2/search/jql` (the old search endpoint is gone on Cloud) and the Sprint field `customfield_10020`.
+
 ## [0.4.5] - 2026-10-26
 
 ### Fixed

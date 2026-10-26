@@ -21,16 +21,16 @@ The file is `~/.ioassistant/secrets.env` (in the user's home folder, outside any
 
 1. If it does not exist, create it (never overwrite an existing one):
    ```bash
-   mkdir -p "$HOME/.ioassistant" && [ -e "$HOME/.ioassistant/secrets.env" ] || printf 'JIRA_API_TOKEN=paste_your_jira_token_here\nCONFLUENCE_API_TOKEN=paste_your_confluence_token_here\n' > "$HOME/.ioassistant/secrets.env"
+   mkdir -p "$HOME/.ioassistant" && [ -e "$HOME/.ioassistant/secrets.env" ] || printf 'JIRA_EMAIL=paste_your_atlassian_email_here\nJIRA_API_TOKEN=paste_your_jira_token_here\nCONFLUENCE_API_TOKEN=paste_your_confluence_token_here\n' > "$HOME/.ioassistant/secrets.env"
    ```
-2. Explain how to create each token (both are personal access tokens on our own servers):
-   - **Jira:** open https://projects.sectigo.net/ → your avatar (top right) → **Profile** → **Personal Access Tokens** → **Create token** → name it "IO Project Assistant" → **Create** → copy the token.
+2. Explain how to create each token (Jira is an Atlassian Cloud API token, Confluence a personal access token on our own server):
+   - **Jira:** open https://id.atlassian.com/manage-profile/security/api-tokens → **Create API token** → name it "IO Project Assistant" → **Create** → copy the token. Also put the email you sign in to https://sectigo.atlassian.net/ with in `JIRA_EMAIL`.
    - **Confluence:** open https://confluence.comodoca.net/ → your avatar → **Settings** → **Personal Access Tokens** → **Create token** → copy it.
-3. Open the file for them: Windows `notepad "$HOME/.ioassistant/secrets.env"`; Mac `open -e "$HOME/.ioassistant/secrets.env"`. They replace each `paste_..._here` with the token (no spaces, no quotes), save and close Notepad, then tell you "done".
+3. Open the file for them: Windows `notepad "$HOME/.ioassistant/secrets.env"`; Mac `open -e "$HOME/.ioassistant/secrets.env"`. They replace each `paste_..._here` with the email or token (no spaces, no quotes), save and close Notepad, then tell you "done".
 4. Test without showing the tokens; print only the HTTP status:
    ```bash
    set -a; . "$HOME/.ioassistant/secrets.env"; set +a
-   curl -s -o /dev/null -w "Jira %{http_code}\n" -H "Authorization: Bearer $JIRA_API_TOKEN" https://projects.sectigo.net/rest/api/2/myself
+   curl -s -o /dev/null -w "Jira %{http_code}\n" -u "$JIRA_EMAIL:$JIRA_API_TOKEN" https://sectigo.atlassian.net/rest/api/3/myself
    curl -s -o /dev/null -w "Confluence %{http_code}\n" -H "Authorization: Bearer $CONFLUENCE_API_TOKEN" https://confluence.comodoca.net/rest/api/user/current
    ```
    200 = working. 401/403 = the token is wrong or expired (make a new one). No answer / 000 = not on the company network or VPN.

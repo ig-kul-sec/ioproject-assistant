@@ -169,7 +169,7 @@ You do steps B0-B7 **once**. After that, making a report is B8 only.
 - A **Sectigo Claude account** with Claude Code access. Ask your manager if unsure.
 - Access to:
   - the **Daily Ops StandUp** Teams chat (and the Rubrik Project SyncUp chat, if you cover Rubrik)
-  - **Jira** (projects.sectigo.net) and **Confluence** (confluence.comodoca.net)
+  - **Jira** (sectigo.atlassian.net) and **Confluence** (confluence.comodoca.net)
   - the **I&O Project Roadmap** on SharePoint (IOProjectTeam site)
   - write access to the **AI Test SharePoint Folder** and to the Confluence space **CO**
   - optional: an **Ardoq** account with access to the Entra Users workspace (for the live team chart; see B7)
@@ -239,9 +239,9 @@ In the chat box type:
 Claude checks everything and walks you through what is missing. The one manual part is creating your **two access tokens**. These are like passwords that let the assistant read Jira and Confluence as you.
 
 **Jira token**
-1. Open https://projects.sectigo.net/ in your browser.
-2. Click your picture (top right) → **Profile** → **Personal Access Tokens** → **Create token**.
-3. Name it `IO Project Assistant`, click **Create**, and **copy** the token.
+1. Open https://id.atlassian.com/manage-profile/security/api-tokens in your browser (sign in with your Sectigo account).
+2. Click **Create API token**.
+3. Name it `IO Project Assistant`, click **Create**, and **copy** the token. You also need the email you sign in with.
 
 **Confluence token**
 1. Open https://confluence.comodoca.net/.
@@ -250,11 +250,12 @@ Claude checks everything and walks you through what is missing. The one manual p
 **Where to put them:** Claude opens a small file in Notepad that looks like this:
 
 ```
+JIRA_EMAIL=paste_your_atlassian_email_here
 JIRA_API_TOKEN=paste_your_jira_token_here
 CONFLUENCE_API_TOKEN=paste_your_confluence_token_here
 ```
 
-Replace each `paste_..._here` with the matching token: no spaces, no quotes. Save (Ctrl+S), close Notepad, and type **done** in Claude.
+Replace each `paste_..._here` with your email or token: no spaces, no quotes. Save (Ctrl+S), close Notepad, and type **done** in Claude.
 
 > **Never paste a token into the Claude chat.** Only put it in that Notepad file.
 
@@ -374,7 +375,7 @@ All agents are launched as `ioproject-assistant:<name>`.
 | `run-report` | User | Pre-flight checks, launching the orchestrator, final spending figures, plain-language summary |
 | `setup` | User | Python, tokens, Microsoft 365 connector, Ardoq sign-in, folder and CC email checks |
 | `teams-standup-collection` | teams-collector | Paging through Teams chat search, filtering by chat, transcripts and status emails; output JSON |
-| `jira-project-review` | jira-collector | Jira spaces, scrum board 485, always-included epic, REST calls; output JSON |
+| `jira-project-review` | jira-collector | Jira spaces, scrum board 318, always-included epic, REST calls; output JSON |
 | `confluence-review` | confluence-collector | CQL search and page reads; output JSON |
 | `sharepoint-roadmap` | sharepoint-collector | Roadmap rules (Project review slides only, skip Accomplishments); size-checked upload rules |
 | `report-generation` | orchestrator, report-builder | `data.json` schema (including `org_teams` and `sprint.changes`), tabs and section order, sprint chart rules, status rules, presentation rules |
@@ -482,9 +483,9 @@ Run it as `PYTHONPATH="<plugin>/src" python -m ioassistant.cli <command> <json>`
 | Daily Ops StandUp transcripts | Outlook emails with subject `Daily Ops Standup_<yyyymmdd>` linking `Daily Ops Standup_<yyyymmdd>.docx` (OneDrive › Attachments) |
 | Rubrik Project SyncUp (Teams chat + transcript) | Thread `19:meeting_YjU0ZDdlMWEtNjc1Mi00Nzg4LTlhZjItNDBmMWEzNmExNzFl@thread.v2` |
 | Rubrik status emails | Outlook, subject "RUBRIK - Project Status" |
-| Jira | https://projects.sectigo.net/ (spaces IOSP, RM, COR) |
-| Jira scrum board | https://projects.sectigo.net/secure/RapidBoard.jspa?rapidView=485&projectKey=IOSP&view=planning.nodetail&issueLimit=100 |
-| Rubrik DR backup epic | https://projects.sectigo.net/browse/IOSP-471 |
+| Jira | https://sectigo.atlassian.net/ (spaces IOSP, RM, COR) |
+| Jira scrum board | https://sectigo.atlassian.net/jira/software/c/projects/IOSP/boards/318/backlog |
+| Rubrik DR backup epic | https://sectigo.atlassian.net/browse/IOSP-471 |
 | Confluence | https://confluence.comodoca.net/ |
 | Ardoq (organization structure) | https://sectigo.us.ardoq.com/mcp/ (MCP server bundled in the plugin; Entra Users workspace, "Manager Of" references) |
 | I&O Project Roadmap deck | SharePoint site IOProjectTeam, `Presentations/I&O Project Roadmap.pptx` |
