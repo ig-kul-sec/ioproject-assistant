@@ -11,7 +11,7 @@ description: Merged-data schema and rendering of the clickable HTML status repor
 {
   "generated_at": "ISO",
   "window": {"from": "ISO with offset", "to": "ISO with offset"},
-  "sprint": {"name": "", "start": "", "end": "", "tickets": [{"key": "", "url": "", "name": "ticket subject", "status": "", "assignee": "", "due": ""}]},
+  "sprint": {"id": 0, "name": "", "start": "", "end": "", "tickets": [{"key": "", "url": "", "name": "ticket subject", "status": "", "assignee": "", "due": ""}]},
   "past_sprints": [],
   "projects": [{
     "name": "", "status": "On track | At risk | Off track", "notes": [], "progress": "", "timeline": "", "dates": {"start": "", "end": ""},

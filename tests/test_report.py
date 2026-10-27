@@ -529,3 +529,10 @@ def test_spend_set_orchestrator_replaces_placeholder_and_prices_it(tmp_path):
     row = json.loads(path.read_text(encoding="utf-8"))[0]
     assert row["input_tokens"] == 100000 and row["seconds"] == 1500.0 and "note" not in row
     assert spend.cost(row, spend.load_pricing()) > 0
+
+
+def test_sprint_tickets_fill_ids_by_name_when_collector_omits_them():
+    from ioassistant import sprinttickets
+    data = {"sprint": {"name": "I&O 26.44"}, "past_sprints": [{"name": "I&O 26.43"}, {"name": "gone", "id": 7}]}
+    sprinttickets.fill_ids(data, [{"id": 376, "name": "I&O 26.44"}, {"id": 374, "name": "I&O 26.43"}])
+    assert data["sprint"]["id"] == 376 and data["past_sprints"][0]["id"] == 374 and data["past_sprints"][1]["id"] == 7

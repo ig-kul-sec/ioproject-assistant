@@ -6,7 +6,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 import urllib.error
 
-from .sprintchanges import JIRA_SITE, PAGE, _get, _token
+from .sprintchanges import BOARD_ID, JIRA_SITE, PAGE, _get, _token
 
 # customfield_10023 is "Target end": IOSP tickets keep their end date there and leave "Due date" empty.
 FIELDS = "summary,status,assignee,duedate,customfield_10023"
@@ -43,17 +43,28 @@ def merge(tickets: list, issues: list, base: str = JIRA_SITE) -> list:
     return [_row(i, base, known.get(i["key"])) for i in issues]
 
 
+def fill_ids(data: dict, sprints: list) -> None:
+    """Give the current and past sprints that lack an `id` the Agile id of the board sprint with the same name."""
+    by_name = {str(s.get("name")): s["id"] for s in sprints if s.get("id") is not None}
+    for s in [data.get("sprint") or {}, *(data.get("past_sprints") or [])]:
+        if not s.get("id") and s.get("name") in by_name:
+            s["id"] = by_name[s["name"]]
+
+
 def build(data_path: Path) -> Path:
     """Replace `sprint.tickets` and each `past_sprints[].tickets` in the run's data.json with the full Jira list."""
     raw = data_path.read_bytes()
     data = json.loads(raw.decode("utf-8"))
     sprint = data.get("sprint") or {}
-    if not sprint.get("id"):
-        raise SystemExit("data.json has no current sprint id")
     parts = urlsplit(str(data.get("jira_base_url") or JIRA_SITE))
     site = f"{parts.scheme}://{parts.netloc}"
     token = _token()
     try:
+        if not sprint.get("id") or any(not p.get("id") for p in data.get("past_sprints") or []):
+            # the Jira agent did not return the Agile sprint ids: look them up on the board by sprint name
+            fill_ids(data, _get(site, f"/rest/agile/1.0/board/{BOARD_ID}/sprint", {"state": "active"}, token).get("values", []))
+        if not sprint.get("id"):
+            raise SystemExit(f"data.json has no current sprint id and sprint {sprint.get('name')!r} is not an active sprint on board {BOARD_ID}")
         for s in [sprint, *[p for p in data.get("past_sprints") or [] if p.get("id")]]:
             s["tickets"] = merge(s.get("tickets"), fetch(site, s["id"], token), site)
     except urllib.error.HTTPError as exc:

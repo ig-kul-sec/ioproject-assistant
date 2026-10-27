@@ -25,6 +25,8 @@ For each discussed project (by key from the Teams collector, otherwise by epic/n
 - **Rubrik DR backup: IOSP-471** (https://sectigo.atlassian.net/browse/IOSP-471). Fetch the epic itself (summary, status, description/objectives, assignee, dates) and all child issues (`"Epic Link" = IOSP-471`, plus issue links to RM and COR tickets such as RM-1658, RM-1660). Apply steps 1 and 2 to it. Report it as the project "Rubrik DR backup".
 - **Postgres EDB migration: IOSP-955** (https://sectigo.atlassian.net/browse/IOSP-955). Fetch the epic itself (summary, status, description/objectives, assignee, dates), its comments and recent changes since the start of the window, and all child issues (`"Epic Link" = IOSP-955`, plus issue links to RM and COR tickets). Apply steps 1 and 2 to it. Report it under the same project name the Teams collector uses for the EDB chat (see step 2c of `teams-standup-collection`), so the chat and Jira data merge into one project.
 
+Always return the Agile sprint `id` (a number, from `/rest/agile/1.0/board/{id}/sprint`) of the active sprint as `sprint.id` and of each past sprint as `past_sprints[].id`; the `sprint-tickets` step needs them.
+
 Return every project's tickets as the structured `tickets` list in the output JSON: the epic itself (`epic: true`) plus all child tickets, including closed ones, with `start`/`end` from the **Target start** (`customfield_10022`) and **Target end** (`customfield_10023`) fields, falling back to **Start date** (`customfield_10015`) and **Due date** (`duedate`) when they are empty (null only when all are empty). IOSP tickets, including the Rubrik ones, keep their dates in Target start/end and leave Start date/Due date empty; COR tickets use Due date. Request these fields explicitly in every search (`fields=...,customfield_10022,customfield_10023,customfield_10015,duedate`), the assignee's display name, and `related` from issue links and linked RM/COR tickets (key + browse URL).
 
 **Daily Ops items** (when the orchestrator passes the Teams collector's `non_project` list): for each item, find related tickets in IOSP, RM and COR. First fetch every key the item already lists. Then run a narrow text search on the item's distinctive terms, e.g. `project in (IOSP, RM, COR) AND text ~ "\"DNS connector\"" AND updated >= -30d ORDER BY updated DESC`, and keep at most 3 matches. Keep a match only if its summary clearly refers to the same system or incident; never pad with loosely related tickets. Return each item's `title` with `tickets` (`key`, `url`, `status`, `summary`); an item with no confident match gets an empty list.
@@ -35,7 +37,7 @@ Use read-only REST calls (`/rest/api/2/search/jql` (the old `/rest/api/2/search`
 
 ```json
 {
-  "sprint": {"name": "", "start": "YYYY-MM-DD", "end": "YYYY-MM-DD", "tickets": [
+  "sprint": {"id": 0, "name": "", "start": "YYYY-MM-DD", "end": "YYYY-MM-DD", "tickets": [
     {"key": "", "url": "", "summary": "", "status": "", "assignee": "", "due": null}]},
   "past_sprints": [],
   "projects": [{"name": "", "changes": [{"key": "", "who": "", "when": "", "text": ""}],

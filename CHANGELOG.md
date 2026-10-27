@@ -6,6 +6,11 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
+## [0.5.6] - 2026-10-27
+
+### Fixed
+- The sprint ticket step failed with "data.json has no current sprint id" because the Jira agent did not return the Agile sprint ids, and runs needed a hand-edited `data.json`. The Jira skill and report schema now require `sprint.id` and `past_sprints[].id`, and `sprint-tickets` looks a missing id up on board 318 by sprint name before reading the tickets.
+
 ## [0.5.5] - 2026-10-27
 
 ### Fixed
