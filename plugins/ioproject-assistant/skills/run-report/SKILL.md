@@ -21,6 +21,8 @@ Run these checks yourself; if one fails, tell the user in one sentence what is m
 
 Launch the Agent tool with `subagent_type: "ioproject-assistant:orchestrator"`. Prompt: "Run the daily IO Project Assistant pipeline." Add the analysis period only if the user gave one: `$ARGUMENTS`. Say once that a run usually takes 10-20 minutes.
 
+If the user's request is `continue from upload <RUN_ID>` (after a manual upload), skip the first two checks' wait time but still run the pre-flight, then launch the orchestrator with the prompt `Continue from upload <RUN_ID>` and go to step 4.
+
 ## 3. Finish the spending report
 
 Never skip this step, also when the orchestrator was launched without this skill. Per the `ioproject-assistant:spend-tracking` skill, take the orchestrator's own Agent result usage (total tokens and duration) and pass it to the renderer, which replaces the `orchestrator` placeholder row in `output/<RUN_ID>/usage.json` (model `claude-opus-5-5`) and re-renders:
@@ -38,4 +40,5 @@ A short summary, plain language:
 - The Outlook draft link (it is **not sent**; they review and send it themselves).
 - The Confluence draft page link.
 - Projects needing attention (At risk / Off track), one line each.
+- If the SharePoint upload was blocked: say so first, give the full path of `output/<RUN_ID>/upload/<RUN_ID>.html`, ask the user to upload it to the report folder by hand, and offer to continue with the Outlook draft and Confluence page (`/ioproject-assistant:run-report continue from upload <RUN_ID>`). Do not retry the upload yourself.
 - Any data gaps, one line each, with what the user can do about them (for example "Jira: token expired; run /ioproject-assistant:setup").

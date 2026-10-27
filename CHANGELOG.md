@@ -6,6 +6,11 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
+## [0.5.7] - in development
+
+### Fixed
+- A blocked SharePoint upload no longer leaves a half-finished run. The main report is uploaded first (the spending report only if it succeeded), a denial is not retried, and the result gives the path for a manual upload. After a manual upload, `/ioproject-assistant:run-report continue from upload <RUN_ID>` creates the Outlook draft and the Confluence page without re-running the pipeline.
+
 ## [0.5.6] - 2026-10-27
 
 ### Fixed
