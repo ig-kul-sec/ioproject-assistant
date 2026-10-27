@@ -40,7 +40,7 @@ AGENTS = [
      "Creates one Outlook draft with the SharePoint links, a CC to the author and the standard footer.",
      "Creates a draft only", "Has no send tool: the draft is never sent"),
     ("report-confluence-publisher", "Sonnet 5.5", "Confluence",
-     "Creates one new page under ITSM Freshservice with the same content as the email.",
+     "Creates one new page under PMO AI Agent Factory > IO Project Assistant with the same content as the email.",
      "Creates one new page", "Stops if a page with that title exists"),
 ]
 
@@ -50,9 +50,9 @@ STEPS = [
     ("3", "Read the systems", "Jira, Confluence and SharePoint are read in parallel: ticket status and dates, project pages, the roadmap deck."),
     ("4", "Compare and merge", "The orchestrator compares what people said with what Jira shows, and lists where tickets are out of date or missing."),
     ("5", "Build the report", "One clickable HTML status report per project, plus a spending report for the run."),
-    ("6", "Publish to SharePoint", "Both reports are saved to the AI Test SharePoint Folder, with a size check on every file."),
+    ("6", "Publish to SharePoint", "Both reports are saved to the IO Project Assistant Reports folder, with a size check on every file."),
     ("7", "Draft the email", "An Outlook draft with the links is created and left unsent for review."),
-    ("8", "Create the wiki page", "A Confluence page with the same links is created under ITSM Freshservice."),
+    ("8", "Create the wiki page", "A Confluence page with the same links is created under PMO AI Agent Factory > IO Project Assistant."),
 ]
 
 SOURCES = [
@@ -250,7 +250,7 @@ def render() -> str:
         "<ul class='next'>" + "".join(f"<li>{escape(x)}</li>" for x in NEXT) + "</ul>"
         "<p class='links' style='margin-top:30px'>"
         f"<a href='{escape(brand.sharepoint_folder_url(), quote=True)}' target='_blank' rel='noopener'>SharePoint report archive</a>"
-        f"<a href='{brand.CONFLUENCE_PARENT_URL}' target='_blank' rel='noopener'>Confluence ITSM parent page</a>"
+        f"<a href='{brand.CONFLUENCE_PARENT_URL}' target='_blank' rel='noopener'>Confluence parent page</a>"
         f"<a href='{brand.REPO_URL}' target='_blank' rel='noopener'>GitHub repository</a></p></section>",
     ]
     logo = brand._data_uri("sectigo-logo-light.png", "image/png")

@@ -14,9 +14,9 @@ You type one command. About 10-20 minutes later you have:
 
 1. A **clickable status report** (HTML) of every I&O project discussed in the period: status, updates, risks, action items, Jira tickets and links to sources. It has four tabs: **Projects**, **Operations** (Daily Ops health and incidents), **Sprint management** (sprint charts by status, team and employee, who has no tickets, what was added or removed after day 1, and the full ticket list) and **Data gaps**.
 2. A **spending report** showing roughly what the run cost in AI usage.
-3. Both reports **uploaded to SharePoint** (AI Test SharePoint Folder).
+3. Both reports **uploaded to SharePoint** (IO Project Assistant Reports folder).
 4. An **Outlook draft** with the SharePoint links, CC'd to you. It is **never sent automatically**; you check it and press Send yourself.
-5. A **Confluence draft page** under ITSM Freshservice with the same links.
+5. A **Confluence draft page** under PMO AI Agent Factory > IO Project Assistant with the same links.
 
 It reads (never changes) the Daily Ops StandUp and Rubrik Project SyncUp Teams chats, the "RUBRIK - Project Status" emails, Jira (IOSP, RM, COR), Confluence, the I&O Project Roadmap deck and the reporting lines in Ardoq (used to group sprint tickets by team). The only things it writes are the two SharePoint files, the unsent draft and the one new Confluence page.
 
@@ -171,7 +171,7 @@ You do steps B0-B7 **once**. After that, making a report is B8 only.
   - the **Daily Ops StandUp** Teams chat (and the Rubrik Project SyncUp chat, if you cover Rubrik)
   - **Jira** (sectigo.atlassian.net) and **Confluence** (sectigo.atlassian.net/wiki)
   - the **I&O Project Roadmap** on SharePoint (IOProjectTeam site)
-  - write access to the **AI Test SharePoint Folder** and to the Confluence space **CO**
+  - write access to the **IO Project Assistant Reports folder** and to the Confluence space **CO**
   - optional: an **Ardoq** account with access to the Entra Users workspace (for the live team chart; see B7)
 
   Missing access will not break the run; the missing part shows up as a "data gap" in the report.
@@ -286,7 +286,7 @@ Claude then tests the tokens and Microsoft 365 and shows a checklist. When every
 
 1. **Open the report:** click the SharePoint link, or open the `.html` file in `Documents\IO Reports\output\...` by double-clicking it. Use the four tabs under the summary tiles (**Projects**, **Operations**, **Sprint management**, **Data gaps**) and the contents list on the left. Click column headers to sort, and click project names to expand them. In **Sprint management**, start with the JIRA ScrumBoard link, then the sprint charts and the ticket list.
 2. **Check the Outlook draft:** open Outlook → **Drafts**. Add the recipients, review the text, and click **Send** when happy. The report file cannot be attached automatically, which is why the email contains the SharePoint link. If you want the file attached, drag it in from the `output` folder.
-3. **Check the Confluence page:** it is titled `TEST: IO Project Assistant Report <date> <time> (Draft)` under ITSM Freshservice. Edit or delete it as you would any page.
+3. **Check the Confluence page:** it is titled `TEST: IO Project Assistant Report <date> <time> (Draft)` under PMO AI Agent Factory > IO Project Assistant. Edit or delete it as you would any page.
 
 ## B10. Keeping the plugin up to date
 
@@ -307,7 +307,7 @@ When the owner announces a new version:
 | Jira or Confluence **000** / timeout | Not on the Sectigo network | Connect to VPN and run again |
 | "No such file or directory" when writing the report | Folder path too long | Use a short folder such as `C:\IOReports` (B4) |
 | "No transcript email" for a standup date | No "Daily Ops Standup_<yyyymmdd>" email with the transcript link was received | Email the downloaded transcript link with that subject; until then the chat is used |
-| SharePoint upload failed | No write access to the AI Test SharePoint Folder | Ask the folder owner for access; the local report is still in `output` |
+| SharePoint upload failed | No write access to the IO Project Assistant Reports folder | Ask the folder owner for access; the local report is still in `output` |
 | Data gap "Ardoq: team roster is the static snapshot" | Ardoq is not signed in, so the team chart uses the saved team list | Type `/mcp`, choose **ardoq** and sign in; the next run uses live data |
 | Data gap "Sprint changes: Jira answered HTTP 401" (or 403) | The Jira token is wrong or expired | Make a new Jira token (B7); the "added or removed from the sprint" section is left out until then |
 | Data gap "Sprint changes: Jira not reachable" | Not on the Sectigo network | Connect to VPN and run again |
@@ -360,10 +360,10 @@ All agents are launched as `ioproject-assistant:<name>`.
 | `jira-collector` | Sonnet | Epics, child tickets, changes and comments in the window, active IOSP sprint; always includes Rubrik epic IOSP-471 | Bash (curl GET), WebFetch | Nothing |
 | `confluence-collector` | Sonnet | Project pages: title, URL, last editor, last modified, and status, timeline and risk sections | Bash (curl GET) | Nothing |
 | `org-collector` | Sonnet | Reporting lines from Ardoq (who reports to the DBA, Network, SRE Tier 2 and SRE Tier 3 managers) for the sprint charts by team. Without an Ardoq sign-in it returns nothing and the report uses the bundled snapshot `config/org-teams.json` and lists a data gap | Ardoq MCP server bundled in `.mcp.json` (each user signs in once with `/mcp`) | Nothing |
-| `sharepoint-collector` | Sonnet | **Read mode:** roadmap deck "Project review" slides (RAG status, dates, PM, tech lead) and PMO folder files. **Upload mode:** uploads the two finished reports | Microsoft 365: SharePoint search, folder search, read resource, upload file | 2 files in the AI Test SharePoint Folder (never overwrites) |
+| `sharepoint-collector` | Sonnet | **Read mode:** roadmap deck "Project review" slides (RAG status, dates, PM, tech lead) and PMO folder files. **Upload mode:** uploads the two finished reports | Microsoft 365: SharePoint search, folder search, read resource, upload file | 2 files in the IO Project Assistant Reports folder (never overwrites) |
 | `report-builder` | Sonnet | Renders the status report and spending report with the Python package | Bash (python), Read, Write | Local HTML files |
 | `report-email-drafter` | Sonnet | Creates the Outlook draft with SharePoint links, CC'd to the user | Microsoft 365: Outlook create draft | 1 unsent draft |
-| `report-confluence-publisher` | Sonnet | Creates `TEST: IO Project Assistant Report <date> <time> (Draft)` under ITSM Freshservice | Bash (curl GET + one POST) | 1 new Confluence page |
+| `report-confluence-publisher` | Sonnet | Creates `TEST: IO Project Assistant Report <date> <time> (Draft)` under PMO AI Agent Factory > IO Project Assistant | Bash (curl GET + one POST) | 1 new Confluence page |
 
 ## C3. Skills
 
@@ -497,8 +497,8 @@ Run it as `PYTHONPATH="<plugin>/src" python -m ioassistant.cli <command> <json>`
 
 | Resource | Location |
 |---|---|
-| Report archive (SharePoint) | https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared%20Documents/ITSM%20Freshservice/Archive/AI%20Test%20SharePoint%20Folder |
-| Confluence parent page | https://sectigo.atlassian.net/wiki/spaces/CO/pages/94177160/ITSM+Freshservice (space CO) |
+| Report archive (SharePoint) | https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared%20Documents/PMO%20AI%20Agent%20Factory/IO%20Project%20Assistant%20Reports |
+| Confluence parent page | https://sectigo.atlassian.net/wiki/spaces/CO/pages/110166017/PMO+AI+Agent+Factory+IO+Project+Assistant (space CO) |
 | Outlook | Drafts folder of the user running the report |
 
 **Project and configuration**
@@ -520,10 +520,11 @@ Run it as `PYTHONPATH="<plugin>/src" python -m ioassistant.cli <command> <json>`
 
 ## C8. Version history
 
-Full notes are in `CHANGELOG.md`. Current version: **0.5.2**.
+Full notes are in `CHANGELOG.md`. Current version: **0.5.3**.
 
 | Version | Date | What changed |
 |---|---|---|
+| 0.5.3 | 2026-10-27 | Reports are uploaded to `PMO AI Agent Factory/IO Project Assistant Reports` (SharePoint) and the Confluence page is created under PMO AI Agent Factory > IO Project Assistant. The new Daily Ops StandUp chat is read from 2026-10-27, and the Postgres EDB migration Teams chat and Jira epic IOSP-955 are read every run. |
 | 0.5.2 | 2026-10-26 | Sprint ticket lists are complete: a new `sprint-tickets` step reads every ticket of the sprint (and open past sprints) from Jira and checks the count, so the charts no longer miss tickets (79 in the sprint, 30 were reported). |
 | 0.5.1 | 2026-10-26 | Confluence moved to Confluence Cloud (sectigo.atlassian.net/wiki, space CO). Same `JIRA_EMAIL` + `JIRA_API_TOKEN` as Jira; `CONFLUENCE_API_TOKEN` is no longer needed. |
 | 0.5.0 | 2026-10-26 | Jira moved to Jira Cloud (sectigo.atlassian.net). Sign-in is Atlassian email plus API token (basic auth), so **colleagues must add `JIRA_EMAIL`** (setup asks for it). Scrum board is now 318 (was 485). |

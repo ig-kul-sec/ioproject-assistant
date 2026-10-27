@@ -6,6 +6,15 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
+## [0.5.3] - 2026-10-27
+
+### Changed
+- Report locations moved. Confluence report pages are now created under PMO AI Agent Factory > IO Project Assistant (space CO, page 110166017, https://sectigo.atlassian.net/wiki/spaces/CO/pages/110166017/PMO+AI+Agent+Factory+IO+Project+Assistant). Reports are uploaded to the SharePoint folder `PMO AI Agent Factory/IO Project Assistant Reports` on site IOProjectTeam. Header links, email draft and Confluence body use the new locations.
+
+### Added
+- Daily Ops StandUp: the new standup chat is read for standups from 2026-10-27 (`TEAMS_STANDUP_CHAT_URL_NEW`); earlier standups stay on the old chat.
+- Postgres EDB migration: the project Teams chat (`TEAMS_EDB_CHAT_URL`) and the Jira epic IOSP-955 are read every run.
+
 ## [0.5.2] - 2026-10-26
 
 ### Fixed

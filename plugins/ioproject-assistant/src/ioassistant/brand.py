@@ -121,10 +121,10 @@ AUTHOR_EMAIL = "igor.kulyk@sectigo.com"
 REPO_URL = "https://github.com/ig-kul-sec/ioproject-assistant"
 GUIDE_URL = "https://claude.ai/artifact/PvvZeQj7adETgzUuCpRhog?sk=sheeUB2-jY3qJTuYhUBMTQ"
 JIRA_BOARD_URL = "https://sectigo.atlassian.net/jira/software/c/projects/IOSP/boards/318/backlog"
-CONFLUENCE_PARENT_URL = "https://sectigo.atlassian.net/wiki/spaces/CO/pages/94177160/ITSM+Freshservice"
+CONFLUENCE_PARENT_URL = "https://sectigo.atlassian.net/wiki/spaces/CO/pages/110166017/PMO+AI+Agent+Factory+IO+Project+Assistant"
 REPORT_FOLDER_URL = (
     "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared%20Documents/"
-    "ITSM%20Freshservice/Archive/AI%20Test%20SharePoint%20Folder"
+    "PMO%20AI%20Agent%20Factory/IO%20Project%20Assistant%20Reports"
 )
 
 
@@ -155,7 +155,7 @@ def header_links() -> str:
     return (
         f'<a href="{GUIDE_URL}" target="_blank" rel="noopener">AI AGENT FACTORY</a> &nbsp;|&nbsp; '
         f'<a href="{escape(sharepoint_folder_url(), quote=True)}" target="_blank" rel="noopener">SharePoint Report Archive Link</a>'
-        f' &nbsp;|&nbsp; <a href="{CONFLUENCE_PARENT_URL}" target="_blank" rel="noopener">Confluence ITSM Parent Page</a>'
+        f' &nbsp;|&nbsp; <a href="{CONFLUENCE_PARENT_URL}" target="_blank" rel="noopener">Confluence Parent Page</a>'
         f' &nbsp;|&nbsp; <a href="{escape(JIRA_BOARD_URL, quote=True)}" target="_blank" rel="noopener">JIRA ScrumBoard</a>'
     )
 
@@ -167,7 +167,7 @@ def sharepoint_note(filename: str) -> str:
     file_link = ""
     if file_url != sharepoint_folder_url():
         file_link = f'<a href="{escape(file_url, quote=True)}" target="_blank" rel="noopener">{escape(filename)}</a> in '
-    return f'Stored in SharePoint: {file_link}<a href="{folder}" target="_blank" rel="noopener">AI Test SharePoint Folder</a>'
+    return f'Stored in SharePoint: {file_link}<a href="{folder}" target="_blank" rel="noopener">IO Project Assistant Reports</a>'
 
 
 SCRIPT = r"""<script>

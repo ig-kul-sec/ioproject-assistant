@@ -177,8 +177,8 @@ def test_report_features(tmp_path):
     assert '<details class="top" id="sprint" open><summary class="top"><h2>JIRA tickets</h2>' in html
     assert "id='collapse-all'" in html and '<details class="card"' in html and "th.sortable" in html
     assert "I&amp;O PROJECT STATUS REPORT" in html
-    assert "SharePoint Report Archive Link</a>" in html and "Confluence ITSM Parent Page</a>" in html
-    assert "wiki/spaces/CO/pages/94177160/ITSM+Freshservice" in html
+    assert "SharePoint Report Archive Link</a>" in html and "Confluence Parent Page</a>" in html
+    assert "wiki/spaces/CO/pages/110166017/PMO+AI+Agent+Factory+IO+Project+Assistant" in html
     assert "AI AGENT FACTORY</a>" in html and html.index("AI AGENT FACTORY</a>") < html.index("SharePoint Report Archive Link") and "JIRA ScrumBoard</a>" in html and html.count("boards/318/backlog") == 2
     assert "JIRA ScrumBoard Link</a>" in html and html.index("JIRA ScrumBoard Link</a>") < html.index("<h2>Sprint charts</h2>") < html.index("<h2>JIRA tickets</h2>")
     head = html[html.index("<header"):html.index("</header>")]
@@ -277,7 +277,7 @@ def test_confluence_body_and_email_draft(tmp_path):
     assert "Sectigo© 2026. All rights reserved." in body
     assert confluence.title_for(run.name) == "TEST: IO Project Assistant Report 20261017 1759 (Draft)"
     mail = emaildraft.build(run / "data.json").read_text(encoding="utf-8")
-    assert "AI%20Test%20SharePoint%20Folder/IOProjectAssistantReport_20261017_1759.html" in mail
+    assert "PMO%20AI%20Agent%20Factory/IO%20Project%20Assistant%20Reports/IOProjectAssistantReport_20261017_1759.html" in mail
     assert "Sectigo\u00a9 2026. All rights reserved." in mail and "<span" not in mail and "<img" not in mail
     assert emaildraft.subject_for(run.name) == "IO Project Assistant Report 20261017 1759"
 

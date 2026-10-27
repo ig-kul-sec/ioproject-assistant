@@ -57,6 +57,6 @@ The Outlook draft is CC'd to: `${user_config.cc_email}`. If that is wrong or loo
 
 ## 6. Access the report needs (cannot be checked from here)
 
-Tell the user the run also needs read access to the Daily Ops StandUp and Rubrik Project SyncUp Teams chats, the I&O Project Roadmap on SharePoint, and write access to the "AI Test SharePoint Folder" and the Confluence space CO. Missing access does not stop the run; it shows up as a data gap in the report.
+Tell the user the run also needs read access to the Daily Ops StandUp and Rubrik Project SyncUp Teams chats, the I&O Project Roadmap on SharePoint, and write access to the "IO Project Assistant Reports" SharePoint folder and the Confluence space CO. Missing access does not stop the run; it shows up as a data gap in the report.
 
 Finish with the checklist and, if everything is ✅, say: "You're ready. Type `/ioproject-assistant:run-report` to make today's report."
