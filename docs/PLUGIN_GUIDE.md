@@ -478,7 +478,10 @@ Run it as `PYTHONPATH="<plugin>/src" python -m ioassistant.cli <command> <json>`
 
 | Resource | Location |
 |---|---|
-| Daily Ops StandUp (Teams chat) | Thread `19:meeting_NDAxMzEzOGEtZmUzYS00MTMxLTk3NTItODc1MGM1ZTBkZWQ2@thread.v2` |
+| Daily Ops StandUp (Teams chat), until 2026-10-26 | Thread `19:meeting_NDAxMzEzOGEtZmUzYS00MTMxLTk3NTItODc1MGM1ZTBkZWQ2@thread.v2` |
+| Daily Ops StandUp (Teams chat), new call from 2026-10-27 | Thread `19:meeting_ZTJiMmU3YzYtZDIyNi00NmU1LTgyZmYtODRlNzZmNmEwYWRm@thread.v2` ([open](https://teams.microsoft.com/l/chat/19%3Ameeting_ZTJiMmU3YzYtZDIyNi00NmU1LTgyZmYtODRlNzZmNmEwYWRm%40thread.v2/conversations?context=%7B%22contextType%22%3A%22chat%22%7D)) |
+| Postgres EDB migration (Teams chat) | Thread `19:meeting_MjIxMTgwMDItMGNlOC00ODAyLTliYjQtOGFhYTRlNjRiZjg1@thread.v2` ([open](https://teams.microsoft.com/l/chat/19%3Ameeting_MjIxMTgwMDItMGNlOC00ODAyLTliYjQtOGFhYTRlNjRiZjg1%40thread.v2/conversations?context=%7B%22contextType%22%3A%22chat%22%7D)) |
+| Postgres EDB migration (Jira epic) | [IOSP-955](https://sectigo.atlassian.net/browse/IOSP-955), reviewed every run with its child tickets |
 | Daily Ops StandUp transcripts | Outlook emails with subject `Daily Ops Standup_<yyyymmdd>` linking `Daily Ops Standup_<yyyymmdd>.docx` (OneDrive › Attachments) |
 | Rubrik Project SyncUp (Teams chat + transcript) | Thread `19:meeting_YjU0ZDdlMWEtNjc1Mi00Nzg4LTlhZjItNDBmMWEzNmExNzFl@thread.v2` |
 | Rubrik status emails | Outlook, subject "RUBRIK - Project Status" |

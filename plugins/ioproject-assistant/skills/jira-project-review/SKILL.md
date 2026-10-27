@@ -23,6 +23,7 @@ For each discussed project (by key from the Teams collector, otherwise by epic/n
 
 **Always-included epics** (reviewed every run, in addition to whatever the Teams collector reports; never replace the discussed-project list):
 - **Rubrik DR backup: IOSP-471** (https://sectigo.atlassian.net/browse/IOSP-471). Fetch the epic itself (summary, status, description/objectives, assignee, dates) and all child issues (`"Epic Link" = IOSP-471`, plus issue links to RM and COR tickets such as RM-1658, RM-1660). Apply steps 1 and 2 to it. Report it as the project "Rubrik DR backup".
+- **Postgres EDB migration: IOSP-955** (https://sectigo.atlassian.net/browse/IOSP-955). Fetch the epic itself (summary, status, description/objectives, assignee, dates), its comments and recent changes since the start of the window, and all child issues (`"Epic Link" = IOSP-955`, plus issue links to RM and COR tickets). Apply steps 1 and 2 to it. Report it under the same project name the Teams collector uses for the EDB chat (see step 2c of `teams-standup-collection`), so the chat and Jira data merge into one project.
 
 Return every project's tickets as the structured `tickets` list in the output JSON: the epic itself (`epic: true`) plus all child tickets, including closed ones, with `start`/`end` from the start-date and due-date fields (null when empty), the assignee's display name, and `related` from issue links and linked RM/COR tickets (key + browse URL).
 
