@@ -62,12 +62,15 @@ def render(rows: list[dict], pricing: dict, title: str, compact: bool = False) -
     )
 
 
-def set_orchestrator(usage_path: Path, tokens: int, seconds: float | None = None) -> None:
-    """Put the orchestrator's own usage (from its Agent result) into usage.json, replacing the placeholder row."""
+def set_orchestrator(usage_path: Path, tokens: int, seconds: float | None = None, agent: str = "orchestrator") -> None:
+    """Put the orchestrator's own usage (from its Agent result) into usage.json, replacing the placeholder row.
+
+    `agent` names the row; a resume run uses "orchestrator (resume)" so the first run's figures stay.
+    """
     rows = json.loads(usage_path.read_text(encoding="utf-8"))
-    row = next((r for r in rows if r["agent"] == "orchestrator"), None)
+    row = next((r for r in rows if r["agent"] == agent), None)
     if row is None:
-        row = {"agent": "orchestrator", "model": "claude-opus-5-5", "input_tokens": 0, "output_tokens": 0, "seconds": 0.0}
+        row = {"agent": agent, "model": "claude-opus-5-5", "input_tokens": 0, "output_tokens": 0, "seconds": 0.0}
         rows.append(row)
     row.update(input_tokens=int(tokens), output_tokens=0)  # only a total is known: cost() splits it by _output_share
     if seconds is not None:
@@ -85,7 +88,8 @@ def _out_path(run_dir: Path, name: str, compact: bool) -> Path:
 
 def build(usage_path: Path, compact: bool = False) -> Path:
     rows = json.loads(usage_path.read_text(encoding="utf-8"))
-    run_id = usage_path.parent.name
-    out = _out_path(usage_path.parent, f"{run_id}_spending.html", compact)
+    run_dir = usage_path.resolve().parent  # a bare "usage.json" has no parent name; resolve it to the run folder
+    run_id = run_dir.name
+    out = _out_path(run_dir, f"{run_id}_spending.html", compact)
     out.write_bytes(render(rows, load_pricing(), run_id, compact).encode("utf-8"))  # LF endings
     return out

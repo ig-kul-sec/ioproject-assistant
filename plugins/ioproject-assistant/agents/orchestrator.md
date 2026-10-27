@@ -41,7 +41,7 @@ All agents and skills here come from the `ioproject-assistant` plugin, so launch
 
 ## Resume mode
 
-If the prompt is `Continue from upload <RUN_ID>`, do not collect or render anything. Check that `output/<RUN_ID>/` exists, then launch `sharepoint-collector` in verify mode for `<RUN_ID>.html`. If it is not in the SharePoint report folder, stop and say so. Otherwise run steps 7 and 8 for that `RUN_ID` (in parallel, same rules), add their rows to `usage.json` and re-render the spending report with `... spend output/<RUN_ID>/usage.json`. Return the draft link and page URL.
+If the prompt is `Continue from upload <RUN_ID>`, do not collect or render anything. Check that `output/<RUN_ID>/` exists, then launch `sharepoint-collector` in verify mode for `<RUN_ID>.html`. If it is not in the SharePoint report folder, stop and say so. Otherwise run steps 7 and 8 for that `RUN_ID` (in parallel, same rules), add their rows to `usage.json` and re-render the spending report with `... spend output/<RUN_ID>/usage.json` (keep your own row named `orchestrator (resume)` with tokens 0; the launching session fills it in, and refreshes the compact copy and the SharePoint copy). Return the draft link and page URL.
 
 ## Spend tracking
 

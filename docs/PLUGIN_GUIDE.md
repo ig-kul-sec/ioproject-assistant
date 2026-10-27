@@ -259,6 +259,9 @@ Replace each `paste_..._here` with your email or token: no spaces, no quotes. Sa
 **Ardoq (optional, once)**
 The plugin includes the Ardoq connection. In Claude type `/mcp`, choose **ardoq** and sign in with your Sectigo account in the browser. It is used only to read who reports to the DBA, Network and SRE managers, so the sprint charts can show tickets per team. If you skip it, the report still works with a saved team list and shows a data gap saying so.
 
+**SharePoint upload approval (optional)**
+Setup asks once whether to approve the report upload to SharePoint automatically. The default is **no**, and each run then asks you to approve it (B8). If you say yes, Claude adds `mcp__claude_ai_Microsoft_365__sharepoint_upload_file` to the allowed tools in your own Claude settings. That setting covers SharePoint uploads from any Claude project on your computer, not only this one. To undo it, type `/permissions` and remove it. For a whole team, IT can set the same rule in managed settings.
+
 Claude then tests the tokens and Microsoft 365 and shows a checklist. When everything is ✅ you're ready.
 
 ## B8. Make a report (every time)
@@ -273,7 +276,7 @@ Claude then tests the tokens and Microsoft 365 and shows a checklist. When every
    /ioproject-assistant:run-report since 2026-10-12
    ```
    (a start date, or "from 2026-10-20 to now"; times are New York time).
-3. **Approve the requests.** Claude asks permission before it reads Teams, runs the report program or contacts Jira, Confluence, SharePoint or Outlook. Read each one and click **Allow** (or *Allow for this session* to be asked less often). Nothing is ever sent or deleted.
+3. **Approve the requests.** Claude asks permission before it reads Teams, runs the report program or contacts Jira, Confluence, SharePoint or Outlook. Read each one and click **Allow** (or *Allow for this session* to be asked less often). Nothing is ever sent or deleted. The SharePoint upload is one of these requests, unless you allowed it during setup (B7).
 4. Wait 10-20 minutes. You can do other work meanwhile, but keep the Claude window open.
 5. Claude ends with a short summary:
    - where the report is on your computer and on SharePoint
@@ -308,6 +311,8 @@ When the owner announces a new version:
 | "No such file or directory" when writing the report | Folder path too long | Use a short folder such as `C:\IOReports` (B4) |
 | "No transcript email" for a standup date | No "Daily Ops Standup_<yyyymmdd>" email with the transcript link was received | Email the downloaded transcript link with that subject; until then the chat is used |
 | SharePoint upload failed | No write access to the IO Project Assistant Reports folder | Ask the folder owner for access; the local report is still in `output` |
+| SharePoint upload blocked or denied | You clicked **Deny** on the upload request, or Claude may not read files outside the folder it was opened in | Upload the `upload` copy by hand, then type `/ioproject-assistant:run-report continue from upload <RUN_ID>`. To avoid the approval prompt next time, see B7 |
+| "Claude is not allowed to read ..." before the run starts | Your Claude settings block reading outside the folder Claude was opened in | Type `/add-dir <that folder>` (or reopen Claude in your IO Reports folder), then run the report again |
 | Data gap "Ardoq: team roster is the static snapshot" | Ardoq is not signed in, so the team chart uses the saved team list | Type `/mcp`, choose **ardoq** and sign in; the next run uses live data |
 | Data gap "Sprint changes: Jira answered HTTP 401" (or 403) | The Jira token is wrong or expired | Make a new Jira token (B7); the "added or removed from the sprint" section is left out until then |
 | Data gap "Sprint changes: Jira not reachable" | Not on the Sectigo network | Connect to VPN and run again |
@@ -370,7 +375,7 @@ All agents are launched as `ioproject-assistant:<name>`.
 | Skill | Used by | What it defines |
 |---|---|---|
 | `run-report` | User | Pre-flight checks, launching the orchestrator, final spending figures, plain-language summary |
-| `setup` | User | Python, tokens, Microsoft 365 connector, Ardoq sign-in, folder and CC email checks |
+| `setup` | User | Python, tokens, Microsoft 365 connector, Ardoq sign-in, folder and CC email checks, optional one-time question to allow the SharePoint upload without a prompt |
 | `teams-standup-collection` | teams-collector | Paging through Teams chat search, filtering by chat, transcripts and status emails; output JSON |
 | `jira-project-review` | jira-collector | Jira spaces, scrum board 318, always-included epic, REST calls; output JSON |
 | `confluence-review` | confluence-collector | CQL search and page reads; output JSON |

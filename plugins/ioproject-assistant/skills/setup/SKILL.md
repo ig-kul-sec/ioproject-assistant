@@ -59,4 +59,13 @@ The Outlook draft is CC'd to: `${user_config.cc_email}`. If that is wrong or loo
 
 Tell the user the run also needs read access to the Daily Ops StandUp and Rubrik Project SyncUp Teams chats, the I&O Project Roadmap on SharePoint, and write access to the "IO Project Assistant Reports" SharePoint folder and the Confluence space CO. Missing access does not stop the run; it shows up as a data gap in the report.
 
+## 6b. SharePoint upload without a prompt (optional, ask once)
+
+Each run asks the user to approve the SharePoint upload. Ask once whether they want to skip that prompt: "Each report run asks you to approve the upload to the SharePoint reports folder. Do you want me to allow it automatically from now on? The setting applies to SharePoint uploads from any Claude project on this computer, not only to the report folder. You can remove it later with `/permissions`." Default is **no**: only act on an explicit yes, and say that no is fine.
+
+- **Yes:** use the `update-config` skill to add `mcp__claude_ai_Microsoft_365__sharepoint_upload_file` to `permissions.allow` in the user's own settings (user scope, not the project). Do not touch any other setting, and never add it without the yes.
+- **No, or no answer:** change nothing. The run asks for approval each time.
+
+Report it in the checklist as "SharePoint upload approval: automatic" or "asked each run".
+
 Finish with the checklist and, if everything is ✅, say: "You're ready. Type `/ioproject-assistant:run-report` to make today's report."
