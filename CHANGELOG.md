@@ -9,6 +9,7 @@ tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DE
 ## [0.5.4] - 2026-10-27
 
 ### Fixed
+- The report folder is now set explicitly (`SHAREPOINT_REPORT_FOLDER_URL` in `defaults.env` and `.env.example`) and the upload finds it by path, not by an exact-name search that returned nothing. A first PROD run on 2026-10-27 uploaded the spending report but the main report upload was blocked, so no Outlook draft or Confluence page was created. The Confluence parent (page 110166017) and SharePoint folder (`PMO AI Agent Factory/IO Project Assistant Reports`) are the 0.5.3 locations and are unchanged.
 - "Existing tickets to change" suggested comments that the ticket description already contained (for example IOSP-1341 and IOSP-1342, created from the same standup). The Jira collector now also returns each ticket's `created` date and `description`, and the orchestrator skips comment suggestions the description already covers or that only repeat the standup a new ticket was created from.
 
 ## [0.5.3] - 2026-10-27
