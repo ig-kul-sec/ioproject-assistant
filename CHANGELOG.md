@@ -6,6 +6,12 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
+## [0.5.5] - 2026-10-27
+
+### Fixed
+- Jira tickets in the Rubrik project (and every IOSP ticket) showed no start/end dates: the collector read "Start date" and "Due date", but IOSP tickets keep their dates in "Target start" / "Target end". Both the collector and the sprint ticket list now read Target start/end first and fall back to Start date/Due date.
+- The spending report showed 0 tokens and $0 for the orchestrator. `ioassistant.cli spend` now takes `--orchestrator-tokens` and `--orchestrator-seconds`, which write the orchestrator's own Agent result figures into `usage.json` before rendering; the run-report skill makes this step mandatory.
+
 ## [0.5.4] - 2026-10-27
 
 ### Fixed

@@ -62,6 +62,20 @@ def render(rows: list[dict], pricing: dict, title: str, compact: bool = False) -
     )
 
 
+def set_orchestrator(usage_path: Path, tokens: int, seconds: float | None = None) -> None:
+    """Put the orchestrator's own usage (from its Agent result) into usage.json, replacing the placeholder row."""
+    rows = json.loads(usage_path.read_text(encoding="utf-8"))
+    row = next((r for r in rows if r["agent"] == "orchestrator"), None)
+    if row is None:
+        row = {"agent": "orchestrator", "model": "claude-opus-5-5", "input_tokens": 0, "output_tokens": 0, "seconds": 0.0}
+        rows.append(row)
+    row.update(input_tokens=int(tokens), output_tokens=0)  # only a total is known: cost() splits it by _output_share
+    if seconds is not None:
+        row["seconds"] = float(seconds)
+    row.pop("note", None)
+    usage_path.write_text(json.dumps(rows, indent=2) + "\n", encoding="utf-8")
+
+
 def _out_path(run_dir: Path, name: str, compact: bool) -> Path:
     """Compact builds (no embedded fonts, small logo) go to <run>/upload/ for the connector upload."""
     folder = run_dir / "upload" if compact else run_dir

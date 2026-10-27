@@ -23,10 +23,10 @@ Launch the Agent tool with `subagent_type: "ioproject-assistant:orchestrator"`. 
 
 ## 3. Finish the spending report
 
-Per the `ioproject-assistant:spend-tracking` skill: in `output/<RUN_ID>/usage.json`, replace the `orchestrator` placeholder row with the orchestrator's own Agent result usage (total tokens, duration in seconds, model `claude-opus-5-5`), then run:
+Never skip this step, also when the orchestrator was launched without this skill. Per the `ioproject-assistant:spend-tracking` skill, take the orchestrator's own Agent result usage (total tokens and duration) and pass it to the renderer, which replaces the `orchestrator` placeholder row in `output/<RUN_ID>/usage.json` (model `claude-opus-5-5`) and re-renders:
 
 ```bash
-PYTHONPATH="${CLAUDE_PLUGIN_ROOT}/src" python -m ioassistant.cli spend output/<RUN_ID>/usage.json
+PYTHONPATH="${CLAUDE_PLUGIN_ROOT}/src" python -m ioassistant.cli spend output/<RUN_ID>/usage.json --orchestrator-tokens <total tokens> --orchestrator-seconds <duration in seconds>
 ```
 
 The SharePoint copy of the spending report was uploaded before this step; say that only the local copy has the final orchestrator figures.

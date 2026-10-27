@@ -13,6 +13,10 @@ def main(argv=None) -> None:
     ap.add_argument("path", type=Path, nargs="?", help="data/usage json (not needed for presentation)")
     ap.add_argument("--compact", action="store_true",
                     help="write to <run>/upload/ without embedded fonts and with a small logo (fits one connector upload)")
+    ap.add_argument("--orchestrator-tokens", type=int, metavar="N",
+                    help="spend: total tokens of the orchestrator's Agent result, written into usage.json before rendering")
+    ap.add_argument("--orchestrator-seconds", type=float, metavar="S",
+                    help="spend: orchestrator duration in seconds (default: keep the recorded wall-clock)")
     args = ap.parse_args(argv)
     if args.command == "presentation":
         out = presentation.build()
@@ -23,6 +27,8 @@ def main(argv=None) -> None:
     elif args.command == "sprint-tickets":
         out = sprinttickets.build(args.path)
     elif args.command == "spend":
+        if args.orchestrator_tokens is not None:
+            spend.set_orchestrator(args.path, args.orchestrator_tokens, args.orchestrator_seconds)
         out = spend.build(args.path, compact=args.compact)
     elif args.command == "confluence":
         out = confluence.build(args.path)

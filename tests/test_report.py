@@ -511,3 +511,21 @@ def test_sprint_tickets_fetch_pages_and_checks_the_total(monkeypatch):
     monkeypatch.setattr(sprinttickets, "_get", lambda site, path, p, t: {"total": 9, "issues": data[p["startAt"]:p["startAt"] + 2]})
     with pytest.raises(SystemExit):
         sprinttickets.fetch("https://j", 1, "t")
+
+
+def test_sprint_ticket_due_falls_back_to_target_end():
+    from ioassistant import sprinttickets
+    issues = [{"key": "IOSP-1", "fields": {"summary": "A", "status": {"name": "To Do"}, "assignee": None, "customfield_10023": "2026-10-29"}}]
+    assert sprinttickets.merge([], issues, "https://j")[0]["due"] == "2026-10-29"
+
+
+def test_spend_set_orchestrator_replaces_placeholder_and_prices_it(tmp_path):
+    from ioassistant import spend
+    path = tmp_path / "usage.json"
+    path.write_text(json.dumps([
+        {"agent": "orchestrator", "model": "claude-opus-5-5", "input_tokens": 0, "output_tokens": 0, "seconds": 5.0, "note": "placeholder"}]),
+        encoding="utf-8")
+    spend.set_orchestrator(path, 100000, 1500.0)
+    row = json.loads(path.read_text(encoding="utf-8"))[0]
+    assert row["input_tokens"] == 100000 and row["seconds"] == 1500.0 and "note" not in row
+    assert spend.cost(row, spend.load_pricing()) > 0
