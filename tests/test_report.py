@@ -555,6 +555,17 @@ def test_spend_build_with_bare_relative_path_names_file_after_run_folder(tmp_pat
     assert out.name == "IOProjectAssistantReport_20261027_1651_spending.html" and out.exists()
 
 
+def test_secret_is_read_when_secrets_file_starts_with_a_bom(tmp_path, monkeypatch):
+    from ioassistant import sprintchanges
+    path = tmp_path / "secrets.env"
+    path.write_bytes(b"\xef\xbb\xbfJIRA_EMAIL=a@b.c\nJIRA_API_TOKEN=\"tok\"\n")
+    monkeypatch.setattr(sprintchanges, "SECRETS", path)
+    monkeypatch.delenv("JIRA_EMAIL", raising=False)
+    monkeypatch.delenv("JIRA_API_TOKEN", raising=False)
+    assert sprintchanges._secret("JIRA_EMAIL") == "a@b.c"
+    assert sprintchanges._secret("JIRA_API_TOKEN") == "tok"
+
+
 def test_sprint_tickets_fill_ids_by_name_when_collector_omits_them():
     from ioassistant import sprinttickets
     data = {"sprint": {"name": "I&O 26.44"}, "past_sprints": [{"name": "I&O 26.43"}, {"name": "gone", "id": 7}]}

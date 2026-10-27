@@ -27,6 +27,7 @@ The file is `~/.ioassistant/secrets.env` (in the user's home folder, outside any
    - **Jira:** open https://id.atlassian.com/manage-profile/security/api-tokens → **Create API token** → name it "IO Project Assistant" → **Create** → copy the token. Also put the email you sign in to https://sectigo.atlassian.net/ with in `JIRA_EMAIL`.
    - **Confluence:** the same email and token work for https://sectigo.atlassian.net/wiki/; nothing more to create.
 3. Open the file for them: Windows `notepad "$HOME/.ioassistant/secrets.env"`; Mac `open -e "$HOME/.ioassistant/secrets.env"`. They replace each `paste_..._here` with the email or token (no spaces, no quotes), save and close Notepad, then tell you "done".
+   After they save, remove a hidden byte-order mark if the editor added one (it breaks the first line when the file is loaded): `sed -i '1s/^\xEF\xBB\xBF//' "$HOME/.ioassistant/secrets.env"`. Never print the file.
 4. Test without showing the tokens; print only the HTTP status:
    ```bash
    set -a; . "$HOME/.ioassistant/secrets.env"; set +a
