@@ -531,6 +531,41 @@ def test_spend_set_orchestrator_replaces_placeholder_and_prices_it(tmp_path):
     assert spend.cost(row, spend.load_pricing()) > 0
 
 
+def test_spend_set_orchestrator_resume_row_keeps_first_run(tmp_path):
+    from ioassistant import spend
+    path = tmp_path / "usage.json"
+    path.write_text(json.dumps([
+        {"agent": "orchestrator", "model": "claude-opus-5-5", "input_tokens": 152708, "output_tokens": 0, "seconds": 1852.0},
+        {"agent": "orchestrator (resume)", "model": "claude-opus-5-5", "input_tokens": 0, "output_tokens": 0, "seconds": 199.0}]),
+        encoding="utf-8")
+    spend.set_orchestrator(path, 37903, 254.3, "orchestrator (resume)")
+    first, resume = json.loads(path.read_text(encoding="utf-8"))
+    assert first["input_tokens"] == 152708 and first["seconds"] == 1852.0
+    assert resume["input_tokens"] == 37903 and resume["seconds"] == 254.3
+
+
+def test_spend_build_with_bare_relative_path_names_file_after_run_folder(tmp_path, monkeypatch):
+    from ioassistant import spend
+    run = tmp_path / "IOProjectAssistantReport_20261027_1651"
+    run.mkdir()
+    (run / "usage.json").write_text(json.dumps([
+        {"agent": "a", "model": "claude-opus-5-5", "input_tokens": 10, "output_tokens": 0, "seconds": 1.0}]), encoding="utf-8")
+    monkeypatch.chdir(run)
+    out = spend.build(Path("usage.json"))
+    assert out.name == "IOProjectAssistantReport_20261027_1651_spending.html" and out.exists()
+
+
+def test_secret_is_read_when_secrets_file_starts_with_a_bom(tmp_path, monkeypatch):
+    from ioassistant import sprintchanges
+    path = tmp_path / "secrets.env"
+    path.write_bytes(b"\xef\xbb\xbfJIRA_EMAIL=a@b.c\nJIRA_API_TOKEN=\"tok\"\n")
+    monkeypatch.setattr(sprintchanges, "SECRETS", path)
+    monkeypatch.delenv("JIRA_EMAIL", raising=False)
+    monkeypatch.delenv("JIRA_API_TOKEN", raising=False)
+    assert sprintchanges._secret("JIRA_EMAIL") == "a@b.c"
+    assert sprintchanges._secret("JIRA_API_TOKEN") == "tok"
+
+
 def test_sprint_tickets_fill_ids_by_name_when_collector_omits_them():
     from ioassistant import sprinttickets
     data = {"sprint": {"name": "I&O 26.44"}, "past_sprints": [{"name": "I&O 26.43"}, {"name": "gone", "id": 7}]}

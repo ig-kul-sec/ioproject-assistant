@@ -17,6 +17,8 @@ def main(argv=None) -> None:
                     help="spend: total tokens of the orchestrator's Agent result, written into usage.json before rendering")
     ap.add_argument("--orchestrator-seconds", type=float, metavar="S",
                     help="spend: orchestrator duration in seconds (default: keep the recorded wall-clock)")
+    ap.add_argument("--orchestrator-row", default="orchestrator", metavar="NAME",
+                    help='spend: usage.json row to fill with --orchestrator-tokens (a resume run uses "orchestrator (resume)")')
     args = ap.parse_args(argv)
     if args.command == "presentation":
         out = presentation.build()
@@ -28,7 +30,7 @@ def main(argv=None) -> None:
         out = sprinttickets.build(args.path)
     elif args.command == "spend":
         if args.orchestrator_tokens is not None:
-            spend.set_orchestrator(args.path, args.orchestrator_tokens, args.orchestrator_seconds)
+            spend.set_orchestrator(args.path, args.orchestrator_tokens, args.orchestrator_seconds, args.orchestrator_row)
         out = spend.build(args.path, compact=args.compact)
     elif args.command == "confluence":
         out = confluence.build(args.path)

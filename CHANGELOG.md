@@ -6,6 +6,19 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
+## [0.5.7] - 2026-10-28
+
+### Fixed
+- A blocked SharePoint upload no longer leaves a half-finished run. The main report is uploaded first (the spending report only if it succeeded), a denial is not retried, and the result gives the path for a manual upload. After a manual upload, `/ioproject-assistant:run-report continue from upload <RUN_ID>` creates the Outlook draft and the Confluence page without re-running the pipeline.
+- The spending report on SharePoint never had the orchestrator's figures: it was uploaded before they were known, and only the local copy was updated. `run-report` step 3 now also rebuilds the compact `upload/` copy and, when the main report is on SharePoint, replaces only `<RUN_ID>_spending.html` there with the final figures (a narrow replace mode in the SharePoint skill; a denied refresh is not retried).
+- A resume run (`continue from upload`) skipped the spending step, so its `orchestrator (resume)` row stayed at 0 tokens. `spend` has `--orchestrator-row` to fill that row without touching the first run's `orchestrator` row, and the skill now runs step 3 for resume runs.
+- `spend` run with a bare `usage.json` from inside the run folder wrote `_spending.html` (empty run name). The path is now resolved first.
+- A `~/.ioassistant/secrets.env` saved with a byte-order mark (Notepad can do this) made the first line unreadable: the first key was never loaded, and sourcing the file in the shell printed that line, token included, into the transcript. `sprint-changes` now reads the file as `utf-8-sig`, and `setup` strips a BOM after the user saves the file.
+
+### Added
+- `/ioproject-assistant:setup` asks once whether to approve the SharePoint report upload automatically. The default is no (each run asks); on a yes it adds `mcp__claude_ai_Microsoft_365__sharepoint_upload_file` to the user's own `permissions.allow` through the `update-config` skill, after explaining that the rule covers SharePoint uploads from any project. The plugin guide (B7, B8, B11) describes it, including the IT option through managed settings.
+- `run-report` pre-flight checks folder access: it lists `output/` and reads the plugin's `config/defaults.env` before the run. When Claude's setting blocks reads outside the working directories it stops in seconds and tells the user to type `/add-dir <folder>`, instead of failing at the upload after a 30-minute run. The blocked-upload message gives the same hint.
+
 ## [0.5.6] - 2026-10-27
 
 ### Fixed

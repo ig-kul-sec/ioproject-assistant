@@ -79,7 +79,7 @@ def extract(issues: list, sprint_id, start: str, base: str = JIRA_SITE, members=
 def _secret(name: str) -> str:
     value = os.environ.get(name)
     if not value and SECRETS.exists():
-        for line in SECRETS.read_text(encoding="utf-8").splitlines():
+        for line in SECRETS.read_text(encoding="utf-8-sig").splitlines():  # Notepad can save a BOM that would hide the first key
             key, _, val = line.partition("=")
             if key.strip() == name:
                 value = val.strip().strip("\"'")

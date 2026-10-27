@@ -27,6 +27,7 @@ The file is `~/.ioassistant/secrets.env` (in the user's home folder, outside any
    - **Jira:** open https://id.atlassian.com/manage-profile/security/api-tokens → **Create API token** → name it "IO Project Assistant" → **Create** → copy the token. Also put the email you sign in to https://sectigo.atlassian.net/ with in `JIRA_EMAIL`.
    - **Confluence:** the same email and token work for https://sectigo.atlassian.net/wiki/; nothing more to create.
 3. Open the file for them: Windows `notepad "$HOME/.ioassistant/secrets.env"`; Mac `open -e "$HOME/.ioassistant/secrets.env"`. They replace each `paste_..._here` with the email or token (no spaces, no quotes), save and close Notepad, then tell you "done".
+   After they save, remove a hidden byte-order mark if the editor added one (it breaks the first line when the file is loaded): `sed -i '1s/^\xEF\xBB\xBF//' "$HOME/.ioassistant/secrets.env"`. Never print the file.
 4. Test without showing the tokens; print only the HTTP status:
    ```bash
    set -a; . "$HOME/.ioassistant/secrets.env"; set +a
@@ -58,5 +59,14 @@ The Outlook draft is CC'd to: `${user_config.cc_email}`. If that is wrong or loo
 ## 6. Access the report needs (cannot be checked from here)
 
 Tell the user the run also needs read access to the Daily Ops StandUp and Rubrik Project SyncUp Teams chats, the I&O Project Roadmap on SharePoint, and write access to the "IO Project Assistant Reports" SharePoint folder and the Confluence space CO. Missing access does not stop the run; it shows up as a data gap in the report.
+
+## 6b. SharePoint upload without a prompt (optional, ask once)
+
+Each run asks the user to approve the SharePoint upload. Ask once whether they want to skip that prompt: "Each report run asks you to approve the upload to the SharePoint reports folder. Do you want me to allow it automatically from now on? The setting applies to SharePoint uploads from any Claude project on this computer, not only to the report folder. You can remove it later with `/permissions`." Default is **no**: only act on an explicit yes, and say that no is fine.
+
+- **Yes:** use the `update-config` skill to add `mcp__claude_ai_Microsoft_365__sharepoint_upload_file` to `permissions.allow` in the user's own settings (user scope, not the project). Do not touch any other setting, and never add it without the yes.
+- **No, or no answer:** change nothing. The run asks for approval each time.
+
+Report it in the checklist as "SharePoint upload approval: automatic" or "asked each run".
 
 Finish with the checklist and, if everything is ✅, say: "You're ready. Type `/ioproject-assistant:run-report` to make today's report."
