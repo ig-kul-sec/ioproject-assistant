@@ -520,10 +520,11 @@ Run it as `PYTHONPATH="<plugin>/src" python -m ioassistant.cli <command> <json>`
 
 ## C8. Version history
 
-Full notes are in `CHANGELOG.md`. Current version: **0.5.3**.
+Full notes are in `CHANGELOG.md`. Current version: **0.5.4**.
 
 | Version | Date | What changed |
 |---|---|---|
+| 0.5.4 | 2026-10-27 | "Existing tickets to change" no longer suggests comments that the ticket description already states (the Jira collector now returns each ticket's description and creation date). |
 | 0.5.3 | 2026-10-27 | Reports are uploaded to `PMO AI Agent Factory/IO Project Assistant Reports` (SharePoint) and the Confluence page is created under PMO AI Agent Factory > IO Project Assistant. The new Daily Ops StandUp chat is read from 2026-10-27, and the Postgres EDB migration Teams chat and Jira epic IOSP-955 are read every run. |
 | 0.5.2 | 2026-10-26 | Sprint ticket lists are complete: a new `sprint-tickets` step reads every ticket of the sprint (and open past sprints) from Jira and checks the count, so the charts no longer miss tickets (79 in the sprint, 30 were reported). |
 | 0.5.1 | 2026-10-26 | Confluence moved to Confluence Cloud (sectigo.atlassian.net/wiki, space CO). Same `JIRA_EMAIL` + `JIRA_API_TOKEN` as Jira; `CONFLUENCE_API_TOKEN` is no longer needed. |

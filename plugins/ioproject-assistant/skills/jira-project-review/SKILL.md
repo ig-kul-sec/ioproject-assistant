@@ -15,7 +15,7 @@ Spaces:
 - **COR**: projects managed in COR.
 
 For each discussed project (by key from the Teams collector, otherwise by epic/name search):
-1. Epic + child tickets: key, summary, status, assignee, start date, due/end date, URL, and `sprint` (the name of the active sprint the ticket is in, else its latest sprint, null if none; use the Agile "Sprint" field, whose id is `customfield_10020`, see `/rest/api/3/field`).
+1. Epic + child tickets: key, summary, status, assignee, start date, due/end date, URL, `created` (YYYY-MM-DD), `description` (plain text of the ticket description, first 600 characters, null when empty) and `sprint` (the name of the active sprint the ticket is in, else its latest sprint, null if none; use the Agile "Sprint" field, whose id is `customfield_10020`, see `/rest/api/3/field`).
 2. Changes and comments with `updated >= <window.from>` (the analysis window passed by the orchestrator; default since Monday 00:00 America/New_York) (author, time, short text).
 3. Active IOSP sprint: name, start, end, duration in days, tickets as above. Also report `past_sprints` (a list, oldest first, each the same shape) with every other sprint on the board that has ended but is still not closed (state active, end date in the past); otherwise an empty list.
 
@@ -40,7 +40,7 @@ Use read-only REST calls (`/rest/api/2/search/jql` (the old `/rest/api/2/search`
   "past_sprints": [],
   "projects": [{"name": "", "changes": [{"key": "", "who": "", "when": "", "text": ""}],
     "tickets": [{"key": "", "url": "", "name": "", "status": "", "sprint": null, "assignee": "", "start": null, "end": null,
-                 "epic": false, "related": [{"key": "", "url": ""}]}]}],
+                 "created": "YYYY-MM-DD", "description": null, "epic": false, "related": [{"key": "", "url": ""}]}]}],
   "daily_ops": [{"title": "", "tickets": [{"key": "", "url": "", "status": "", "summary": ""}]}],
   "gaps": []
 }
