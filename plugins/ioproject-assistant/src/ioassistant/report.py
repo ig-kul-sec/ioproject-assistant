@@ -675,6 +675,17 @@ def _local(value):
     return dt.replace(tzinfo=tz) if dt.tzinfo is None else dt.astimezone(tz)
 
 
+def period_text(window) -> str:
+    """'period from yyyy/mm/dd till yyyy/mm/dd hh:mm' (America/New_York, 24h) for the email and Confluence lead line; '' when the window is unknown."""
+    try:
+        start, end = _local(window["from"]), _local(window["to"])
+    except (TypeError, KeyError):
+        return ""
+    if not start or not end:
+        return ""
+    return f"period from {start:%Y/%m/%d} till {end:%Y/%m/%d %H:%M}"
+
+
 def _range(window) -> str:
     """'Analysis period: yyyy.mm.dd - yyyy.mm.dd hh:mm EDT'; the zone label is EST or EDT as in force."""
     try:

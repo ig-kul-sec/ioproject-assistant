@@ -6,6 +6,14 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
+## [0.5.8] - in development
+
+### Changed
+- The Outlook draft and the Confluence page now open with the analysis period: "The latest I&O project status report is on SharePoint: period from yyyy/mm/dd till yyyy/mm/dd hh:mm" (America/New_York, taken from the run's `window`; without a window the line stays as before).
+
+### Added
+- Postgres EDB migration: two more Teams chats are read every run and reported under the same project (`TEAMS_EDB_CHAT_URL_2`, `TEAMS_EDB_CHAT_URL_3` in `defaults.env` and `.env.example`). Notes say which chat they came from (`edb chat`, `edb chat 2`, `edb chat 3`), and a chat that cannot be read is a named data gap that does not block the others.
+
 ## [0.5.7] - 2026-10-28
 
 ### Fixed

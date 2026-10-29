@@ -4,10 +4,12 @@ The body uses only tags the Outlook connector allows (p, a, strong, hr): no styl
 """
 from __future__ import annotations
 
+import json
 from html import escape
 from pathlib import Path
 
 from . import __version__, brand, spend
+from .report import period_text
 
 CC = "igor.kulyk@sectigo.com"
 
@@ -21,9 +23,15 @@ def _a(label: str, url: str) -> str:
     return f'<a href="{escape(url, quote=True)}">{escape(label)}</a>'
 
 
-def render(run_id: str) -> str:
+def lead_line(window) -> str:
+    """'The latest I&O project status report is on SharePoint: period from yyyy/mm/dd till yyyy/mm/dd hh:mm'."""
+    period = period_text(window)
+    return "The latest I&amp;O project status report is on SharePoint:" + (f" {escape(period)}" if period else "")
+
+
+def render(run_id: str, window=None) -> str:
     return (
-        "<p>The latest I&amp;O project status report is on SharePoint:</p>"
+        f"<p>{lead_line(window)}</p>"
         f"<p>Report: {_a(run_id + '.html', brand.sharepoint_file_url(run_id + '.html'))}<br>"
         f"Spending report: {_a(run_id + '_spending.html', brand.sharepoint_file_url(run_id + '_spending.html'))}<br>"
         f"Folder: {_a('IO Project Assistant Reports', brand.sharepoint_folder_url())}</p>"
@@ -35,8 +43,9 @@ def render(run_id: str) -> str:
 
 
 def build(data_path: Path) -> Path:
-    """Write <run>/upload/<RUN_ID>_email.html; the run id is the run folder name."""
+    """Write <run>/upload/<RUN_ID>_email.html; the run id is the run folder name, the period comes from data.json `window`."""
     run_id = data_path.parent.name
+    window = json.loads(data_path.read_text(encoding="utf-8")).get("window")
     out = spend._out_path(data_path.parent, f"{run_id}_email.html", True)
-    out.write_bytes(render(run_id).encode("utf-8"))
+    out.write_bytes(render(run_id, window).encode("utf-8"))
     return out

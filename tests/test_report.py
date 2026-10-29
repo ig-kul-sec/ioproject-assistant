@@ -264,7 +264,7 @@ def test_confluence_body_and_email_draft(tmp_path):
 
     run = tmp_path / "IOProjectAssistantReport_20261017_1759"
     run.mkdir()
-    data = {"generated_at": "2026-10-17T11:16:29-04:00", "projects": [{
+    data = {"generated_at": "2026-10-17T11:16:29-04:00", "window": {"from": "2026-10-12T00:00:00-04:00", "to": "2026-10-17T11:16:29-04:00"}, "projects": [{
         "name": "Rubrik <DR>", "project_manager": "Pat", "summary": [{"text": "RM-1553 due 2026-09-11", "tickets": ["IOSP-1"]}],
         "tickets": [{"key": "IOSP-1", "name": "T & U", "status": "Open"}],
     }]}
@@ -272,11 +272,14 @@ def test_confluence_body_and_email_draft(tmp_path):
     body = confluence.build(run / "data.json").read_text(encoding="utf-8")
     minidom.parseString(f"<r>{body}</r>")  # well-formed XML
     assert "Rubrik" not in body  # same content as the email, not the per-project report
-    assert "The latest I&amp;O project status report is on SharePoint:" in body
+    lead = "The latest I&amp;O project status report is on SharePoint: period from 2026/10/12 till 2026/10/17 11:16</p>"
+    assert lead in body
     assert "AI AGENT FACTORY:" in body and "User-Guide</a>" in body and "sk=sheeUB2-jY3qJTuYhUBMTQ" in body and "Version: " in body and "github.com/ig-kul-sec/ioproject-assistant" in body
     assert "Sectigo© 2026. All rights reserved." in body
     assert confluence.title_for(run.name) == "TEST: IO Project Assistant Report 20261017 1759 (Draft)"
     mail = emaildraft.build(run / "data.json").read_text(encoding="utf-8")
+    assert lead in mail
+    assert "period from" not in emaildraft.render(run.name)  # no window: the plain line, no period
     assert "PMO%20AI%20Agent%20Factory/IO%20Project%20Assistant%20Reports/IOProjectAssistantReport_20261017_1759.html" in mail
     assert "Sectigo\u00a9 2026. All rights reserved." in mail and "<span" not in mail and "<img" not in mail
     assert emaildraft.subject_for(run.name) == "IO Project Assistant Report 20261017 1759"

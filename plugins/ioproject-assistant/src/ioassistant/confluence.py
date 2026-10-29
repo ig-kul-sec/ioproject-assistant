@@ -5,7 +5,7 @@ import json
 from html import escape
 from pathlib import Path
 
-from . import __version__, brand, spend
+from . import __version__, brand, emaildraft, spend
 
 def title_for(run_id: str) -> str:
     """'IOProjectAssistantReport_20261017_1759' -> 'TEST: IO Project Assistant Report 20261017 1759 (Draft)'."""
@@ -19,7 +19,7 @@ def _a(label: str, url: str) -> str:
 def render(data: dict, run_id: str) -> str:
     """Same content as the Outlook draft body (emaildraft.render), in Confluence storage format."""
     return (
-        "<p>The latest I&amp;O project status report is on SharePoint:</p>"
+        f"<p>{emaildraft.lead_line(data.get('window'))}</p>"
         f"<p>Report: {_a(run_id + '.html', brand.sharepoint_file_url(run_id + '.html'))}<br />"
         f"Spending report: {_a(run_id + '_spending.html', brand.sharepoint_file_url(run_id + '_spending.html'))}<br />"
         f"Folder: {_a('IO Project Assistant Reports', brand.sharepoint_folder_url())}</p>"
