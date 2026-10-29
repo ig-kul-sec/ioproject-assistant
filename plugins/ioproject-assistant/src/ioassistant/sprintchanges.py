@@ -1,4 +1,4 @@
-"""Tickets added to or removed from the active sprint after its first day, from the Jira change history."""
+"""Tickets added to or removed from the active sprint during the analyzed period, from the Jira change history."""
 from __future__ import annotations
 
 import base64
@@ -30,20 +30,34 @@ def _local(value):
         return None
 
 
-def extract(issues: list, sprint_id, start: str, base: str = JIRA_SITE, members=()) -> list:
-    """One row per add/remove of `sprint_id` made on the 2nd day of the sprint or later (`start` is yyyy-mm-dd,
-    day 1). `issues` are Jira issues with the changelog expanded; `members` are the keys currently in the sprint.
-    A move between sprints shows as a removal from one and an addition to the other; `other_sprint` names the
-    sprint it came from or went to. A current member created on day 2 or later with no Sprint history entry was
-    created straight into the sprint: it counts as added by its creator on the creation date."""
+def period_of(window) -> tuple | None:
+    """(start, end) as aware datetimes from a data.json `window` ({"from": ISO, "to": ISO}); None when it is missing."""
+    try:
+        lo, hi = _local(window["from"]), _local(window["to"])
+    except (TypeError, KeyError):
+        return None
+    return (lo, hi) if lo and hi else None
+
+
+def extract(issues: list, sprint_id, start: str, base: str = JIRA_SITE, members=(), period: tuple | None = None) -> list:
+    """One row per add/remove of `sprint_id` made during the analyzed `period` (start and end datetimes, both
+    included). Without a period the rule is the old one: made on the 2nd day of the sprint or later (`start` is
+    yyyy-mm-dd, day 1). `issues` are Jira issues with the changelog expanded; `members` are the keys currently in
+    the sprint. A move between sprints shows as a removal from one and an addition to the other; `other_sprint`
+    names the sprint it came from or went to. A current member created in the period with no Sprint history entry
+    was created straight into the sprint: it counts as added by its creator on the creation date."""
     cutoff = date.fromisoformat(start) + timedelta(days=1)
+
+    def inside(when) -> bool:
+        return bool(when) and (period[0] <= when <= period[1] if period else when.date() >= cutoff)
+
     sid, rows = str(sprint_id), []
     for issue in issues:
         fields = issue.get("fields") or {}
         mark = len(rows)
         for hist in (issue.get("changelog") or {}).get("histories", []):
             when = _local(hist.get("created"))
-            if not when or when.date() < cutoff:
+            if not inside(when):
                 continue
             for item in hist.get("items", []):
                 if item.get("field") != "Sprint":
@@ -64,7 +78,7 @@ def extract(issues: list, sprint_id, start: str, base: str = JIRA_SITE, members=
                     "other_sprint": ", ".join(other) or None,
                 })
         made = _local(fields.get("created"))
-        if (issue.get("key") in members and made and made.date() >= cutoff
+        if (issue.get("key") in members and inside(made)
                 and not any(r["action"] == "added" for r in rows[mark:])):
             rows.append({
                 "key": issue.get("key"), "url": f"{base}/browse/{issue.get('key')}",
@@ -101,8 +115,8 @@ def _get(site: str, path: str, params: dict, token: str) -> dict:
         return json.loads(resp.read().decode("utf-8"))
 
 
-def fetch(site: str, sprint_name: str, start: str) -> list:
-    """Changes of the active board sprint called `sprint_name`; raises SystemExit when it cannot be read."""
+def fetch(site: str, sprint_name: str, start: str, period: tuple | None = None) -> list:
+    """Changes of the active board sprint called `sprint_name` made in `period`; raises SystemExit when it cannot be read."""
     token = _token()
     members: set = set()
     try:
@@ -130,7 +144,7 @@ def fetch(site: str, sprint_name: str, start: str) -> list:
         raise SystemExit(f"Jira answered HTTP {exc.code} (for 401/403 check JIRA_EMAIL and JIRA_API_TOKEN)")
     except OSError as exc:  # network, VPN
         raise SystemExit(f"Jira not reachable: {exc}")
-    return extract(list(issues.values()), match["id"], start, site, members)
+    return extract(list(issues.values()), match["id"], start, site, members, period)
 
 
 def build(data_path: Path) -> Path:
@@ -141,7 +155,7 @@ def build(data_path: Path) -> Path:
     if not sprint.get("name") or not sprint.get("start"):
         raise SystemExit("data.json has no current sprint name/start")
     parts = urlsplit(str(data.get("jira_base_url") or JIRA_SITE))
-    sprint["changes"] = fetch(f"{parts.scheme}://{parts.netloc}", sprint["name"], sprint["start"])
+    sprint["changes"] = fetch(f"{parts.scheme}://{parts.netloc}", sprint["name"], sprint["start"], period_of(data.get("window")))
     data["sprint"] = sprint
     text = json.dumps(data, indent=1, ensure_ascii=False)  # the layout the run's data.json is written in
     if b"\r\n" in raw:

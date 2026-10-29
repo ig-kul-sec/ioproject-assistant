@@ -9,7 +9,7 @@ import urllib.error
 from .sprintchanges import BOARD_ID, JIRA_SITE, PAGE, _get, _token
 
 # customfield_10023 is "Target end": IOSP tickets keep their end date there and leave "Due date" empty.
-FIELDS = "summary,status,assignee,duedate,customfield_10023"
+FIELDS = "summary,status,assignee,duedate,customfield_10023,resolutiondate"  # resolutiondate feeds the burndown chart
 
 
 def _row(issue: dict, base: str, old: dict | None) -> dict:
@@ -18,7 +18,8 @@ def _row(issue: dict, base: str, old: dict | None) -> dict:
     return {**(old or {}),
             "key": issue["key"], "url": f"{base}/browse/{issue['key']}", "name": fields.get("summary"),
             "status": (fields.get("status") or {}).get("name"),
-            "assignee": (fields.get("assignee") or {}).get("displayName"), "due": fields.get("duedate") or fields.get("customfield_10023")}
+            "assignee": (fields.get("assignee") or {}).get("displayName"), "due": fields.get("duedate") or fields.get("customfield_10023"),
+            "resolved": fields.get("resolutiondate")}
 
 
 def fetch(site: str, sprint_id, token: str) -> list:

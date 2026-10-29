@@ -57,7 +57,8 @@ def test_per_project_view(tmp_path):
         },
         "links": {"teams": [{"label": "Chat", "url": "https://teams.example/c"}]},
         "tickets": [
-            {"key": "IOSP-1", "name": "Done one", "status": "Done", "related": ["RM-5"]},
+            {"key": "IOSP-1", "name": "Done one", "status": "Done"},
+            {"key": "IOSP-2", "name": "Active two", "status": "To Do", "related": ["RM-5"]},
             {"key": "IOSP-471", "name": "Epic", "status": "In Progress", "epic": True},
         ],
     }]}
@@ -67,7 +68,9 @@ def test_per_project_view(tmp_path):
     html = report.build(run / "data.json").read_text(encoding="utf-8")
     assert 'href="https://sectigo.atlassian.net/browse/IOSP-1012"' in html  # summary ref
     assert 'href="https://sectigo.atlassian.net/browse/RM-5"' in html  # related ticket
-    assert html.index("IOSP-471</a>") < html.index("IOSP-1</a>")  # active before done
+    assert html.index("IOSP-471</a>") < html.index("IOSP-2</a>")  # epic first
+    assert "Jira tickets for this project (active)" in html
+    assert "Done one" not in html and "1 closed or done ticket is not listed." in html  # only active tickets are listed
     assert "Add backup VLAN IPs" in html and "Move start to 10/18" in html
     assert html.index("What to do</th>") < html.index("Reason/Comment</th>") and "Agreed in the SyncUp" in html
     assert html.index("Description</th>") < html.index("Reason/Comment</th>", html.index("Description</th>")) and "No ticket for the new VLAN" in html
@@ -82,9 +85,74 @@ def test_compact_trims_closed_and_caps_active_tickets(tmp_path):
     (run / "data.json").write_text(json.dumps({"projects": [{"name": "Big", "tickets": tickets}]}), encoding="utf-8")
     full = report.build(run / "data.json").read_text(encoding="utf-8")
     small = report.build(run / "data.json", compact=True).read_text(encoding="utf-8")
-    assert "Closed 101" in full and "Active 30" in full and "left out of this copy" not in full
+    assert "Closed 101" not in full and "Active 30" in full and "5 closed or done tickets are not listed." in full
+    assert "left out of this copy" not in full  # the full report lists every active ticket
     assert "Closed 101" not in small and "Active 30" not in small
-    assert f"Active {report.COMPACT_TICKET_CAP}<" in small and "15 tickets are left out of this copy" in small
+    assert f"Active {report.COMPACT_TICKET_CAP}<" in small and "5 closed or done tickets are not listed." in small
+    assert "10 more active tickets are left out of this copy" in small
+
+
+def test_overdue_tickets_are_highlighted_and_listed_under_jira_updates(tmp_path):
+    tickets = [
+        {"key": "IOSP-10", "name": "Late one", "status": "In Progress", "assignee": "Pat", "end": "2026-10-20"},
+        {"key": "IOSP-11", "name": "Very late", "status": "To Do", "end": "2026-10-01"},
+        {"key": "IOSP-12", "name": "On time", "status": "To Do", "end": "2026-10-29"},  # due on the report day: not overdue
+        {"key": "IOSP-13", "name": "Later", "status": "To Do", "end": "2026-11-15"},
+        {"key": "IOSP-14", "name": "Finished late", "status": "Done", "end": "2026-09-01"},
+        {"key": "IOSP-15", "name": "No date", "status": "To Do"},
+    ]
+    data = {"window": {"from": "2026-10-27T00:00:00-04:00", "to": "2026-10-29T11:44:21-04:00"},
+            "projects": [{"name": "P", "tickets": tickets, "jira_updates": {"change": [
+                {"key": "IOSP-10", "type": "dates", "detail": "move end date", "reason": "slipped"}], "create": []}}]}
+    html = _render_data(tmp_path, data)
+    assert html.count('<tr class="active overdue">') == 2  # IOSP-10 and IOSP-11 in the ticket table
+    assert 'overdue 9 d' in html and 'overdue 28 d' in html and "overdue 0 d" not in html
+    assert html.count('<tr class="overdue">') == 2  # the same two under "Jira task updates needed"
+    assert "Tickets past their due date" in html
+    assert html.index("IOSP-11</a>", html.index("Tickets past their due date")) < html.index("IOSP-10</a>", html.index("Tickets past their due date"))  # most overdue first
+    assert "Finished late" not in html and "<th>Due</th>" in html
+
+
+def test_project_sources_merged_and_report_sources_renamed(tmp_path):
+    data = {"projects": [{
+        "name": "P",
+        "links": {"teams": [{"label": "Chat", "url": "https://teams.example/c"}],
+                  "sharepoint": [{"label": "Folder", "url": "https://sp.example/f"}],
+                  "confluence": [{"label": "Page", "url": "https://wiki.example/p"}]},
+        "tickets": [{"key": "IOSP-5", "name": "The epic", "status": "In Progress", "epic": True}],
+    }]}
+    html = _render_data(tmp_path, data)
+    for gone in ("Project meeting chats", "Project SharePoint folder", "Project Confluence page"):
+        assert gone not in html
+    assert "Report sources</summary>" in html and "Project sources</summary>" in html
+    assert html.index("Project sources</summary>") < html.index("Report sources</summary>")  # project sources first
+    block = html[html.index("Project sources</summary>"):html.index("Report sources</summary>")]
+    assert block.index("Meeting chats") < block.index("SharePoint folder") < block.index("Confluence page") < block.index("Jira epic")
+    assert 'href="https://sectigo.atlassian.net/browse/IOSP-5"' in block and "The epic" in block
+    assert "<span>3</span> Project sources" in html and "<span>4</span> Report sources" in html
+    assert "<span>5</span> Jira tickets for this project (active)" in html
+
+
+def test_tickets_default_to_sprint_ascending(tmp_path):
+    tickets = [
+        {"key": "IOSP-1", "name": "No sprint", "status": "To Do"},
+        {"key": "IOSP-2", "name": "In 26.44", "status": "To Do", "sprint": "I&O 26.44"},
+        {"key": "IOSP-3", "name": "In 26.9", "status": "To Do", "sprint": "I&O 26.9"},
+        {"key": "IOSP-4", "name": "Epic in 26.44", "status": "To Do", "sprint": "I&O 26.44", "epic": True},
+    ]
+    html = _render_data(tmp_path, {"projects": [{"name": "P", "tickets": tickets}]})
+    table = html[html.index("<table class='tix'>"):]
+    order = [table.index(x) for x in ("In 26.9", "Epic in 26.44", "In 26.44", "No sprint")]
+    assert order == sorted(order)  # 26.9 < 26.44 by number; epic first inside a sprint; no sprint last
+    assert "<th data-dir='asc'>Sprint</th>" in html  # the header shows the default order
+
+
+def test_no_overdue_means_no_extra_jira_updates(tmp_path):
+    data = {"window": {"to": "2026-10-29T11:44:21-04:00"},
+            "projects": [{"name": "P", "tickets": [{"key": "IOSP-1", "name": "Fine", "status": "To Do", "end": "2026-12-01"}]}]}
+    html = _render_data(tmp_path, data)
+    assert "No Jira updates identified." in html and "Tickets past their due date" not in html
+    assert 'class="active overdue"' not in html and 'class="od"' not in html
 
 
 def _render_data(tmp_path, data):
@@ -163,7 +231,7 @@ def test_report_features(tmp_path):
     (run / "data.json").write_text(json.dumps(data), encoding="utf-8")
     html = report.build(run / "data.json").read_text(encoding="utf-8")
     assert "<th>Ticket name</th>" in html and html.count("RAC backup start") >= 2  # name looked up from tickets
-    assert 'data-s="2026-09-11">09/11</td>' in html
+    assert 'data-s="2026-09-11">09/11 <span class="odn">overdue 36 d</span></td>' in html  # 2026-10-17 report day, due 09/11
     assert "Project Manager: <b>Pat</b>" in html and "Technical Lead: <b>Lee</b>" in html
     assert "Generated: 2026.10.17 11:16 EDT" in html
     assert "id='expand-projects'" in html and html.count("<svg viewBox='0 0 24 24'") == 3 and "Expand Proj+SubItems" in html
@@ -446,15 +514,62 @@ def test_sprint_changes_section_and_sprint_link():
     sprint = {"name": "I&O 26.43", "start": "2026-10-19", "tickets": [{"key": "IOSP-9", "status": "Open"}],
               "changes": [{"key": "IOSP-2", "url": "https://j/IOSP-2", "name": "Patch", "status": "Open", "assignee": "Ann",
                            "action": "added", "date": "2026-10-20", "by": "Gabriel Rovira", "other_sprint": "I&O 26.42"}]}
-    html = report.render({"sprint": sprint, "projects": []}, "R")
+    window = {"from": "2026-10-19T00:00:00-04:00", "to": "2026-10-23T09:00:00-04:00"}
+    html = report.render({"sprint": sprint, "projects": [], "window": window}, "R")
+    assert "Tickets added or removed from the sprint (during analyzed period)" in html and "day 2" not in html
     sec = html[html.index("Tickets added or removed from the sprint"):]
     sec = sec[:sec.index("</table>")]
-    assert "from day 2 of the sprint (10/20) onward: 1 added, 0 removed" in sec.lower().replace("from day 2", "from day 2")
+    assert "During the analyzed period (10/19 - 10/23): 1 added, 0 removed" in sec
     assert "<td>10/20</td>" in sec or 'data-s="2026-10-20">10/20</td>' in sec
     assert "Gabriel Rovira" in sec and "<td>Added</td>" in sec
     assert ">JIRA Tickets Link: Sprint I&amp;O 26.43</a>" in html
     assert "issues/?jql=sprint%20%3D%20%22I%26O%2026.43%22%20order%20by%20updated%20DESC" in html
     assert "Tickets added or removed" not in report.render({"sprint": {**sprint, "changes": None}, "projects": []}, "R")
+
+
+def test_sprint_changes_follow_the_analyzed_period_not_day_two():
+    from ioassistant import sprintchanges
+    period = sprintchanges.period_of({"from": "2026-10-20T00:00:00-04:00", "to": "2026-10-23T09:00:00-04:00"})
+    issues = [
+        _issue("IOSP-1", ("2026-10-19T10:00:00.000+0100", "Early", None, None, "1017", "S2")),    # before the period: ignored
+        _issue("IOSP-2", ("2026-10-20T12:00:00.000+0100", "Gabriel Rovira", None, None, "1017", "S2")),  # in the period
+        _issue("IOSP-3", ("2026-10-23T09:00:00.000-0400", "Edge", None, None, "1017", "S2")),      # exactly at the end: kept
+        _issue("IOSP-4", ("2026-10-25T09:00:00.000+0100", "Late", None, None, "1017", "S2")),      # after the period: ignored
+    ]
+    rows = sprintchanges.extract(issues, 1017, "2026-10-12", period=period)  # sprint day 2 is 10-13: not the rule any more
+    assert [r["key"] for r in rows] == ["IOSP-2", "IOSP-3"]
+    old = sprintchanges.extract(issues, 1017, "2026-10-12")  # no period: the old day-2 rule still applies
+    assert [r["key"] for r in old] == ["IOSP-1", "IOSP-2", "IOSP-3", "IOSP-4"]
+    assert sprintchanges.period_of(None) is None and sprintchanges.period_of({"from": "x", "to": "y"}) is None
+    new = {"key": "COR-9", "fields": {"summary": "N", "status": {"name": "Open"}, "created": "2026-10-22T19:23:11.365+0100",
+                                      "creator": {"displayName": "Maarten"}}, "changelog": {"histories": []}}
+    out = {**new, "key": "COR-8", "fields": {**new["fields"], "created": "2026-10-26T09:00:00.000+0100"}}
+    got = sprintchanges.extract([new, out], 1017, "2026-10-12", members={"COR-9", "COR-8"}, period=period)
+    assert [r["key"] for r in got] == ["COR-9"]  # created straight into the sprint, inside the period only
+
+
+def test_sprint_burndown_chart_is_section_two_of_the_sprint_charts():
+    tickets = [
+        {"key": "A-1", "name": "a", "status": "Done", "resolved": "2026-10-27T10:00:00.000-0400"},
+        {"key": "A-2", "name": "b", "status": "Done", "resolved": "2026-10-28T09:00:00.000-0400"},
+        {"key": "A-3", "name": "c", "status": "Done"},  # no resolution date: done on the report day only
+        {"key": "A-4", "name": "d", "status": "In Progress"},
+    ]
+    sprint = {"name": "S1", "start": "2026-10-26", "end": "2026-10-30", "tickets": tickets}
+    window = {"from": "2026-10-26T00:00:00-04:00", "to": "2026-10-28T15:00:00-04:00"}
+    html = report.render({"sprint": sprint, "projects": [], "window": window}, "R")
+    sec = html[html.index("Sprint burndown chart"):html.index("Tickets by status")]
+    assert "<span>2</span> Sprint burndown chart" in html and "<span>3</span> Tickets by status" in html
+    assert "<span>7</span> Tickets added" not in html  # no changes recorded: that section stays out
+    assert "<svg class='bd'" in sec and "bd-ideal" in sec and "bd-actual" in sec
+    assert "Sprint burndown: 1 of 4 tickets open at 10/28, 1 ticket ahead of the ideal line" in sec
+    # day, ideal open, open tickets: start 4, Mon 4, Tue 3, Wed 1 (A-3 counted today), Thu/Fri still to come
+    rows = [[c for c in re.findall(r"<td>(.*?)</td>", r)] for r in re.findall(r"<tr><td>(?:Start|\d\d/\d\d).*?</tr>", sec)]
+    assert rows == [["Start", "4", "4"], ["10/26", "3.2", "4"], ["10/27", "2.4", "3"], ["10/28", "1.6", "1"],
+                    ["10/29", "0.8", "n/a"], ["10/30", "0", "n/a"]]
+    assert "1 done ticket has no resolution date in Jira and counts as done on 10/28 only." in sec
+    no_dates = report.render({"sprint": {"name": "S1", "tickets": tickets}, "projects": []}, "R")
+    assert "The burndown needs the sprint start and end dates" in no_dates
 
 
 def test_ticket_created_straight_into_sprint_counts_as_added_by_creator():
@@ -496,12 +611,15 @@ def test_sprint_changes_keeps_the_data_file_layout(tmp_path, monkeypatch):
 def test_sprint_tickets_merge_takes_jira_list_and_keeps_collector_fields():
     from ioassistant import sprinttickets
     issues = [{"key": "COR-1", "fields": {"summary": "A", "status": {"name": "QA"}, "assignee": None, "duedate": "2026-10-30"}},
-              {"key": "COR-2", "fields": {"summary": "B", "status": {"name": "Backlog"}, "assignee": {"displayName": "X Y"}}}]
+              {"key": "COR-2", "fields": {"summary": "B", "status": {"name": "Done"}, "assignee": {"displayName": "X Y"},
+                                          "resolutiondate": "2026-10-28T09:00:00.000-0400"}}]
     rows = sprinttickets.merge([{"key": "COR-1", "name": "old", "epic": "IOSP-9"}, {"key": "GONE-1"}], issues, "https://j")
     assert [r["key"] for r in rows] == ["COR-1", "COR-2"]
     assert rows[0] == {"key": "COR-1", "url": "https://j/browse/COR-1", "name": "A", "status": "QA", "assignee": None,
-                       "due": "2026-10-30", "epic": "IOSP-9"}
+                       "due": "2026-10-30", "resolved": None, "epic": "IOSP-9"}
     assert rows[1]["assignee"] == "X Y" and rows[1]["due"] is None
+    assert rows[1]["resolved"] == "2026-10-28T09:00:00.000-0400"  # feeds the burndown chart
+    assert "resolutiondate" in sprinttickets.FIELDS
 
 
 def test_sprint_tickets_fetch_pages_and_checks_the_total(monkeypatch):

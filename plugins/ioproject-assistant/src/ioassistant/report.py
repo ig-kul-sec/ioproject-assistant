@@ -68,6 +68,32 @@ def _date_td(value) -> str:
     return f"<td>{_rich(value)}</td>"
 
 
+def _overdue_days(ticket: dict, today: date) -> int | None:
+    """Days past the due date (End, else Due) for a ticket that is not closed or done; None when it is not overdue."""
+    if _is_done(ticket):
+        return None
+    try:
+        late = (today - date.fromisoformat(str(ticket.get("end") or ticket.get("due") or "")[:10])).days
+    except ValueError:
+        return None
+    return late if late > 0 else None
+
+
+def _end_td(ticket: dict, days: int | None) -> str:
+    """The End cell; an overdue ticket also says how many days late in words (the colour is not the only signal)."""
+    if not days:
+        return _date_td(ticket.get("end") or ticket.get("due"))
+    value = ticket.get("end") or ticket.get("due")
+    return (f'<td class="od" data-s="{escape(str(value)[:10], quote=True)}">{_rich(value)} '
+            f'<span class="odn">overdue {days} d</span></td>')
+
+
+def _ref_date(data: dict) -> date:
+    """The day the report is about: the end of the analysis window, else when it was generated (America/New_York), else today."""
+    end = _local((data.get("window") or {}).get("to")) or _local(data.get("generated_at"))
+    return end.date() if end else date.today()
+
+
 def _safe_url(url) -> str | None:
     """Only http(s) links are made clickable; anything else is rendered as text."""
     url = str(url or "")
@@ -125,16 +151,22 @@ def _sprint_url(name) -> str:
     return f"{JIRA_BROWSE.rsplit('browse/', 1)[0]}issues/?jql={quote(jql)}"
 
 
-def _sprint_changes(sprint: dict) -> str:
-    """Tickets added to or removed from the sprint on its 2nd day or later, with date and who did it."""
-    changes = sprint.get("changes") or []
+def _period_label(window) -> str:
+    """'mm/dd - mm/dd' for the analysis window (America/New_York)."""
     try:
-        day2 = _md((date.fromisoformat(sprint["start"]) + timedelta(days=1)).isoformat())
-    except (KeyError, TypeError, ValueError):
-        day2 = NA
+        start, end = _local(window["from"]), _local(window["to"])
+    except (TypeError, KeyError):
+        return NA
+    return f"{start:%m/%d} - {end:%m/%d}" if start and end else NA
+
+
+def _sprint_changes(sprint: dict, window=None) -> str:
+    """Tickets added to or removed from the sprint during the analyzed period, with date and who did it."""
+    changes = sprint.get("changes") or []
+    period = _period_label(window)
     added = sum(1 for c in changes if c.get("action") == "added")
     if not changes:
-        return f"<p>No tickets were added to or removed from the sprint from day 2 ({day2}) onward.</p>"
+        return f"<p>No tickets were added to or removed from the sprint during the analyzed period ({period}).</p>"
     rows = "".join(
         f"<tr>{_date_td(c.get('date'))}<td>{_t(str(c.get('action') or '').capitalize())}</td>"
         f"<td>{_link(c.get('key'), c.get('url'))}</td><td>{_t(c.get('name'))}</td><td>{_t(c.get('status'))}</td>"
@@ -142,7 +174,7 @@ def _sprint_changes(sprint: dict) -> str:
         for c in changes
     )
     return (
-        f"<p>From day 2 of the sprint ({day2}) onward: {added} added, {len(changes) - added} removed.</p>"
+        f"<p>During the analyzed period ({period}): {added} added, {len(changes) - added} removed.</p>"
         "<table><tr><th>Date</th><th>Action</th><th>Ticket</th><th>Ticket name</th><th>Status</th>"
         "<th>Responsible</th><th>Done by</th><th>Other sprint</th></tr>" + rows + "</table>"
         "<p class='note'>From the Jira change history of the Sprint field. A ticket moved between sprints shows as "
@@ -275,7 +307,84 @@ def _idle_employees(tickets: list, roster: dict) -> str:
             "Tickets are matched by name or email.</p>")
 
 
-def _sprint_charts(sprint: dict, roster: dict | None = None) -> str:
+def _burndown(sprint: dict, today: date) -> str:
+    """Open sprint tickets at the end of each working day against the ideal line, as an SVG line chart plus a table.
+
+    Scope is the tickets in the sprint now. A done ticket counts from its Jira resolution date; one with no date
+    counts as done on the report day only (the note says how many)."""
+    try:
+        start, end = date.fromisoformat(str(sprint["start"])[:10]), date.fromisoformat(str(sprint["end"])[:10])
+    except (KeyError, ValueError):
+        return f"<p>The burndown needs the sprint start and end dates: {NA}.</p>"
+    days = [start + timedelta(days=i) for i in range((end - start).days + 1) if (start + timedelta(days=i)).weekday() < 5]
+    tickets = sprint.get("tickets") or []
+    if not days or not tickets:
+        return f"<p>{NA}</p>"
+    total, n = len(tickets), len(days)
+    resolved = []  # date a done ticket was resolved; None when Jira gave no date
+    for t in tickets:
+        if _is_done(t):
+            when = _local(t.get("resolved"))
+            resolved.append(when.date() if when else None)
+    unknown = sum(1 for r in resolved if r is None)
+    last = max((d for d in days if d <= today), default=None)  # last working day with an actual figure
+
+    def open_at(day: date) -> int:
+        return total - sum(1 for r in resolved if r is not None and r <= day) - (unknown if day == last else 0)
+
+    points = [("Start", total - sum(1 for r in resolved if r is not None and r < start), total)]
+    points += [(f"{d:%m/%d}", open_at(d) if d <= today else None, round(total * (n - i) / n, 1)) for i, d in enumerate(days, 1)]
+    w, h, ml, mr, mt, mb = 640, 270, 44, 16, 34, 40
+    pw, ph = w - ml - mr, h - mt - mb
+
+    def x(i: int) -> float:
+        return round(ml + pw * i / n, 1)
+
+    def y(v: float) -> float:
+        return round(mt + ph * (1 - v / total), 1)
+
+    grid = "".join(
+        f"<line class='bd-grid' x1='{ml}' x2='{w - mr}' y1='{y(v)}' y2='{y(v)}'/><text class='bd-t' x='{ml - 6}' y='{y(v) + 4}' text-anchor='end'>{v:g}</text>"
+        for v in sorted({0, round(total / 2), total})
+    )
+    labels = "".join(
+        f"<text class='bd-t' x='{x(i)}' y='{h - mb + 16}' text-anchor='middle'>{escape(lbl)}</text>"
+        for i, (lbl, _, _) in enumerate(points) if n <= 12 or i % 2 == 0 or i == n
+    )
+    ideal = " ".join(f"{x(i)},{y(p[2])}" for i, p in enumerate(points))
+    actual_pts = [(i, p) for i, p in enumerate(points) if p[1] is not None]
+    actual = " ".join(f"{x(i)},{y(p[1])}" for i, p in actual_pts)
+    dots = "".join(f"<circle class='bd-dot' cx='{x(i)}' cy='{y(p[1])}' r='3.5'><title>{escape(p[0])}: {p[1]} open</title></circle>" for i, p in actual_pts)
+    now = actual_pts[-1][1] if actual_pts else points[0]
+    gap = round(now[1] - now[2])
+    state = ("on the ideal line" if gap == 0 else f"{abs(gap)} ticket{'s' if abs(gap) != 1 else ''} {'behind' if gap > 0 else 'ahead of'} the ideal line")
+    title = f"Sprint burndown: {now[1]} of {total} tickets open at {now[0]}, {state}"
+    chart = (
+        f"<svg class='bd' viewBox='0 0 {w} {h}' role='img' aria-label='{escape(title, quote=True)}'>"
+        f"<line class='bd-ideal' x1='{ml}' x2='{ml + 26}' y1='14' y2='14'/><text class='bd-t' x='{ml + 32}' y='18'>Ideal</text>"
+        f"<line class='bd-actual' x1='{ml + 90}' x2='{ml + 116}' y1='14' y2='14'/><text class='bd-t' x='{ml + 122}' y='18'>Open tickets</text>"
+        f"{grid}<line class='bd-grid' x1='{ml}' x2='{ml}' y1='{mt}' y2='{h - mb}'/>{labels}"
+        f"<polyline class='bd-ideal' points='{ideal}'/>"
+        + (f"<polyline class='bd-actual' points='{actual}'/>{dots}" if len(actual_pts) > 1 else dots)
+        + "</svg>"
+    )
+    rows = "".join(
+        f"<tr><td>{escape(lbl)}</td><td>{ideal_v:g}</td><td>{NA if open_v is None else open_v}</td></tr>" for lbl, open_v, ideal_v in points
+    )
+    notes = ("Counts tickets, not story points. The scope is the tickets in the sprint now, so tickets added or removed during "
+             "the sprint are not reflected (see \"Tickets added or removed\").")
+    if unknown:
+        one = unknown == 1
+        notes += (f" {unknown} done ticket{' has' if one else 's have'} no resolution date in Jira and "
+                  f"{'counts' if one else 'count'} as done on {last:%m/%d} only.")
+    return (
+        f"<p>{escape(title)}.</p>{chart}"
+        f"<table><tr><th>Day (end)</th><th>Ideal open</th><th>Open tickets</th></tr>{rows}</table>"
+        f"<p class='note'>{notes}</p>"
+    )
+
+
+def _sprint_charts(sprint: dict, roster: dict | None = None, window=None) -> str:
     """Resource-assignment charts for one sprint: headline counts, tickets by status, by team, load per assignee."""
     tickets = sprint.get("tickets", [])
     if not tickets:
@@ -306,10 +415,11 @@ def _sprint_charts(sprint: dict, roster: dict | None = None) -> str:
     status_rows = sorted(by_status.items(), key=lambda kv: (_status_rank(kv[0]), kv[0]))
     return (
         _sec(1, "Sprint at a glance", f"<div class='kpis'>{kpis}</div>")
-        + _sec(2, "Tickets by status", _bars(status_rows, total=True))
-        + _sec(3, "Tickets by team", _team_workload(tickets, roster))
-        + _sec(4, "Employees without tickets assigned in sprint", _idle_employees(tickets, roster))
-        + _sec(5, "Tickets by employee",
+        + _sec(2, "Sprint burndown chart", _burndown(sprint, _ref_date({"window": window})))
+        + _sec(3, "Tickets by status", _bars(status_rows, total=True))
+        + _sec(4, "Tickets by team", _team_workload(tickets, roster))
+        + _sec(5, "Employees without tickets assigned in sprint", _idle_employees(tickets, roster))
+        + _sec(6, "Tickets by employee",
                "<p class='legend'><i class='seg'></i> done <i class='seg open'></i> not done"
                f" &middot; {len(people)} employees account for {assigned} of {len(tickets)} tickets"
                + (f" &middot; {unassigned} unassigned" if unassigned else "") + "</p>"
@@ -317,7 +427,7 @@ def _sprint_charts(sprint: dict, roster: dict | None = None) -> str:
                        + ([(UNASSIGNED, *_done_open([t for t in tickets if not t.get("assignee")]))] if unassigned else []),
                        total=True, stacked=True)
                + "<p class='note'>Counts tickets, not story points or effort.</p>")
-        + (_sec(6, "Tickets added or removed from the sprint (day 2 onward)", _sprint_changes(sprint))
+        + (_sec(7, "Tickets added or removed from the sprint (during analyzed period)", _sprint_changes(sprint, window))
            if sprint.get("changes") is not None else "")
     )
 
@@ -332,10 +442,10 @@ def _sprint(sprint: dict, past: list[dict] | None = None) -> str:
     return "".join(_sec(i, title, _sprint_body(s)) for i, (title, s) in enumerate(subs, 1))
 
 
-def _sprint_management(sprint: dict, past: list[dict] | None = None, roster: dict | None = None) -> str:
+def _sprint_management(sprint: dict, past: list[dict] | None = None, roster: dict | None = None, window=None) -> str:
     """Sprint management tab: board link, then the "Sprint charts" and "JIRA tickets" sections (each foldable)."""
     board = _link("JIRA ScrumBoard Link", brand.JIRA_BOARD_URL)
-    charts = _sprint_charts(sprint or {}, roster) or "<p>No sprint tickets.</p>"
+    charts = _sprint_charts(sprint or {}, roster, window) or "<p>No sprint tickets.</p>"
     return (f"<p>{board}</p>" + _top("Sprint charts", charts, ident="sprint-charts")
             + _top("JIRA tickets", _sprint(sprint, past), ident="sprint"))
 
@@ -417,23 +527,43 @@ def _summary(p: dict, base: str) -> str:
     return _ul(out) + (f"<p class='lbl'>Risks</p>{_ul(risks)}" if risks else "")
 
 
-def _jira_updates(p: dict, base: str) -> str:
+def _jira_updates(p: dict, base: str, today: date | None = None, compact: bool = False) -> str:
     ju = p.get("jira_updates") or {}
     change, create = ju.get("change") or [], ju.get("create") or []
-    if not change and not create:
+    today = today or date.today()
+    by_key = {str(t.get("key")): t for t in p.get("tickets") or []}
+    late = sorted(((d, t) for t in by_key.values() if (d := _overdue_days(t, today))),
+                  key=lambda x: (-x[0], str(x[1].get("key"))))  # most overdue first
+    if not change and not create and not late:
         return "<p>No Jira updates identified.</p>"
     html = ""
     if change:
-        names = {str(t.get("key")): t.get("name") or t.get("summary") for t in p.get("tickets") or []}
         rows = "".join(
             f"<tr><td>{_ticket_link(c, base)}</td>"
-            f"<td>{_rich(c.get('name') or c.get('summary') or names.get(str(c.get('key'))), base)}</td>"
-            f"<td>{_t(c.get('type'))}</td><td>{_rich(c.get('detail'), base)}</td><td>{_rich(c.get('reason'), base)}</td></tr>"
+            f"<td>{_rich(c.get('name') or c.get('summary') or (by_key.get(str(c.get('key'))) or {}).get('name'), base)}</td>"
+            + (_end_td(by_key[str(c.get('key'))], _overdue_days(by_key[str(c.get('key'))], today))
+               if str(c.get('key')) in by_key else _date_td(None))
+            + f"<td>{_t(c.get('type'))}</td><td>{_rich(c.get('detail'), base)}</td><td>{_rich(c.get('reason'), base)}</td></tr>"
             for c in change
         )
         html += (
             "<p class='lbl'>Existing tickets to change</p>"
-            "<table><tr><th>Ticket</th><th>Ticket name</th><th>Change</th><th>What to do</th><th>Reason/Comment</th></tr>" + rows + "</table>"
+            "<table><tr><th>Ticket</th><th>Ticket name</th><th>Due</th><th>Change</th><th>What to do</th><th>Reason/Comment</th></tr>"
+            + rows + "</table>"
+        )
+    if late:
+        shown = late[:COMPACT_TICKET_CAP] if compact else late
+        rows = "".join(
+            f"<tr class=\"overdue\"><td>{_ticket_link(t, base)}</td><td>{_rich(t.get('name') or t.get('summary'), base)}</td>"
+            f"<td>{_t(t.get('status'))}</td><td>{_t(t.get('assignee'))}</td>{_end_td(t, d)}</tr>"
+            for d, t in shown
+        )
+        more = (f"<p class='lbl'>{len(late) - len(shown)} more overdue tickets are left out of this copy "
+                "(the most overdue are shown); the full list is in the local report.</p>") if len(shown) < len(late) else ""
+        html += (
+            "<p class='lbl'>Tickets past their due date (update the date, or close the ticket)</p>"
+            "<table class='tix'><tr><th>Ticket</th><th>Ticket name</th><th>Status</th><th>Responsible</th><th>Due</th></tr>"
+            + rows + "</table>" + more
         )
     if create:
         rows = "".join(
@@ -459,26 +589,59 @@ def _sources(p: dict) -> str:
     return f"<p>Sources used: {counts or NA}.</p>" + (_ul(other) if other else "")
 
 
-def _tickets(p: dict, base: str, compact: bool = False, sprint_of: dict | None = None) -> str:
-    ts = sorted(p.get("tickets") or [], key=lambda t: (_is_done(t), not t.get("epic")))
-    omitted = 0
-    if compact:  # the upload copy must stay small: closed tickets stay in the full local report
-        kept = [t for t in ts if not _is_done(t)][:COMPACT_TICKET_CAP]
-        omitted, ts = len(ts) - len(kept), kept
-    note = (f"<p class='lbl'>{omitted} tickets are left out of this copy (closed or done, or beyond the first "
-            f"{COMPACT_TICKET_CAP} active ones); the full list is in the local report.</p>") if omitted else ""
+def _project_sources(p: dict, base: str) -> str:
+    """Where the project lives: its meeting chats, SharePoint folder, Confluence page and Jira epic(s)."""
+    links = p.get("links") or {}
+    epics = [t for t in p.get("tickets") or [] if t.get("epic")]
+    epic_rows = "".join(
+        f"<li>{_ticket_link(t, base)}" + (f" {_rich(t.get('name') or t.get('summary'), base)}" if t.get("name") or t.get("summary") else "") + "</li>"
+        for t in epics
+    )
+    return (
+        "<p class='lbl'>Meeting chats</p>" + _link_list(links.get("teams"))
+        + "<p class='lbl'>SharePoint folder</p>" + _link_list(links.get("sharepoint"))
+        + "<p class='lbl'>Confluence page</p>" + _link_list(links.get("confluence"))
+        + f"<p class='lbl'>Jira {'epics' if len(epics) > 1 else 'epic'}</p>" + (f"<ul>{epic_rows}</ul>" if epic_rows else f"<p>{NA}</p>")
+    )
+
+
+def _natural(text) -> list:
+    """Sort key that orders numbers inside a name by value ("I&O 26.9" before "I&O 26.43")."""
+    return [(1, int(x)) if x.isdigit() else (0, x.lower()) for x in re.split(r"(\d+)", str(text or "")) if x]
+
+
+def _tickets(p: dict, base: str, compact: bool = False, sprint_of: dict | None = None, today: date | None = None) -> str:
+    today = today or date.today()
+    every = p.get("tickets") or []
+    ts = sorted((t for t in every if not _is_done(t)), key=lambda t: not t.get("epic"))  # active only, epic first
+    closed, capped = len(every) - len(ts), 0
+    if compact:  # the upload copy must stay small: only the first COMPACT_TICKET_CAP active tickets
+        capped, ts = max(0, len(ts) - COMPACT_TICKET_CAP), ts[:COMPACT_TICKET_CAP]
+
+    def sprint(t):
+        return t.get("sprint") or (sprint_of or {}).get(str(t.get("key")))
+
+    # default order: sprint ascending (tickets without a sprint last), epic first within a sprint; the Sprint header is marked "asc"
+    ts = sorted(ts, key=lambda t: (not sprint(t), _natural(sprint(t)), not t.get("epic"), _natural(t.get("key"))))
+    notes = []
+    if closed:
+        notes.append(f"{closed} closed or done ticket{' is' if closed == 1 else 's are'} not listed.")
+    if capped:
+        notes.append(f"{capped} more active ticket{' is' if capped == 1 else 's are'} left out of this copy "
+                     f"(the first {COMPACT_TICKET_CAP} are shown); the full list is in the local report.")
+    note = f"<p class='lbl'>{' '.join(notes)}</p>" if notes else ""
     if not ts:
-        return note or f"<p>{NA}</p>"
+        return f"<p>No active tickets.</p>{note}" if every else f"<p>{NA}</p>"
     rows = "".join(
-        f"<tr class=\"{'done' if _is_done(t) else 'active'}\"><td>{_ticket_link(t, base)}</td>"
+        f"<tr class=\"{'active overdue' if _overdue_days(t, today) else 'active'}\"><td>{_ticket_link(t, base)}</td>"
         f"<td>{_rich(t.get('name') or t.get('summary'), base)}</td><td>{_t(t.get('status'))}</td>"
-        f"<td>{_t(t.get('sprint') or (sprint_of or {}).get(str(t.get('key'))))}</td>"
-        f"<td>{_t(t.get('assignee'))}</td>{_date_td(t.get('start'))}{_date_td(t.get('end') or t.get('due'))}"
+        f"<td>{_t(sprint(t))}</td>"
+        f"<td>{_t(t.get('assignee'))}</td>{_date_td(t.get('start'))}{_end_td(t, _overdue_days(t, today))}"
         f"<td>{', '.join(_ticket_link(r, base) for r in t.get('related') or []) or NA}</td></tr>"
         for t in ts
     )
     return (
-        "<table class='tix'><tr><th>Ticket #</th><th>Ticket name</th><th>Status</th><th>Sprint</th><th>Responsible</th>"
+        "<table class='tix'><tr><th>Ticket #</th><th>Ticket name</th><th>Status</th><th data-dir='asc'>Sprint</th><th>Responsible</th>"
         f"<th>Start</th><th>End</th><th>Related tickets</th></tr>{rows}</table>" + note
     )
 
@@ -585,19 +748,17 @@ def _people(p: dict) -> str:
     )
 
 
-def _project(p: dict, base: str = JIRA_BROWSE, compact: bool = False, sprint_of: dict | None = None) -> str:
-    links = p.get("links") or {}
+def _project(p: dict, base: str = JIRA_BROWSE, compact: bool = False, sprint_of: dict | None = None,
+             today: date | None = None) -> str:
     return (
         f'<details class="card" id="{_anchor(p.get("name"))}" open>'
         f'<summary class="card-h"><div><h3>{_t(p.get("name"))}</h3><div class="meta">{_people(p)}</div></div>'
         f"{_pill(p)}</summary>"
         f"{_sec(1, 'Project updates (summary)', _summary(p, base))}"
-        f"{_sec(2, 'Jira task updates needed', _jira_updates(p, base))}"
-        f"{_sec(3, 'Project sources', _sources(p))}"
-        f"{_sec(4, 'Project meeting chats', _link_list(links.get('teams')))}"
-        f"{_sec(5, 'Project SharePoint folder', _link_list(links.get('sharepoint')))}"
-        f"{_sec(6, 'Project Confluence page', _link_list(links.get('confluence')))}"
-        f"{_sec(7, 'Jira tickets for this project', _tickets(p, base, compact, sprint_of))}</details>"
+        f"{_sec(2, 'Jira task updates needed', _jira_updates(p, base, today, compact))}"
+        f"{_sec(3, 'Project sources', _project_sources(p, base))}"
+        f"{_sec(4, 'Report sources', _sources(p))}"
+        f"{_sec(5, 'Jira tickets for this project (active)',_tickets(p, base, compact, sprint_of, today))}</details>"
     )
 
 
@@ -657,6 +818,14 @@ summary.sec{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8
 summary.sec span{background:var(--forest);color:var(--spearmint);border-radius:50%;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;font-size:12px}
 .lbl{font-weight:600;margin:.6rem 0 .2rem}.refs{font-size:13px}
 table.tix tr.done td{opacity:.6}
+tr.overdue td{background:color-mix(in srgb,var(--coral) 22%,transparent)}
+svg.bd{display:block;width:100%;max-width:680px;height:auto;margin:.4rem 0}
+.bd-grid{stroke:var(--off-black);stroke-opacity:.18;stroke-width:1}
+.bd-ideal{fill:none;stroke:var(--off-black);stroke-width:1.6;stroke-dasharray:6 4}
+.bd-actual{fill:none;stroke:var(--forest);stroke-width:2.6;stroke-linejoin:round}
+.bd-dot{fill:var(--forest)}
+.bd-t{font-size:11px;fill:var(--off-black)}
+td.od{font-weight:600}.odn{display:inline-block;margin-left:6px;padding:0 8px;border-radius:999px;background:var(--coral);color:var(--off-black);font-size:12px;font-weight:600;white-space:nowrap}
 ul{margin:.25rem 0;padding-left:1.2rem}
 details{margin:.5rem 0}summary{cursor:pointer;color:var(--forest);font-weight:600}
 @media print{header.top{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
@@ -801,9 +970,9 @@ def _render(data: dict, title: str, compact: bool) -> str:
                       "<table><tr><th>Project</th><th>Status</th><th>Progress</th><th>Timeline</th><th>Top risk</th></tr>"
                       f"{glance}</table>", fold=True, ident="glance")
                  + "<h2>Project status</h2>"
-                 f"{''.join(_project(p, base, compact, sprint_of) for p in projects)}")
+                 f"{''.join(_project(p, base, compact, sprint_of, _ref_date(data)) for p in projects)}")
         + _panel("tab-ops", _top(OPS_TITLE, _non_project(non_project, base), fold=True, ident="ops"))
-        + _panel("tab-sprint", _sprint_management(sprint, past, roster))
+        + _panel("tab-sprint", _sprint_management(sprint, past, roster, data.get("window")))
         + (_panel("tab-gaps", gap_html) if gaps else "")
         + brand.footer()
         + "</main></div>" + brand.foot(base)

@@ -6,6 +6,21 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
+## [0.5.9] - 2026-10-29
+
+### Changed
+- The per-project section "Jira tickets for this project" is now "Jira tickets for this project (active)" and lists only active tickets (not closed, done, resolved or complete), epic first, in the full report as well as the upload copy. A note under the table says how many closed or done tickets are not listed; the upload copy still shows at most the first 20 active tickets and says how many more are left out.
+
+- Per-project sections are reorganised. "Project meeting chats", "Project SharePoint folder" and "Project Confluence page" are now one section "Project sources" (meeting chats, SharePoint folder, Confluence page and a link to the project's Jira epic, or epics when there are several), placed before "Report sources" (the former "Project sources": which sources the report used). Jira tickets is now section 5.
+- "Jira tickets for this project (active)" opens sorted by sprint, ascending (numbers in the name compare by value, tickets without a sprint come last, epic first inside a sprint); the Sprint header shows the order and still toggles on click.
+
+- "Tickets added or removed from the sprint (day 2 onward)" is now "Tickets added or removed from the sprint (during analyzed period)". The rule changed with the title: `sprint-changes` keeps every add or remove made inside the run's analysis window (start and end included, America/New_York), whatever the sprint day, and a ticket created straight into the sprint inside the window counts as added by its creator. The sentence above the table names the period ("During the analyzed period (10/27 - 10/29): N added, M removed."). Without a window in `data.json` the command falls back to the old day-2 rule.
+
+### Added
+- "Sprint burndown chart" is section 2 of the Sprint charts (the others move down by one; "Tickets added or removed from the sprint" is now section 7): open sprint tickets at the end of each working day against the ideal line, as a line chart with a data table and a one-line reading ("1 of 4 tickets open at 10/28, 1 ticket ahead of the ideal line"). A done ticket counts from its Jira resolution date, which `sprint-tickets` now reads (`resolved` on each sprint ticket); one without a date counts as done on the report day only, and the note says how many. Scope is the tickets in the sprint now: tickets added or removed during the sprint are not reflected. The chart ends on the report day (the end of the analysis window).
+- Overdue tickets are highlighted. In "Jira tickets for this project (active)" a ticket whose End (Due) date is before the report day gets a coral row and an "overdue N d" tag on its End date (the tag says it in words, so colour is not the only signal). The report day is the end of the run's analysis window, so a report always shows what was overdue when it was built.
+- "Jira task updates needed" gains a table "Tickets past their due date (update the date, or close the ticket)": the project's active tickets that are overdue, most overdue first (the upload copy shows the first 20 and says how many are left out), and "Existing tickets to change" now has a Due column. "No Jira updates identified." appears only when there is nothing to change, create or chase.
+
 ## [0.5.8] - 2026-10-29
 
 ### Changed

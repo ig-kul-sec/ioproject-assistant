@@ -12,7 +12,7 @@ This guide has three parts:
 
 You type one command. About 10-20 minutes later you have:
 
-1. A **clickable status report** (HTML) of every I&O project discussed in the period: status, updates, risks, action items, Jira tickets and links to sources. It has four tabs: **Projects**, **Operations** (Daily Ops health and incidents), **Sprint management** (sprint charts by status, team and employee, who has no tickets, what was added or removed after day 1, and the full ticket list) and **Data gaps**.
+1. A **clickable status report** (HTML) of every I&O project discussed in the period: status, updates, risks, action items, Jira tickets and links to sources. It has four tabs: **Projects**, **Operations** (Daily Ops health and incidents), **Sprint management** (sprint charts by status, team and employee, who has no tickets, what was added or removed during the analyzed period, and the full ticket list) and **Data gaps**.
 2. A **spending report** showing roughly what the run cost in AI usage.
 3. Both reports **uploaded to SharePoint** (IO Project Assistant Reports folder).
 4. An **Outlook draft** with the SharePoint links, CC'd to you. It is **never sent automatically**; you check it and press Send yourself.
@@ -400,7 +400,7 @@ flowchart TD
     C --> M
     S --> M
     OC --> M
-    M --> SC["cli sprint-changes: tickets added/removed from day 2"]
+    M --> SC["cli sprint-changes: tickets added/removed during the analyzed period"]
     SC --> RB
     M --> RB["report-builder: status report + spending report"]
     RB --> UP["sharepoint-collector (upload): compact copies, size-checked"]
@@ -415,7 +415,7 @@ flowchart TD
 3. **Teams first.** `teams-collector` decides which projects were discussed. Its project list drives every later step.
 4. **Jira, Confluence, SharePoint and Ardoq in parallel.** Each collector gets the project list; `org-collector` reads the reporting lines from Ardoq. If the Jira agent can't start, a general agent retries once with the same read-only rules. If Ardoq is not signed in, `org-collector` returns nothing and the run goes on with the saved team list.
 5. **Merge.** The orchestrator writes `data.json`. Status comes only from evidence: roadmap RAG first, then Jira dates. "Jira updates needed" lists only gaps a source proves. The live roster is stored as `org_teams`.
-5a. **Sprint changes.** `python -m ioassistant.cli sprint-changes` (no AI involved) reads the Jira change history of the current sprint and adds `sprint.changes`: tickets added to or removed from the sprint on its 2nd day or later, with date and who did it. If Jira cannot be read, the section is left out and a data gap is recorded.
+5a. **Sprint changes.** `python -m ioassistant.cli sprint-changes` (no AI involved) reads the Jira change history of the current sprint and adds `sprint.changes`: tickets added to or removed from the sprint during the analysis window, with date and who did it. If Jira cannot be read, the section is left out and a data gap is recorded.
 6. **Render.** `report-builder` produces the full status report and the spending report.
 7. **Upload.** Compact copies (no embedded fonts or logo) are built and uploaded with a byte-count check. Existing files are never overwritten; a name clash adds `_2`.
 8. **Draft and page, in parallel.** These run only after a successful upload: the Outlook draft (never sent) and the Confluence draft page (never overwrites).
@@ -452,7 +452,7 @@ The report starts with a header: links to the SharePoint archive, the Confluence
 **Operations:** the **Daily Ops operational health and incidents** table lists Daily Ops Standup items that belong to no project: health, incidents, problems, issues, changes and maintenance. It shows the date, type, item, status, who gave the update, owner, related Jira tickets with their status, and the source link.
 
 **Sprint management:** a JIRA ScrumBoard link, then two sections.
-- **Sprint charts**: (1) sprint at a glance; (2) tickets by status in workflow order (Backlog, To Do, In Progress, QA, On Hold, Unassigned, Done) with a total; (3) tickets by team (DBA, Network, SRE Tier 2, SRE Tier 3, Other, Unassigned) with a total and tickets per person; (4) employees without tickets in the sprint, per team and manager; (5) tickets by employee with their team, an Unassigned row and a total; (6) tickets added to or removed from the sprint from day 2 onward, with date and who did it. Teams come from Ardoq, never from the roadmap deck.
+- **Sprint charts**: (1) sprint at a glance; (2) sprint burndown chart (open tickets at the end of each working day against the ideal line, from Jira resolution dates); (3) tickets by status in workflow order (Backlog, To Do, In Progress, QA, On Hold, Unassigned, Done) with a total; (4) tickets by team (DBA, Network, SRE Tier 2, SRE Tier 3, Other, Unassigned) with a total and tickets per person; (5) employees without tickets in the sprint, per team and manager; (6) tickets by employee with their team, an Unassigned row and a total; (7) tickets added to or removed from the sprint during the analyzed period, with date and who did it. Teams come from Ardoq, never from the roadmap deck.
 - **JIRA tickets**: for the current sprint and any past sprint that is not closed yet, a "JIRA Tickets Link: Sprint <name>" link to Jira and the full ticket list in the same status order.
 
 **Data gaps:** everything a source could not provide in this run, including a note when the team list is the saved snapshot.
@@ -466,7 +466,7 @@ Tables sort by column, cards collapse, and Jira keys are links.
 | `cli.py` | Command line: `report`, `spend`, `confluence`, `email`, `presentation`, `sprint-changes` (`--compact` for upload copies) |
 | `report.py` | Status report HTML renderer |
 | `orgteams.py` | Team roster (Ardoq reporting lines): live `org_teams` from the run, else `config/org-teams.json`; matches Jira assignees to teams |
-| `sprintchanges.py` | `sprint-changes` command: reads the Jira change history (read-only) and adds `sprint.changes`, the tickets added to or removed from the sprint on day 2 or later |
+| `sprintchanges.py` | `sprint-changes` command: reads the Jira change history (read-only) and adds `sprint.changes`, the tickets added to or removed from the sprint during the analyzed period |
 | `sprinttickets.py` | `sprint-tickets` command: reads every ticket of the current and open past sprints from Jira (read-only, paged, count checked) and replaces `tickets` in `data.json` |
 | `spend.py` | Spending report and cost calculation (`config/pricing.json`) |
 | `transcript_usage.py` | Sums an agent's real token usage from its Claude Code transcript (prototype for a hook that fills `usage.json` without the model reporting its own tokens) |
