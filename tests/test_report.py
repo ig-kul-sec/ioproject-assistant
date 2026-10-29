@@ -113,7 +113,7 @@ def test_overdue_tickets_are_highlighted_and_listed_under_jira_updates(tmp_path)
     assert "Finished late" not in html and "<th>Due</th>" in html
 
 
-def test_project_sources_merged_and_report_sources_renamed(tmp_path):
+def test_project_sources_merged_and_report_sources_removed(tmp_path):
     data = {"projects": [{
         "name": "P",
         "links": {"teams": [{"label": "Chat", "url": "https://teams.example/c"}],
@@ -122,15 +122,13 @@ def test_project_sources_merged_and_report_sources_renamed(tmp_path):
         "tickets": [{"key": "IOSP-5", "name": "The epic", "status": "In Progress", "epic": True}],
     }]}
     html = _render_data(tmp_path, data)
-    for gone in ("Project meeting chats", "Project SharePoint folder", "Project Confluence page"):
+    for gone in ("Project meeting chats", "Project SharePoint folder", "Project Confluence page", "Report sources", "Sources used"):
         assert gone not in html
-    assert "Report sources</summary>" in html and "Project sources</summary>" in html
-    assert html.index("Project sources</summary>") < html.index("Report sources</summary>")  # project sources first
-    block = html[html.index("Project sources</summary>"):html.index("Report sources</summary>")]
+    assert "Project sources</summary>" in html
+    block = html[html.index("Project sources</summary>"):html.index("Jira tickets for this project (active)")]
     assert block.index("Meeting chats") < block.index("SharePoint folder") < block.index("Confluence page") < block.index("Jira epic")
     assert 'href="https://sectigo.atlassian.net/browse/IOSP-5"' in block and "The epic" in block
-    assert "<span>3</span> Project sources" in html and "<span>4</span> Report sources" in html
-    assert "<span>5</span> Jira tickets for this project (active)" in html
+    assert "<span>3</span> Project sources" in html and "<span>4</span> Jira tickets for this project (active)" in html
 
 
 def test_tickets_default_to_sprint_ascending(tmp_path):
@@ -374,13 +372,12 @@ def test_daily_ops_section():
 
 def test_repeated_source_links_are_merged_or_numbered():
     recap = "Standup recap 2026-10-14"
-    links = {"sources": [
+    links = {"teams": [
         {"label": recap, "url": "https://teams.example/m/1"},
         {"label": recap, "url": "https://teams.example/m/2"},
         {"label": recap, "url": "https://teams.example/m/1"},  # same message twice
     ]}
     html = report.render({"projects": [{"name": "P", "links": links}]}, "IOProjectAssistantReport_20261014_0900")
-    assert "sources (2)" in html
     assert html.count("https://teams.example/m/1") == 1
     assert "Standup recap 10/14 (1)" in html and "Standup recap 10/14 (2)" in html
 

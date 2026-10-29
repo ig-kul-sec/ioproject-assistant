@@ -465,7 +465,6 @@ def _ul(items: list[str]) -> str:
 
 JIRA_BROWSE = "https://sectigo.atlassian.net/browse/"
 KEY_RE = re.compile(r"^[A-Z][A-Z0-9]+-\d+$")
-SOURCE_TYPES = ("teams", "sharepoint", "confluence", "jira")
 
 
 def _ticket_link(ref, base: str) -> str:
@@ -577,16 +576,6 @@ def _jira_updates(p: dict, base: str, today: date | None = None, compact: bool =
             + rows + "</table>"
         )
     return html
-
-
-def _sources(p: dict) -> str:
-    links = {k: _unique_links(v) for k, v in (p.get("links") or {}).items()}
-    counts = ", ".join(f"{_dated(k)} ({len(v)})" for k, v in links.items() if v)
-    other = [
-        f"<li>{_dated(k)}: {_link(it.get('label'), it.get('url'))}</li>"
-        for k, v in links.items() if k not in SOURCE_TYPES for it in v
-    ]
-    return f"<p>Sources used: {counts or NA}.</p>" + (_ul(other) if other else "")
 
 
 def _project_sources(p: dict, base: str) -> str:
@@ -757,8 +746,7 @@ def _project(p: dict, base: str = JIRA_BROWSE, compact: bool = False, sprint_of:
         f"{_sec(1, 'Project updates (summary)', _summary(p, base))}"
         f"{_sec(2, 'Jira task updates needed', _jira_updates(p, base, today, compact))}"
         f"{_sec(3, 'Project sources', _project_sources(p, base))}"
-        f"{_sec(4, 'Report sources', _sources(p))}"
-        f"{_sec(5, 'Jira tickets for this project (active)',_tickets(p, base, compact, sprint_of, today))}</details>"
+        f"{_sec(4, 'Jira tickets for this project (active)', _tickets(p, base, compact, sprint_of, today))}</details>"
     )
 
 

@@ -6,6 +6,11 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
+## [0.5.10] - 2026-10-30
+
+### Changed
+- The per-project subsection "Report sources" (the source counts) is removed; "Project sources" now sits directly before "Jira tickets for this project (active)", which is section 4.
+
 ## [0.5.9] - 2026-10-29
 
 ### Changed
