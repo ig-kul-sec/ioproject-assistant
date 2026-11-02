@@ -115,15 +115,28 @@ def _get(site: str, path: str, params: dict, token: str) -> dict:
         return json.loads(resp.read().decode("utf-8"))
 
 
+def board_sprints(site: str, token: str, states: str = "active") -> list:
+    """Sprints of the board in the given Jira states (comma separated, e.g. "active,future"), paged until the last page."""
+    out, at = [], 0
+    while True:
+        page = _get(site, f"/rest/agile/1.0/board/{BOARD_ID}/sprint",
+                    {"state": states, "startAt": at, "maxResults": 50}, token)
+        values = page.get("values", [])
+        out += values
+        at += len(values)
+        if page.get("isLast", True) or not values:
+            return out
+
+
 def fetch(site: str, sprint_name: str, start: str, period: tuple | None = None) -> list:
-    """Changes of the active board sprint called `sprint_name` made in `period`; raises SystemExit when it cannot be read."""
+    """Changes of the board sprint called `sprint_name` (active, or not started yet) made in `period`; raises SystemExit when it cannot be read."""
     token = _token()
     members: set = set()
     try:
-        sprints = _get(site, f"/rest/agile/1.0/board/{BOARD_ID}/sprint", {"state": "active"}, token).get("values", [])
+        sprints = board_sprints(site, token, "active,future")
         match = next((s for s in sprints if s.get("name") == sprint_name), None)
         if not match:
-            raise SystemExit(f"sprint {sprint_name!r} is not an active sprint on board {BOARD_ID}")
+            raise SystemExit(f"sprint {sprint_name!r} is not an active or future sprint on board {BOARD_ID}")
         fields = "summary,status,assignee,created,creator"
         # tickets removed since day 1 are only on the board; Done ones may be missing there, so also read the sprint
         issues = {}
