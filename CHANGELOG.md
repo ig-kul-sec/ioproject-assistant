@@ -6,7 +6,7 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
-## [0.5.11] - in development
+## [0.5.11] - 2026-11-02
 
 ### Changed
 - The Sprint charts section "Employees without tickets assigned in sprint" is now "Employees without tickets assigned in sprint (IOSP, COR)".
