@@ -8,6 +8,9 @@ tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DE
 
 ## [0.5.11] - in development
 
+### Changed
+- The Sprint charts section "Employees without tickets assigned in sprint" is now "Employees without tickets assigned in sprint (IOSP, COR)".
+
 ## [0.5.10] - 2026-10-30
 
 ### Changed

@@ -418,7 +418,7 @@ def _sprint_charts(sprint: dict, roster: dict | None = None, window=None) -> str
         + _sec(2, "Sprint burndown chart", _burndown(sprint, _ref_date({"window": window})))
         + _sec(3, "Tickets by status", _bars(status_rows, total=True))
         + _sec(4, "Tickets by team", _team_workload(tickets, roster))
-        + _sec(5, "Employees without tickets assigned in sprint", _idle_employees(tickets, roster))
+        + _sec(5, "Employees without tickets assigned in sprint (IOSP, COR)",_idle_employees(tickets, roster))
         + _sec(6, "Tickets by employee",
                "<p class='legend'><i class='seg'></i> done <i class='seg open'></i> not done"
                f" &middot; {len(people)} employees account for {assigned} of {len(tickets)} tickets"

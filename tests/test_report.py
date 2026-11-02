@@ -443,7 +443,7 @@ def test_idle_employees_per_team_listed_without_tickets():
         {"key": "IOSP-2", "status": "Open", "assignee": "shane feola"},
     ]
     html = report.render({"sprint": {"name": "S1", "tickets": tickets}, "org_teams": TEAMS, "projects": []}, "R")
-    section = html[html.index("Employees without tickets assigned in sprint"):]
+    section = html[html.index("Employees without tickets assigned in sprint (IOSP, COR)"):]
     section = section[:section.index("</table>")]
     assert "<td>DBA</td><td>Prajeet Singh Kahlon</td><td>0 of 1</td><td>everyone has a ticket</td>" in section
     assert "<td>Network</td><td>Jaime Larsen</td><td>0 of 1</td><td>everyone has a ticket</td>" in section
