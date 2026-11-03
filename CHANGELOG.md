@@ -6,7 +6,7 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
-## [0.5.14] - in development
+## [0.5.14] - 2026-11-03
 
 ### Added
 - New agent `release-log-publisher` (skill `confluence-release-log`) keeps a "RELEASE LOG" section at the end of the Confluence page PMO AI Agent Factory > IO Project Assistant (page 110166017). It lists the versions deployed to PROD, newest first, as a table with Version, Date and the list of changes, taken from the dated sections of `CHANGELOG.md` on `main` (sections still "in development" are never listed). The first run adds the section at the end of the page, later runs replace only that section; the rest of the page is untouched, an unchanged log is not published again, and the page body before the update is saved to `output/release-log/page_before.xhtml`. It is run by the maintainer from the repository after a release and is not part of `run-report`. New command `python -m ioassistant.cli release-log CHANGELOG.md [--page-body FILE] [--out FILE]` renders it.
