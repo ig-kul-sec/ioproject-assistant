@@ -1,16 +1,19 @@
-"""Command line: python -m ioassistant.cli {report,spend,confluence,email,presentation,sprint-changes,sprint-tickets} <json-file>."""
+"""Command line: python -m ioassistant.cli {report,spend,confluence,email,presentation,sprint-changes,sprint-tickets,release-log} <json-file>."""
 from __future__ import annotations
 
 import argparse
 from pathlib import Path
 
-from . import confluence, emaildraft, presentation, report, spend, sprintchanges, sprinttickets
+from . import confluence, emaildraft, presentation, releaselog, report, spend, sprintchanges, sprinttickets
 
 
 def main(argv=None) -> None:
     ap = argparse.ArgumentParser(prog="ioassistant")
-    ap.add_argument("command", choices=["report", "spend", "confluence", "email", "presentation", "sprint-changes", "sprint-tickets"])
-    ap.add_argument("path", type=Path, nargs="?", help="data/usage json (not needed for presentation)")
+    ap.add_argument("command", choices=["report", "spend", "confluence", "email", "presentation", "sprint-changes", "sprint-tickets", "release-log"])
+    ap.add_argument("path", type=Path, nargs="?", help="data/usage json (CHANGELOG.md for release-log; not needed for presentation)")
+    ap.add_argument("--page-body", type=Path, metavar="FILE",
+                    help="release-log: current Confluence page body (storage format); the RELEASE LOG section is merged into it")
+    ap.add_argument("--out", type=Path, metavar="FILE", help="release-log: output file (default output/release-log/...)")
     ap.add_argument("--compact", action="store_true",
                     help="write to <run>/upload/ without embedded fonts and with a small logo (fits one connector upload)")
     ap.add_argument("--orchestrator-tokens", type=int, metavar="N",
@@ -24,6 +27,8 @@ def main(argv=None) -> None:
         out = presentation.build()
     elif args.path is None:
         ap.error("path is required for this command")
+    elif args.command == "release-log":
+        out = releaselog.build(args.path, args.page_body, args.out)
     elif args.command == "sprint-changes":
         out = sprintchanges.build(args.path)
     elif args.command == "sprint-tickets":

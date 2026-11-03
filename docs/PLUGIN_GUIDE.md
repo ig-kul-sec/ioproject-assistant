@@ -370,6 +370,7 @@ All agents are launched as `ioproject-assistant:<name>`.
 | `report-builder` | Sonnet | Renders the status report and spending report with the Python package | Bash (python), Read, Write | Local HTML files |
 | `report-email-drafter` | Sonnet | Creates the Outlook draft with SharePoint links, CC'd to the user | Microsoft 365: Outlook create draft | 1 unsent draft |
 | `report-confluence-publisher` | Sonnet | Creates `TEST: IO Project Assistant Report <date> <time> (Draft)` under PMO AI Agent Factory > IO Project Assistant | Bash (curl GET + one POST) | 1 new Confluence page |
+| `release-log-publisher` | Sonnet | Maintainer tool, not part of a report run: updates the RELEASE LOG section at the end of the PMO AI Agent Factory > IO Project Assistant page with the versions deployed to PROD (version, date, changes) from `CHANGELOG.md` on `main`. Run it from the repository after a release | Bash (git, curl GET + one PUT) | The RELEASE LOG section of 1 Confluence page |
 
 ## C3. Skills
 
@@ -385,6 +386,7 @@ All agents are launched as `ioproject-assistant:<name>`.
 | `spend-tracking` | orchestrator, report-builder, run-report | `usage.json` format, pricing, how the orchestrator's own usage is filled in |
 | `outlook-report-draft` | report-email-drafter | Draft subject and body, CC, never send, attachment limit |
 | `confluence-report-page` | report-confluence-publisher | Parent page lookup, title check, single create call |
+| `confluence-release-log` | release-log-publisher | Released versions from `CHANGELOG.md` on `main`, section replace (never the rest of the page), backup of the page body, single update call |
 
 ## C4. The run, step by step
 
