@@ -16,6 +16,17 @@ tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DE
 ### Added
 - The Outlook draft and the Confluence report page have a new line right after "Folder: IO Project Assistant Reports": "Confluence parent page: PMO AI Agent Factory", linking to the parent page (https://sectigo.atlassian.net/wiki/spaces/CO/pages/110166017/PMO+AI+Agent+Factory+IO+Project+Assistant).
 
+## [0.5.12] - 2026-11-02
+
+### Fixed
+- The report no longer shows an ended sprint as the current one. Jira keeps a sprint "active" until someone closes it and the next sprint "future" until it is started, so on the Monday after a sprint ended the report still showed the old sprint (I&O 26.44 instead of I&O 26.45). The current sprint is now the one whose dates cover the report day: `sprint-tickets` makes the next sprint (even one not started yet) current when the sprint in `data.json` has ended, moves the ended sprint to the past sprints and adds a line to the Data gaps ("Current sprint: ... ended ... but is still active in Jira; the report uses ..."). When Jira has no dates for the next sprint, they are assumed from the previous one (same length, one week later) and the note says so. `sprint-changes` can read a sprint that has not started, and the Jira collector instructions state the same rule.
+
+### Added
+- "Sprint at a glance" opens with a link to the sprint's tickets in Jira, "JIRA Tickets Link: Active sprint I&O 26.45" (the same Jira ticket list the "JIRA tickets" section links to).
+
+### Changed
+- The Outlook draft now has a default "To" list (the PMO mailbox and the project leads) instead of no recipients. It comes from `REPORT_EMAIL_TO` in `config/defaults.env` (addresses separated by `;`; a `.env` in the working folder overrides it; empty means no "To"). CC is unchanged and the draft is still never sent.
+
 ## [0.5.11] - 2026-11-02
 
 ### Changed

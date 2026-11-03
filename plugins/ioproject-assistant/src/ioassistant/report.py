@@ -423,7 +423,10 @@ def _sprint_charts(sprint: dict, roster: dict | None = None, window=None) -> str
     )
     status_rows = sorted(by_status.items(), key=lambda kv: (_status_rank(kv[0]), kv[0]))
     return (
-        _sec(1, "Sprint at a glance", f"<div class='kpis'>{kpis}</div>")
+        _sec(1, "Sprint at a glance",
+             (f"<p>{_link('JIRA Tickets Link: Active sprint ' + str(sprint['name']), _sprint_url(sprint['name']))}</p>"
+              if sprint.get("name") else "")
+             + f"<div class='kpis'>{kpis}</div>")
         + _sec(2, "Sprint burndown chart", _burndown(sprint, _ref_date({"window": window})))
         + _sec(3, "Tickets by status", _bars(status_rows, total=True))
         + _sec(4, "Tickets by team", _team_workload(tickets, roster))

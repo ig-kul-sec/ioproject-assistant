@@ -550,6 +550,17 @@ def test_sprint_changes_section_and_sprint_link():
     assert "Tickets added or removed" not in report.render({"sprint": {**sprint, "changes": None}, "projects": []}, "R")
 
 
+def test_sprint_at_a_glance_opens_with_the_active_sprint_ticket_link():
+    sprint = {"name": "I&O 26.45", "start": "2026-11-02", "end": "2026-11-06",
+              "tickets": [{"key": "IOSP-9", "status": "Open", "assignee": "Ann"}]}
+    html = report.render({"sprint": sprint, "projects": [], "org_teams": TEAMS}, "R")
+    sec = html[html.index("Sprint at a glance"):]
+    sec = sec[:sec.index("Sprint burndown chart")]
+    link = ">JIRA Tickets Link: Active sprint I&amp;O 26.45</a>"
+    assert link in sec and sec.index(link) < sec.index("class='kpis'")
+    assert "issues/?jql=sprint%20%3D%20%22I%26O%2026.45%22%20order%20by%20updated%20DESC" in sec
+
+
 def test_sprint_changes_follow_the_analyzed_period_not_day_two():
     from ioassistant import sprintchanges
     period = sprintchanges.period_of({"from": "2026-10-20T00:00:00-04:00", "to": "2026-10-23T09:00:00-04:00"})

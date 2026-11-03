@@ -2,11 +2,13 @@
 from __future__ import annotations
 
 import json
+import re
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from urllib.parse import urlsplit
 import urllib.error
 
-from .sprintchanges import BOARD_ID, JIRA_SITE, PAGE, _get, _token
+from .sprintchanges import BOARD_ID, JIRA_SITE, PAGE, TZ, _get, _local, _token, board_sprints, period_of
 
 # customfield_10023 is "Target end" and customfield_10022 "Target start": IOSP tickets keep their dates there and leave
 # "Due date" / "Start date" (customfield_10015) empty. issuelinks feed the "Related tickets" column.
@@ -73,18 +75,72 @@ def fill_ids(data: dict, sprints: list) -> None:
             s["id"] = by_name[s["name"]]
 
 
+def _day(value) -> str | None:
+    """yyyy-mm-dd (America/New_York) of a Jira timestamp, None when it is missing."""
+    when = _local(value)
+    return when.date().isoformat() if when else None
+
+
+def roll_over(data: dict, sprints: list, today: date) -> str | None:
+    """Jira keeps a sprint "active" until someone closes it, and the next one stays "future" until it is started.
+    When the current sprint's end date is before `today`, the sprint that follows it becomes the current sprint
+    (the earliest active or future board sprint that has not ended; ties by the numbers in the name) and the ended one
+    is appended to `past_sprints`. Returns a note for the report's gaps, or None when nothing changed."""
+    cur = data.get("sprint") or {}
+    try:
+        ended = date.fromisoformat(str(cur.get("end"))[:10]) < today
+    except ValueError:
+        return None  # no usable end date: keep the sprint as it is
+    if not ended:
+        return None
+    past = data.get("past_sprints") or []
+    known_ids = {str(s.get("id")) for s in [cur, *past] if s.get("id") is not None}
+    known_names = {s.get("name") for s in [cur, *past]}
+    found = []
+    for s in sprints:
+        if s.get("state") not in ("active", "future") or str(s.get("id")) in known_ids or s.get("name") in known_names:
+            continue
+        start, end = _day(s.get("startDate")), _day(s.get("endDate"))
+        if end and date.fromisoformat(end) < today:
+            continue  # ended too, still not closed: it stays with the past sprints
+        found.append((start or "9999-12-31", tuple(int(n) for n in re.findall(r"\d+", str(s.get("name")))), s, start, end))
+    if not found:
+        return None
+    _, _, nxt, start, end = min(found, key=lambda f: f[:2])
+    assumed = ""
+    if not (start and end):
+        # not planned in Jira yet: same length as the sprint that ended, one week later
+        try:
+            first, last = date.fromisoformat(str(cur["start"])[:10]), date.fromisoformat(str(cur["end"])[:10])
+            start = start or (first + timedelta(days=7)).isoformat()
+            end = end or (date.fromisoformat(start) + (last - first)).isoformat()
+            assumed = "; the dates are not set in Jira, assumed from the previous sprint"
+        except (KeyError, ValueError):
+            pass
+    data["past_sprints"] = [*past, cur]
+    data["sprint"] = {"id": nxt["id"], "name": nxt["name"], "start": start, "end": end, "tickets": []}
+    return (f"Current sprint: {cur.get('name')} ended {cur.get('end')} but is still active in Jira; "
+            f"the report uses {nxt['name']} ({start} to {end}) as the current sprint{assumed}.")
+
+
 def build(data_path: Path) -> Path:
-    """Replace `sprint.tickets` and each `past_sprints[].tickets` in the run's data.json with the full Jira list."""
+    """Replace `sprint.tickets` and each `past_sprints[].tickets` in the run's data.json with the full Jira list.
+    First makes the sprint that covers the report day the current one (see `roll_over`)."""
     raw = data_path.read_bytes()
     data = json.loads(raw.decode("utf-8"))
-    sprint = data.get("sprint") or {}
     parts = urlsplit(str(data.get("jira_base_url") or JIRA_SITE))
     site = f"{parts.scheme}://{parts.netloc}"
     token = _token()
+    period = period_of(data.get("window"))
+    today = period[1].date() if period else datetime.now(TZ).date()
     try:
-        if not sprint.get("id") or any(not p.get("id") for p in data.get("past_sprints") or []):
-            # the Jira agent did not return the Agile sprint ids: look them up on the board by sprint name
-            fill_ids(data, _get(site, f"/rest/agile/1.0/board/{BOARD_ID}/sprint", {"state": "active"}, token).get("values", []))
+        sprints = board_sprints(site, token, "active,future")
+        # the Jira agent may not have returned the Agile sprint ids: look them up on the board by sprint name
+        fill_ids(data, sprints)
+        note = roll_over(data, sprints, today)
+        if note:
+            data["gaps"] = [*(data.get("gaps") or []), note]
+        sprint = data.get("sprint") or {}
         if not sprint.get("id"):
             raise SystemExit(f"data.json has no current sprint id and sprint {sprint.get('name')!r} is not an active sprint on board {BOARD_ID}")
         for s in [sprint, *[p for p in data.get("past_sprints") or [] if p.get("id")]]:
