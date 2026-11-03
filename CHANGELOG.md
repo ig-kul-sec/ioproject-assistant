@@ -6,6 +6,16 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
+## [0.5.13] - 2026-11-03
+
+### Changed
+- Daily Ops StandUp transcripts: for standups from 2026-10-27 (the "Daily Ops Standup (New)" meeting) the primary source is the meeting's own transcript, read through the calendar event's `meetingTranscriptUrl` for each day, not the "Daily Ops Standup_<yyyymmdd>" email. The emails are used only for standups before 2026-10-27. A day whose transcript cannot be read is a data gap and the chat is used for it. The old "organizer only, once per run" limit no longer applies to the new meeting (an attendee who is not the organizer can read it).
+
+- The Sprint management "JIRA tickets" tables (current and past sprints) have the same columns as "Jira tickets for this project (active)": Ticket #, Ticket name, Status, Sprint, Responsible, Start, End, Related tickets (the old Due column is now End). Tickets that are not done and past their End date are highlighted with "overdue N d", as in the project tables. `sprint-tickets` now also reads Target start / Start date and the issue links from Jira (Start and Related tickets); links to tickets of any Jira project are listed, after the ones the Jira collector recorded. Ticket keys in this table are now links.
+
+### Added
+- The Outlook draft and the Confluence report page have a new line right after "Folder: IO Project Assistant Reports": "Confluence parent page: PMO AI Agent Factory", linking to the parent page (https://sectigo.atlassian.net/wiki/spaces/CO/pages/110166017/PMO+AI+Agent+Factory+IO+Project+Assistant).
+
 ## [0.5.11] - 2026-11-02
 
 ### Changed

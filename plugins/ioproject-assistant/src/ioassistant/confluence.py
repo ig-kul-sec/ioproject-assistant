@@ -22,7 +22,8 @@ def render(data: dict, run_id: str) -> str:
         f"<p>{emaildraft.lead_line(data.get('window'))}</p>"
         f"<p>Report: {_a(run_id + '.html', brand.sharepoint_file_url(run_id + '.html'))}<br />"
         f"Spending report: {_a(run_id + '_spending.html', brand.sharepoint_file_url(run_id + '_spending.html'))}<br />"
-        f"Folder: {_a('IO Project Assistant Reports', brand.sharepoint_folder_url())}</p>"
+        f"Folder: {_a('IO Project Assistant Reports', brand.sharepoint_folder_url())}<br />"
+        f"Confluence parent page: {_a('PMO AI Agent Factory', brand.CONFLUENCE_PARENT_URL)}</p>"
         "<hr />"
         f"<p><strong>AI AGENT FACTORY:</strong> <strong>IO Project Assistant</strong> | Version: {escape(__version__)} | Author: "
         f'<a href="mailto:{brand.AUTHOR_EMAIL}">{brand.AUTHOR_EMAIL}</a> | {_a('User-Guide', brand.GUIDE_URL)} | GitHub: {_a(brand.REPO_URL, brand.REPO_URL)}<br />'

@@ -8,18 +8,39 @@ import urllib.error
 
 from .sprintchanges import BOARD_ID, JIRA_SITE, PAGE, _get, _token
 
-# customfield_10023 is "Target end": IOSP tickets keep their end date there and leave "Due date" empty.
-FIELDS = "summary,status,assignee,duedate,customfield_10023,resolutiondate"  # resolutiondate feeds the burndown chart
+# customfield_10023 is "Target end" and customfield_10022 "Target start": IOSP tickets keep their dates there and leave
+# "Due date" / "Start date" (customfield_10015) empty. issuelinks feed the "Related tickets" column.
+FIELDS = ("summary,status,assignee,duedate,customfield_10023,customfield_10022,customfield_10015,issuelinks,"
+          "resolutiondate")  # resolutiondate feeds the burndown chart
+
+
+def _related(fields: dict, base: str, known: list | None) -> list:
+    """The collector's related tickets first, then every issue link (either direction) that is not in that list yet."""
+    out = list(known or [])
+    seen = {str(r.get("key") if isinstance(r, dict) else r) for r in out}
+    for link in fields.get("issuelinks") or []:
+        key = (link.get("outwardIssue") or link.get("inwardIssue") or {}).get("key")
+        if key and key not in seen:
+            seen.add(key)
+            out.append({"key": key, "url": f"{base}/browse/{key}"})
+    return out
 
 
 def _row(issue: dict, base: str, old: dict | None) -> dict:
-    """The data.json ticket shape; fields the collector added (epic, start, ...) are kept."""
+    """The data.json ticket shape; fields the collector added (epic, start, related, ...) are kept."""
     fields = issue.get("fields") or {}
-    return {**(old or {}),
-            "key": issue["key"], "url": f"{base}/browse/{issue['key']}", "name": fields.get("summary"),
-            "status": (fields.get("status") or {}).get("name"),
-            "assignee": (fields.get("assignee") or {}).get("displayName"), "due": fields.get("duedate") or fields.get("customfield_10023"),
-            "resolved": fields.get("resolutiondate")}
+    row = {**(old or {}),
+           "key": issue["key"], "url": f"{base}/browse/{issue['key']}", "name": fields.get("summary"),
+           "status": (fields.get("status") or {}).get("name"),
+           "assignee": (fields.get("assignee") or {}).get("displayName"), "due": fields.get("duedate") or fields.get("customfield_10023"),
+           "resolved": fields.get("resolutiondate")}
+    start = fields.get("customfield_10022") or fields.get("customfield_10015")
+    if start:  # Jira's value wins; with none, the collector's start (if any) stays
+        row["start"] = start
+    related = _related(fields, base, row.get("related"))
+    if related:
+        row["related"] = related
+    return row
 
 
 def fetch(site: str, sprint_id, token: str) -> list:

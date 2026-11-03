@@ -193,6 +193,24 @@ def test_sprint_status_subsections(tmp_path):
     assert "Past sprint" not in only and "<span>1</span> Current sprint" in only
 
 
+def test_sprint_tickets_table_has_the_project_columns_and_flags_overdue(tmp_path):
+    sprint = {"name": "I&O 26.45", "start": "2026-11-02", "end": "2026-11-06", "tickets": [
+        {"key": "IOSP-1", "url": "https://sectigo.atlassian.net/browse/IOSP-1", "name": "Late one", "status": "In Progress",
+         "assignee": "Pat", "due": "2026-11-01", "start": "2026-10-26",
+         "related": [{"key": "COR-5", "url": "https://sectigo.atlassian.net/browse/COR-5"}]},
+        {"key": "IOSP-2", "name": "On time", "status": "To Do", "due": "2026-11-20"},
+        {"key": "IOSP-3", "name": "Finished late", "status": "Done", "due": "2026-10-20"}]}
+    html = _render_data(tmp_path, {"window": {"to": "2026-11-03T10:00:00-05:00"}, "sprint": sprint})
+    table = html[html.index("All 3 sprint tickets"):]
+    table = table[:table.index("</table>")]
+    assert ("<th>Ticket #</th><th>Ticket name</th><th>Status</th><th>Sprint</th><th>Responsible</th>"
+            "<th>Start</th><th>End</th><th>Related tickets</th>") in table
+    assert table.count('<tr class="overdue">') == 1  # the open ticket past its date; the done one is not flagged
+    late = table[table.index('<tr class="overdue">'):]
+    late = late[:late.index("</tr>")]
+    assert all(x in late for x in ("IOSP-1", "overdue 2 d", "COR-5", "I&amp;O 26.45", "10/26", "Pat"))
+
+
 def test_spend_total_row_sums_tokens_seconds_cost():
     rows = [{"agent": "a", "model": "claude-sonnet-5-5", "input_tokens": 1000, "output_tokens": 0, "seconds": 10.5},
             {"agent": "b", "model": "claude-opus-5-5", "input_tokens": 2000, "output_tokens": 0, "seconds": 4.5}]
@@ -348,6 +366,14 @@ def test_confluence_body_and_email_draft(tmp_path):
     assert "period from" not in emaildraft.render(run.name)  # no window: the plain line, no period
     assert "PMO%20AI%20Agent%20Factory/IO%20Project%20Assistant%20Reports/IOProjectAssistantReport_20261017_1759.html" in mail
     assert "Sectigo\u00a9 2026. All rights reserved." in mail and "<span" not in mail and "<img" not in mail
+    from ioassistant import brand
+
+    for text in (mail, body):  # the parent page link sits right after the Folder row, in the draft and on the page
+        folder = text.index("Folder: ")
+        parent = text.index("Confluence parent page: ")
+        assert folder < parent < text.index("<hr")
+        assert f'<a href="{brand.CONFLUENCE_PARENT_URL}">PMO AI Agent Factory</a></p>' in text[parent:]
+        assert "<a" not in text[folder:parent].split("</a>", 1)[1]  # nothing but the line break between the two rows
     assert emaildraft.subject_for(run.name) == "IO Project Assistant Report 20261017 1759"
 
 
@@ -433,7 +459,7 @@ def test_sprint_statuses_follow_workflow_order():
     order = [m.group(1) for m in re.finditer(r"<span class='bl'>([^<]+)</span>", chart)]
     assert order == ["Backlog", "To Do", "In Progress", "QA", "On Hold", "Unassigned", "Done", "Rejected", "Total"]
     table = html[html.index("All 8 sprint tickets"):]
-    keys = [int(k) for k in re.findall(r"<td>IOSP-(\d+)</td>", table)][:8]
+    keys = [int(k) for k in re.findall(r">IOSP-(\d+)</a></td>", table)][:8]  # keys are Jira links, as in the project tables
     assert keys == [8, 7, 6, 2, 5, 3, 1, 4]
 
 
@@ -635,6 +661,19 @@ def test_sprint_ticket_due_falls_back_to_target_end():
     from ioassistant import sprinttickets
     issues = [{"key": "IOSP-1", "fields": {"summary": "A", "status": {"name": "To Do"}, "assignee": None, "customfield_10023": "2026-10-29"}}]
     assert sprinttickets.merge([], issues, "https://j")[0]["due"] == "2026-10-29"
+
+
+def test_sprint_tickets_merge_adds_start_and_related_links():
+    from ioassistant import sprinttickets
+    issues = [{"key": "IOSP-1", "fields": {"summary": "A", "status": {"name": "To Do"}, "customfield_10022": "2026-10-26",
+                                           "issuelinks": [{"outwardIssue": {"key": "COR-5"}}, {"inwardIssue": {"key": "RM-2"}},
+                                                          {"outwardIssue": {"key": "RM-2"}}]}}]
+    row = sprinttickets.merge([{"key": "IOSP-1", "related": [{"key": "COR-5", "url": "https://x/COR-5"}]}], issues, "https://j")[0]
+    assert row["start"] == "2026-10-26"
+    assert row["related"] == [{"key": "COR-5", "url": "https://x/COR-5"}, {"key": "RM-2", "url": "https://j/browse/RM-2"}]
+    assert "customfield_10022" in sprinttickets.FIELDS and "issuelinks" in sprinttickets.FIELDS
+    kept = sprinttickets.merge([{"key": "IOSP-1", "start": "2026-10-01"}], [{"key": "IOSP-1", "fields": {}}], "https://j")[0]
+    assert kept["start"] == "2026-10-01" and "related" not in kept  # nothing from Jira: the collector's start stays
 
 
 def test_spend_set_orchestrator_replaces_placeholder_and_prices_it(tmp_path):

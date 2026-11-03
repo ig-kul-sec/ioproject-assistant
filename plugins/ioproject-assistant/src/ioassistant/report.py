@@ -191,24 +191,33 @@ def _status_rank(status) -> int:
     return STATUS_ORDER.index(name) if name in STATUS_ORDER else len(STATUS_ORDER)
 
 
-def _sprint_body(sprint: dict) -> str:
+def _sprint_body(sprint: dict, base: str = "", today: date | None = None) -> str:
+    """One sprint: the same columns as "Jira tickets for this project (active)"; tickets past their end date are highlighted."""
+    base, today = base or JIRA_BROWSE, today or date.today()
     dur = _days(sprint.get("start"), sprint.get("end"))
     tickets = sorted(sprint.get("tickets", []), key=lambda t: _status_rank(t.get("status")))  # stable: Jira order within a status
     done = sum(1 for t in tickets if any(w in str(t.get("status") or "").lower() for w in DONE_WORDS))
     pct = f"{round(100 * done / len(tickets))}%" if tickets else NA
-    rows = "".join(
-        f"<tr><td>{_link(t.get('key'), t.get('url'))}</td><td>{_t(t.get('name') or t.get('summary'))}</td>"
-        f"<td>{_t(t.get('status'))}</td><td>{_t(t.get('assignee'))}</td>{_date_td(t.get('due'))}</tr>"
-        for t in tickets
-    )
+    def row(t: dict) -> str:
+        days = _overdue_days(t, today)
+        cls = ' class="overdue"' if days else ""
+        return (
+            f"<tr{cls}><td>{_ticket_link(t, base)}</td>"
+            f"<td>{_rich(t.get('name') or t.get('summary'), base)}</td><td>{_t(t.get('status'))}</td>"
+            f"<td>{_t(t.get('sprint') or sprint.get('name'))}</td><td>{_t(t.get('assignee'))}</td>"
+            f"{_date_td(t.get('start'))}{_end_td(t, days)}"
+            f"<td>{', '.join(_ticket_link(r, base) for r in t.get('related') or []) or NA}</td></tr>"
+        )
+
+    rows = "".join(row(t) for t in tickets)
     return (
         (f"<p>{_link('JIRA Tickets Link: Sprint ' + str(sprint['name']), _sprint_url(sprint['name']))}</p>"
          if sprint.get("name") else "")
         + f"<p><b>{_t(sprint.get('name'))}</b>: {_t(_md(sprint.get('start')))} to {_t(_md(sprint.get('end')))}"
         f" ({dur if dur is not None else NA} days). {done} of {len(tickets)} tickets done ({pct}).</p>"
         f"<details class=\"sub\"><summary>All {len(tickets)} sprint tickets</summary>"
-        "<table><tr><th>Ticket</th><th>Ticket name</th><th>Status</th><th>Responsible</th><th>Due</th></tr>"
-        f"{rows}</table></details>"
+        "<table class='tix'><tr><th>Ticket #</th><th>Ticket name</th><th>Status</th><th>Sprint</th><th>Responsible</th>"
+        f"<th>Start</th><th>End</th><th>Related tickets</th></tr>{rows}</table></details>"
     )
 
 
@@ -432,22 +441,23 @@ def _sprint_charts(sprint: dict, roster: dict | None = None, window=None) -> str
     )
 
 
-def _sprint(sprint: dict, past: list[dict] | None = None) -> str:
+def _sprint(sprint: dict, past: list[dict] | None = None, base: str = "", today: date | None = None) -> str:
     """Collapsible subsections: each past sprint still active (oldest first), then the current one."""
     subs = [(f"Past sprint {s['name']} (not closed yet)" if s.get("name") else "Past sprint (not closed yet)", s)
             for s in past or []]
     subs += [(f"Current sprint {sprint['name']}" if sprint.get("name") else "Current sprint", sprint)] if sprint else []
     if not subs:
         return "<p>No sprint data.</p>"
-    return "".join(_sec(i, title, _sprint_body(s)) for i, (title, s) in enumerate(subs, 1))
+    return "".join(_sec(i, title, _sprint_body(s, base, today)) for i, (title, s) in enumerate(subs, 1))
 
 
-def _sprint_management(sprint: dict, past: list[dict] | None = None, roster: dict | None = None, window=None) -> str:
+def _sprint_management(sprint: dict, past: list[dict] | None = None, roster: dict | None = None, window=None,
+                       base: str = "", today: date | None = None) -> str:
     """Sprint management tab: board link, then the "Sprint charts" and "JIRA tickets" sections (each foldable)."""
     board = _link("JIRA ScrumBoard Link", brand.JIRA_BOARD_URL)
     charts = _sprint_charts(sprint or {}, roster, window) or "<p>No sprint tickets.</p>"
     return (f"<p>{board}</p>" + _top("Sprint charts", charts, ident="sprint-charts")
-            + _top("JIRA tickets", _sprint(sprint, past), ident="sprint"))
+            + _top("JIRA tickets", _sprint(sprint, past, base, today), ident="sprint"))
 
 
 def _links(links: dict) -> str:
@@ -960,7 +970,7 @@ def _render(data: dict, title: str, compact: bool) -> str:
                  + "<h2>Project status</h2>"
                  f"{''.join(_project(p, base, compact, sprint_of, _ref_date(data)) for p in projects)}")
         + _panel("tab-ops", _top(OPS_TITLE, _non_project(non_project, base), fold=True, ident="ops"))
-        + _panel("tab-sprint", _sprint_management(sprint, past, roster, data.get("window")))
+        + _panel("tab-sprint", _sprint_management(sprint, past, roster, data.get("window"), base, _ref_date(data)))
         + (_panel("tab-gaps", gap_html) if gaps else "")
         + brand.footer()
         + "</main></div>" + brand.foot(base)

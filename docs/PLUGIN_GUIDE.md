@@ -128,7 +128,7 @@ Also check they have the access the report needs (see B0).
 ## A5. Things that are specific to you (the owner)
 
 - **Rubrik SyncUp transcript:** only the meeting organizer (you) can read it. For colleagues it is skipped automatically and shown as a data gap; the chat and status emails are still used.
-- **Daily Ops StandUp transcript:** read from the "Daily Ops Standup_<yyyymmdd>" emails that link the downloaded transcript (`Daily Ops Standup_<yyyymmdd>.docx` in OneDrive › Attachments). Keep sending one per standup; a day without it falls back to the chat and shows as a data gap.
+- **Daily Ops StandUp transcript:** from 2026-10-27 (the "Daily Ops Standup (New)" meeting) it is read straight from the meeting's own transcript through the calendar event; no email is needed. Transcription must be started in the meeting. A day without a readable transcript falls back to the chat and shows as a data gap. Standups before 2026-10-27 were read from the "Daily Ops Standup_<yyyymmdd>" emails.
 - **Team roster (Ardoq):** the "Tickets by team" charts use the reporting lines in Ardoq (Entra Users, "Manager Of" references) for the DBA, Network, SRE Tier 2 and SRE Tier 3 managers. When Ardoq is signed in, the `org-collector` agent refreshes the roster on every run. Otherwise the report uses the saved snapshot `plugins/ioproject-assistant/config/org-teams.json` and lists a data gap that gives its date. When the organization changes, ask Claude to refresh that file from Ardoq, review the diff and release a new version.
 - **Ardoq sign-in is per person.** The plugin bundles the Ardoq server (`.mcp.json`) but not anyone's login. A colleague without an Ardoq account, or without access to the Entra Users workspace, still gets the full report with the snapshot roster.
 - The report footer always names the plugin author and repository. The Outlook draft is CC'd to whoever runs it (their "Your work email" setting).
@@ -309,7 +309,8 @@ When the owner announces a new version:
 | Jira or Confluence **401 / 403** | Token wrong or expired | Make a new token (B7) and replace it in the Notepad file. To reopen the file, type `/ioproject-assistant:setup` |
 | Jira or Confluence **000** / timeout | Not on the Sectigo network | Connect to VPN and run again |
 | "No such file or directory" when writing the report | Folder path too long | Use a short folder such as `C:\IOReports` (B4) |
-| "No transcript email" for a standup date | No "Daily Ops Standup_<yyyymmdd>" email with the transcript link was received | Email the downloaded transcript link with that subject; until then the chat is used |
+| "Standup transcript <date>: meeting transcript not available" | The meeting had no transcript (transcription was not started) or it could not be read | Start transcription in the standup; until then the chat is used |
+| "No transcript email" for a standup date before 2026-10-27 | No "Daily Ops Standup_<yyyymmdd>" email with the transcript link was received | Email the downloaded transcript link with that subject; until then the chat is used |
 | SharePoint upload failed | No write access to the IO Project Assistant Reports folder | Ask the folder owner for access; the local report is still in `output` |
 | SharePoint upload blocked or denied | You clicked **Deny** on the upload request, or Claude may not read files outside the folder it was opened in | Upload the `upload` copy by hand, then type `/ioproject-assistant:run-report continue from upload <RUN_ID>`. To avoid the approval prompt next time, see B7 |
 | "Claude is not allowed to read ..." before the run starts | Your Claude settings block reading outside the folder Claude was opened in | Type `/add-dir <that folder>` (or reopen Claude in your IO Reports folder), then run the report again |
@@ -453,7 +454,7 @@ The report starts with a header: links to the SharePoint archive, the Confluence
 
 **Sprint management:** a JIRA ScrumBoard link, then two sections.
 - **Sprint charts**: (1) sprint at a glance; (2) sprint burndown chart (open tickets at the end of each working day against the ideal line, from Jira resolution dates); (3) tickets by status in workflow order (Backlog, To Do, In Progress, QA, On Hold, Unassigned, Done) with a total; (4) tickets by team (DBA, Network, SRE Tier 2, SRE Tier 3, Other, Unassigned) with a total and tickets per person; (5) employees without tickets in the sprint, per team and manager; (6) tickets by employee with their team, an Unassigned row and a total; (7) tickets added to or removed from the sprint during the analyzed period, with date and who did it. Teams come from Ardoq, never from the roadmap deck.
-- **JIRA tickets**: for the current sprint and any past sprint that is not closed yet, a "JIRA Tickets Link: Sprint <name>" link to Jira and the full ticket list in the same status order.
+- **JIRA tickets**: for the current sprint and any past sprint that is not closed yet, a "JIRA Tickets Link: Sprint <name>" link to Jira and the full ticket list in the same status order. The table has the same columns as "Jira tickets for this project (active)" (Ticket #, Ticket name, Status, Sprint, Responsible, Start, End, Related tickets). A ticket that is not done and is past its End date is highlighted and says how many days late it is.
 
 **Data gaps:** everything a source could not provide in this run, including a note when the team list is the saved snapshot.
 
@@ -489,7 +490,8 @@ Run it as `PYTHONPATH="<plugin>/src" python -m ioassistant.cli <command> <json>`
 | Postgres EDB migration (Teams chat 2) | Thread `19:meeting_MmNjNmVlMzktMjRlMi00YWJmLThlMzUtYzQwZjM3MTUyMDIx@thread.v2` ([open](https://teams.microsoft.com/l/chat/19%3Ameeting_MmNjNmVlMzktMjRlMi00YWJmLThlMzUtYzQwZjM3MTUyMDIx%40thread.v2/conversations?context=%7B%22contextType%22%3A%22chat%22%7D)) |
 | Postgres EDB migration (Teams chat 3) | Thread `19:1c63bc6c973843eab7568f5e87e26ef8@thread.v2` ([open](https://teams.microsoft.com/l/chat/19%3A1c63bc6c973843eab7568f5e87e26ef8%40thread.v2/conversations?context=%7B%22contextType%22%3A%22chat%22%7D)) |
 | Postgres EDB migration (Jira epic) | [IOSP-955](https://sectigo.atlassian.net/browse/IOSP-955), reviewed every run with its child tickets |
-| Daily Ops StandUp transcripts | Outlook emails with subject `Daily Ops Standup_<yyyymmdd>` linking `Daily Ops Standup_<yyyymmdd>.docx` (OneDrive › Attachments) |
+| Daily Ops StandUp transcripts, from 2026-10-27 | The "Daily Ops Standup (New)" meeting transcript, read through the calendar event's `meetingTranscriptUrl` |
+| Daily Ops StandUp transcripts, until 2026-10-26 | Outlook emails with subject `Daily Ops Standup_<yyyymmdd>` linking `Daily Ops Standup_<yyyymmdd>.docx` (OneDrive › Attachments) |
 | Rubrik Project SyncUp (Teams chat + transcript) | Thread `19:meeting_YjU0ZDdlMWEtNjc1Mi00Nzg4LTlhZjItNDBmMWEzNmExNzFl@thread.v2` |
 | Rubrik status emails | Outlook, subject "RUBRIK - Project Status" |
 | Jira | https://sectigo.atlassian.net/ (spaces IOSP, RM, COR) |
