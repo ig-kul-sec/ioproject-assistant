@@ -35,8 +35,8 @@ ioproject-assistant/                      <- repository = marketplace "sectigo-i
 ├─ plugins/ioproject-assistant/           <- the plugin colleagues install
 │  ├─ .claude-plugin/plugin.json          <- name, version, the "Your work email" question
 │  ├─ .mcp.json                           <- bundles the Ardoq MCP server (each user signs in once)
-│  ├─ agents/                             <- orchestrator + 9 helper agents (incl. org-collector, release-log-publisher)
-│  ├─ skills/                             <- instructions, incl. run-report and setup
+│  ├─ agents/                             <- orchestrator-assistant-report + orchestrator-leadership + 9 helper agents (incl. collector-org, release-log-publisher)
+│  ├─ skills/                             <- instructions, incl. run-report, run-leadership-updates and setup
 │  ├─ src/ioassistant/                    <- report rendering (Python, no extra packages)
 │  └─ config/                             <- prices, default settings, org-teams.json (team roster snapshot)
 ├─ CHANGELOG.md                           <- release notes; the pipeline publishes them with each release
@@ -130,7 +130,7 @@ Also check they have the access the report needs (see B0).
 
 - **Rubrik SyncUp transcript:** only the meeting organizer (you) can read it. For colleagues it is skipped automatically and shown as a data gap; the chat and status emails are still used.
 - **Daily Ops StandUp transcript:** from 2026-10-27 (the "Daily Ops Standup (New)" meeting) it is read straight from the meeting's own transcript through the calendar event; no email is needed. Transcription must be started in the meeting. A day without a readable transcript falls back to the chat and shows as a data gap. Standups before 2026-10-27 were read from the "Daily Ops Standup_<yyyymmdd>" emails.
-- **Team roster (Ardoq):** the "Tickets by team" charts use the reporting lines in Ardoq (Entra Users, "Manager Of" references) for the DBA, Network, SRE Tier 2 and SRE Tier 3 managers. When Ardoq is signed in, the `org-collector` agent refreshes the roster on every run. Otherwise the report uses the saved snapshot `plugins/ioproject-assistant/config/org-teams.json` and lists a data gap that gives its date. When the organization changes, ask Claude to refresh that file from Ardoq, review the diff and release a new version.
+- **Team roster (Ardoq):** the "Tickets by team" charts use the reporting lines in Ardoq (Entra Users, "Manager Of" references) for the DBA, Network, SRE Tier 2 and SRE Tier 3 managers. When Ardoq is signed in, the `collector-org` agent refreshes the roster on every run. Otherwise the report uses the saved snapshot `plugins/ioproject-assistant/config/org-teams.json` and lists a data gap that gives its date. When the organization changes, ask Claude to refresh that file from Ardoq, review the diff and release a new version.
 - **Ardoq sign-in is per person.** The plugin bundles the Ardoq server (`.mcp.json`) but not anyone's login. A colleague without an Ardoq account, or without access to the Entra Users workspace, still gets the full report with the snapshot roster.
 - **Default recipients:** the Outlook draft's "To" list is `REPORT_EMAIL_TO` in `plugins/ioproject-assistant/config/defaults.env` (the PMO mailbox and the project leads, separated by `;`). Change it there and release a new version. A colleague can override it with a `.env` file in the folder Claude is opened in; an empty value means no "To". The draft is still never sent.
 - The report footer always names the plugin author and repository. The Outlook draft is CC'd to whoever runs it (their "Your work email" setting).
@@ -287,6 +287,21 @@ Claude then tests the tokens and Microsoft 365 and shows a checklist. When every
    - projects that need attention
    - any data gaps, with what to do about them
 
+## B8a. Leadership updates (weekly)
+
+The leadership updates compare the roadmap deck with what the daily reports of the last week show, and propose the new statuses and text. They never change the deck.
+
+1. Make sure the daily reports of the period exist (B8); the leadership run reads them from the `output` folder.
+2. Type:
+   ```
+   /ioproject-assistant:run-leadership-updates
+   ```
+   The default period is the last 7 days. For another one: `/ioproject-assistant:run-leadership-updates since 2026-10-30`.
+3. Approve the requests, wait 10-20 minutes. Claude ends with the report path and SharePoint link, the **spending report** (agents, tokens, time and estimated cost, same rules as the daily report; its SharePoint copy is refreshed with the final figures), the unsent Outlook draft (To the PMO, CC you), the Confluence draft page (`TEST: IO Projects Leadership Updates <date> <time> (Draft)`), the projects whose status the proposal changes, and any data gaps.
+4. Open the report: tabs **Project updates**, **Sources** and **Data gaps**. Each project card shows the key changes of the period, then, side by side, the **previous information from the deck** (left) and the **proposal for the new statuses** (right) with every changed bullet marked and the reason, then the key project resources in two columns (Jira epics, Confluence, SharePoint, project chats). At risk is orange and Off track red. Then update the deck by hand where you agree.
+
+Project names on the deck and in the daily reports differ ("Postgres DB" and "Postgres EDB migration"): `config/leadership-projects.json` maps them; add a line when the deck gets a new project.
+
 ## B9. After the run
 
 1. **Open the report:** click the SharePoint link, or open the `.html` file in `Documents\IO Reports\output\...` by double-clicking it. Use the four tabs under the summary tiles (**Projects**, **Operations**, **Sprint management**, **Data gaps**) and the contents list on the left. Click column headers to sort, and click project names to expand them. In **Sprint management**, start with the JIRA ScrumBoard link, then the sprint charts and the ticket list.
@@ -343,11 +358,11 @@ IO Project Assistant is a **Claude Code plugin**. It has no server and no databa
 
 | Layer | What it is | Where |
 |---|---|---|
-| Entry points | Two skills the user types: `run-report`, `setup` | `skills/run-report`, `skills/setup` |
-| Coordination | One **orchestrator** agent (Claude Opus) that runs the pipeline | `agents/orchestrator.md` |
+| Entry points | Three skills the user types: `run-report`, `run-leadership-updates`, `setup` | `skills/run-report`, `skills/run-leadership-updates`, `skills/setup` |
+| Coordination | One **orchestrator** agent (Claude Opus) that runs the pipeline | `agents/orchestrator-assistant-report.md` |
 | Data collection | Five **collector** agents (Claude Sonnet), one per source (Teams, Jira, Confluence, SharePoint, Ardoq) | `agents/*-collector.md` |
 | Rendering | Python package `ioassistant` (standard library only) that turns merged JSON into HTML, email and Confluence bodies | `src/ioassistant/` |
-| Publishing | Agents that upload to SharePoint and create the Outlook draft and the Confluence page | `sharepoint-collector` (upload mode), `report-email-drafter`, `report-confluence-publisher`; maintainer only, outside a run: `release-log-publisher` |
+| Publishing | Agents that upload to SharePoint and create the Outlook draft and the Confluence page | `collector-sharepoint` (upload mode), `report-email-drafter`, `report-confluence-publisher`; maintainer only, outside a run: `release-log-publisher` |
 | Know-how | Skills holding the detailed rules each agent follows (schemas, API calls, limits) | `skills/*/SKILL.md` |
 | Connections | Microsoft 365 connector (Teams, Outlook, SharePoint) from claude.ai; Jira Cloud and Confluence Cloud REST APIs (sectigo.atlassian.net) with the user's Atlassian email plus one API token (`JIRA_EMAIL`, `JIRA_API_TOKEN`; basic auth); the **Ardoq MCP server** (organization structure) bundled with the plugin, signed in per user | claude.ai settings; `~/.ioassistant/secrets.env`; `.mcp.json` and `/mcp` |
 | Release | GitHub Actions pipeline "Deployment from DEV to PROD": checks DEV, moves `main` (PROD), tags and publishes the release and plugin zip | `.github/workflows/deploy-dev-to-prod.yml` (A6) |
@@ -365,12 +380,13 @@ All agents are launched as `ioproject-assistant:<name>`.
 
 | Agent | Model | Job | Tools / access | Writes |
 |---|---|---|---|---|
-| `orchestrator` | Opus | Runs the pipeline: computes the run id and analysis window, launches all other agents, merges results into `data.json`, sets project status, summaries and "Jira updates needed", records spending | Agent, Read, Write, Bash, Glob, Grep | Local `output/` only |
-| `teams-collector` | Sonnet | Reads the Daily Ops StandUp chat (new chat from 2026-10-27, old chat before) and its transcripts (the meeting's own transcript from 2026-10-27, the "Daily Ops Standup_<yyyymmdd>" emails before), the Rubrik Project SyncUp chat and transcript, the "RUBRIK - Project Status" emails and the three Postgres EDB migration chats; decides which projects were discussed; extracts notes, action items and risks | Microsoft 365: Teams chat list and search, read resource, calendar search, email search | Nothing |
-| `jira-collector` | Sonnet | Epics, child tickets, changes and comments in the window, active IOSP sprint (with its sprint ids); always includes the Rubrik epic IOSP-471 and the Postgres EDB migration epic IOSP-955. Dates come from Target start / Target end; each ticket carries its created date and description | Bash (curl GET), WebFetch | Nothing |
-| `confluence-collector` | Sonnet | Project pages: title, URL, last editor, last modified, and status, timeline and risk sections | Bash (curl GET) | Nothing |
-| `org-collector` | Sonnet | Reporting lines from Ardoq (who reports to the DBA, Network, SRE Tier 2 and SRE Tier 3 managers) for the sprint charts by team. Without an Ardoq sign-in it returns nothing and the report uses the bundled snapshot `config/org-teams.json` and lists a data gap | Ardoq MCP server bundled in `.mcp.json` (each user signs in once with `/mcp`) | Nothing |
-| `sharepoint-collector` | Sonnet | **Read mode:** roadmap deck "Project review" slides (RAG status, dates, PM, tech lead) and PMO folder files. **Upload mode:** finds the report folder by its path and uploads the two finished reports (main report first); also replaces the run's own spending report with the final figures | Microsoft 365: SharePoint search, folder search, read resource, upload file | 2 files in the IO Project Assistant Reports folder (never overwrites; the only replace is the run's own spending report) |
+| `orchestrator-assistant-report` | Opus | Runs the pipeline: computes the run id and analysis window, launches all other agents, merges results into `data.json`, sets project status, summaries and "Jira updates needed", records spending | Agent, Read, Write, Bash, Glob, Grep | Local `output/` only |
+| `orchestrator-leadership` | Opus | Runs the separate IO Projects Leadership Updates pipeline: digest of the main reports of the period (`leadership-collect`), the roadmap deck read by `collector-sharepoint` (deck mode), merge into `data.json` with a proposal per project (starts as a copy of the deck, changes only on evidence), report render, spending report (`usage.json`), upload of both, Outlook draft and Confluence page. Reads only the main reports and the deck, never Teams, Jira or Confluence | Agent, Bash (python), Read, Write | The run folder; through other agents: 2 SharePoint files (report, spending report), 1 unsent draft, 1 Confluence page |
+| `collector-teams` | Sonnet | Reads the Daily Ops StandUp chat (new chat from 2026-10-27, old chat before) and its transcripts (the meeting's own transcript from 2026-10-27, the "Daily Ops Standup_<yyyymmdd>" emails before), the Rubrik Project SyncUp chat and transcript, the "RUBRIK - Project Status" emails and the three Postgres EDB migration chats; decides which projects were discussed; extracts notes, action items and risks | Microsoft 365: Teams chat list and search, read resource, calendar search, email search | Nothing |
+| `collector-jira` | Sonnet | Epics, child tickets, changes and comments in the window, active IOSP sprint (with its sprint ids); always includes the Rubrik epic IOSP-471 and the Postgres EDB migration epic IOSP-955. Dates come from Target start / Target end; each ticket carries its created date and description | Bash (curl GET), WebFetch | Nothing |
+| `collector-confluence` | Sonnet | Project pages: title, URL, last editor, last modified, and status, timeline and risk sections | Bash (curl GET) | Nothing |
+| `collector-org` | Sonnet | Reporting lines from Ardoq (who reports to the DBA, Network, SRE Tier 2 and SRE Tier 3 managers) for the sprint charts by team. Without an Ardoq sign-in it returns nothing and the report uses the bundled snapshot `config/org-teams.json` and lists a data gap | Ardoq MCP server bundled in `.mcp.json` (each user signs in once with `/mcp`) | Nothing |
+| `collector-sharepoint` | Sonnet | **Deck mode (leadership updates):** the deck's project slides 5-9 with RAG letters, PM/TL and every text block (read-only). **Read mode:** roadmap deck "Project review" slides (RAG status, dates, PM, tech lead) and PMO folder files. **Upload mode:** finds the report folder by its path and uploads the two finished reports (main report first); also replaces the run's own spending report with the final figures | Microsoft 365: SharePoint search, folder search, read resource, upload file | 2 files in the IO Project Assistant Reports folder (never overwrites; the only replace is the run's own spending report) |
 | `report-builder` | Sonnet | Renders the status report and spending report with the Python package | Bash (python), Read, Write | Local HTML files |
 | `report-email-drafter` | Sonnet | Creates the Outlook draft with SharePoint links, addressed to the default "To" list (`REPORT_EMAIL_TO`) and CC'd to the user | Microsoft 365: Outlook create draft | 1 unsent draft |
 | `report-confluence-publisher` | Sonnet | Creates `TEST: IO Project Assistant Report <date> <time> (Draft)` under PMO AI Agent Factory > IO Project Assistant | Bash (curl GET + one POST) | 1 new Confluence page |
@@ -380,16 +396,17 @@ All agents are launched as `ioproject-assistant:<name>`.
 
 | Skill | Used by | What it defines |
 |---|---|---|
+| `run-leadership-updates` | User | Pre-flight, launching `orchestrator-leadership` (also `continue from upload`), file names, the leadership `data.json` schema, summary for the user |
 | `run-report` | User | Pre-flight checks (Python, tokens, Microsoft 365, folder path and folder access), launching the orchestrator (also `continue from upload`), final spending figures and their refresh on SharePoint, plain-language summary |
 | `setup` | User | Python, tokens, Microsoft 365 connector, Ardoq sign-in, folder and CC email checks, optional one-time question to allow the SharePoint upload without a prompt |
-| `teams-standup-collection` | teams-collector | Paging through Teams chat search, filtering by chat (old and new standup chat, Rubrik, three Postgres EDB migration chats), the standup meeting transcript (from 2026-10-27) or transcript emails (before), and status emails; output JSON |
-| `jira-project-review` | jira-collector | Jira spaces, scrum board 318, always-included epics (IOSP-471, IOSP-955), Target start/end dates, sprint ids, REST calls; output JSON |
-| `confluence-review` | confluence-collector | CQL search and page reads; output JSON |
-| `sharepoint-roadmap` | sharepoint-collector | Roadmap rules (Project review slides only, skip Accomplishments); report folder found by path; size-checked upload rules, with replace mode only for the run's own spending report |
+| `teams-standup-collection` | collector-teams | Paging through Teams chat search, filtering by chat (old and new standup chat, Rubrik, three Postgres EDB migration chats), the standup meeting transcript (from 2026-10-27) or transcript emails (before), and status emails; output JSON |
+| `jira-project-review` | collector-jira | Jira spaces, scrum board 318, always-included epics (IOSP-471, IOSP-955), Target start/end dates, sprint ids, REST calls; output JSON |
+| `confluence-review` | collector-confluence | CQL search and page reads; output JSON |
+| `sharepoint-roadmap` | collector-sharepoint | Roadmap rules (Project review slides only, skip Accomplishments); report folder found by path; size-checked upload rules, with replace mode only for the run's own spending report |
 | `report-generation` | orchestrator, report-builder | `data.json` schema (including `org_teams`, `sprint.changes` and the sprint ids), tabs and section order, sprint chart rules, status rules, presentation rules |
 | `spend-tracking` | orchestrator, report-builder, run-report | `usage.json` format, pricing, how the orchestrator's own usage is filled in |
-| `outlook-report-draft` | report-email-drafter | Draft subject and body, analysis-period line, default To list, CC, never send, attachment limit |
-| `confluence-report-page` | report-confluence-publisher | Parent page lookup, title check, single create call |
+| `outlook-report-draft` | report-email-drafter | Draft subject and body (also the leadership variant: To `LEADERSHIP_EMAIL_TO`), analysis-period line, default To list, CC, never send, attachment limit |
+| `confluence-report-page` | report-confluence-publisher | (also the leadership variant) Parent page lookup, title check, single create call |
 | `confluence-release-log` | release-log-publisher | Released versions from `CHANGELOG.md` on `main`, section replace (never the rest of the page), backup of the page body, single update call |
 
 ## C4. The run, step by step
@@ -397,12 +414,12 @@ All agents are launched as `ioproject-assistant:<name>`.
 ```mermaid
 flowchart TD
     U["User: /ioproject-assistant:run-report"] --> PF["Pre-flight: Python, tokens, M365, folder"]
-    PF --> O["orchestrator (Opus): RUN_ID + analysis window"]
-    O --> T["teams-collector: which projects were discussed"]
-    T --> J["jira-collector"]
-    T --> C["confluence-collector"]
-    T --> S["sharepoint-collector (read)"]
-    T --> OC["org-collector: Ardoq reporting lines"]
+    PF --> O["orchestrator-assistant-report (Opus): RUN_ID + analysis window"]
+    O --> T["collector-teams: which projects were discussed"]
+    T --> J["collector-jira"]
+    T --> C["collector-confluence"]
+    T --> S["collector-sharepoint (read)"]
+    T --> OC["collector-org: Ardoq reporting lines"]
     J --> M["Merge into data.json: status, summary, Jira updates needed"]
     C --> M
     S --> M
@@ -411,7 +428,7 @@ flowchart TD
     ST --> SC["cli sprint-changes: tickets added/removed during the analyzed period"]
     SC --> RB
     M --> RB["report-builder: status report + spending report"]
-    RB --> UP["sharepoint-collector (upload): compact copies, size-checked"]
+    RB --> UP["collector-sharepoint (upload): compact copies, size-checked"]
     UP --> E["report-email-drafter: unsent Outlook draft"]
     UP --> CF["report-confluence-publisher: new draft page"]
     E --> F["run-report: final spending figures + summary"]
@@ -420,8 +437,8 @@ flowchart TD
 
 1. **Start.** The user types `/ioproject-assistant:run-report`. The skill checks Python, the token file, the Microsoft 365 connector, the folder path and that Claude may read the plugin and report folders (otherwise it stops in seconds and says to type `/add-dir <folder>`).
 2. **Run id and window.** The orchestrator names the run `IOProjectAssistantReport_<yyyymmdd>_<hhmm>`, with date and time in America/New_York (not the computer's local time). When the plugin runs from the `DEV` branch the name starts with `DEV_` and the report shows a red "DEV:" before the title; `main` (PROD) has no prefix. The analysis window is Monday 00:00 America/New_York until now, unless the user gave another period.
-3. **Teams first.** `teams-collector` decides which projects were discussed. Its project list drives every later step.
-4. **Jira, Confluence, SharePoint and Ardoq in parallel.** Each collector gets the project list; `org-collector` reads the reporting lines from Ardoq. If the Jira agent can't start, a general agent retries once with the same read-only rules. If Ardoq is not signed in, `org-collector` returns nothing and the run goes on with the saved team list.
+3. **Teams first.** `collector-teams` decides which projects were discussed. Its project list drives every later step.
+4. **Jira, Confluence, SharePoint and Ardoq in parallel.** Each collector gets the project list; `collector-org` reads the reporting lines from Ardoq. If the Jira agent can't start, a general agent retries once with the same read-only rules. If Ardoq is not signed in, `collector-org` returns nothing and the run goes on with the saved team list.
 5. **Merge.** The orchestrator writes `data.json`. Status comes only from evidence: roadmap RAG first, then Jira dates. "Jira updates needed" lists only gaps a source proves. The live roster is stored as `org_teams`.
 5a. **Sprint tickets.** `python -m ioassistant.cli sprint-tickets` (no AI involved) reads every ticket of the current sprint and of each open past sprint from Jira, page by page, and replaces the ticket lists in `data.json`. A missing sprint id is looked up on board 318 by sprint name. If the count does not match the sprint total, the step fails, a "Sprint tickets" data gap is recorded and the collector's list is kept. The current sprint is the one whose dates cover the report day: when Jira still shows an ended sprint as active, the next sprint becomes current, the ended one moves to the past sprints and a data gap says so.
 5b. **Sprint changes.** `python -m ioassistant.cli sprint-changes` (no AI involved) reads the Jira change history of the current sprint and adds `sprint.changes`: tickets added to or removed from the sprint during the analysis window, with date and who did it. If Jira cannot be read, the section is left out and a data gap is recorded.
@@ -471,8 +488,9 @@ Tables sort by column, cards collapse, and Jira keys are links.
 
 | Module | Role |
 |---|---|
-| `cli.py` | Command line: `report`, `spend`, `confluence`, `email`, `presentation`, `sprint-changes`, `sprint-tickets`, `release-log` (`--compact` for upload copies; `--orchestrator-tokens`, `--orchestrator-seconds` and `--orchestrator-row` for `spend`) |
+| `cli.py` | Command line: `report`, `spend`, `confluence`, `email`, `presentation`, `sprint-changes`, `sprint-tickets`, `release-log`, `leadership-collect`, `leadership-report` (`--compact` for upload copies; `--orchestrator-tokens`, `--orchestrator-seconds` and `--orchestrator-row` for `spend`) |
 | `report.py` | Status report HTML renderer |
+| `leadership.py` | IO Projects Leadership Updates: `leadership-collect` (digest of the main reports of a period per roadmap-deck project, using `config/leadership-projects.json`), `leadership-report` (deck vs proposal HTML), and the Outlook / Confluence bodies (`email` and `confluence` pick them from the run folder name) |
 | `orgteams.py` | Team roster (Ardoq reporting lines): live `org_teams` from the run, else `config/org-teams.json`; matches Jira assignees to teams |
 | `sprintchanges.py` | `sprint-changes` command: reads the Jira change history (read-only) and adds `sprint.changes`, the tickets added to or removed from the sprint during the analyzed period |
 | `sprinttickets.py` | `sprint-tickets` command: reads every ticket of the current and open past sprints from Jira (read-only, paged, count checked), with start and end dates, related tickets and resolution dates, replaces `tickets` in `data.json` and makes the sprint covering the report day the current one |

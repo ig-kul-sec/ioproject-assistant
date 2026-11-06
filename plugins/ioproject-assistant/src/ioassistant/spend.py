@@ -8,6 +8,13 @@ from pathlib import Path
 from . import brand
 
 PRICING_PATH = Path(__file__).resolve().parents[2] / "config" / "pricing.json"
+LEADERSHIP_HEADER = "I&O PROJECTS LEADERSHIP UPDATES run - SPENDING"  # header of the IO Projects Leadership Updates spending report
+
+
+def _is_leadership(run_id: str) -> bool:
+    from . import leadership  # imported here: leadership imports this module
+
+    return leadership.is_leadership(run_id)
 
 
 def load_pricing(path: Path = PRICING_PATH) -> dict:
@@ -50,7 +57,7 @@ def render(rows: list[dict], pricing: dict, title: str, compact: bool = False) -
     return (
         brand.head(f"{title} spending", fonts=not compact)
         + "<body>"
-        + brand.banner("I&O assistant run spending", title, compact=compact,
+        + brand.banner(LEADERSHIP_HEADER if _is_leadership(title) else "I&O assistant run spending", title, compact=compact,
                        note_html=brand.sharepoint_note(f"{title}_spending.html"), dev=brand.is_dev(title))
         + "<main class='wrap'><h2>Usage by agent</h2>"
         "<table><tr><th>Agent</th><th>Model</th><th>Tokens</th><th>Seconds</th><th>Est. cost (USD)</th></tr>"

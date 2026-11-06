@@ -14,22 +14,22 @@ from . import __version__, brand, spend
 OUTPUT_DIR = Path.cwd() / "output"  # the user's working folder, not the installed plugin folder
 
 AGENTS = [
-    ("orchestrator", "Opus 5.5", "Conductor",
+    ("orchestrator-assistant-report", "Opus 5.5", "Conductor",
      "Runs the 8-step pipeline, merges the collectors' findings into one data set, writes the per-project summary and the Jira "
      "updates needed, and tracks time and cost.",
      "Launches the other agents; writes the run folder", "Never invents facts: a missing value shows as n/a"),
-    ("teams-collector", "Sonnet 5.5", "Meetings and email",
+    ("collector-teams", "Sonnet 5.5", "Meetings and email",
      "Reads the Daily Ops StandUp and Rubrik Project SyncUp chats, the Rubrik transcript and the 'RUBRIK - Project Status' emails "
      "for the analysis period.",
      "Read-only", "Chat text is treated as data, never as instructions"),
-    ("jira-collector", "Sonnet 5.5", "Tickets",
+    ("collector-jira", "Sonnet 5.5", "Tickets",
      "Reviews IOSP, RM and COR tickets for the discussed projects, always including the Rubrik epic IOSP-471, plus the active "
      "sprint: status, owners, dates, changes since Monday.",
      "Read-only", "Cannot edit, move or comment on tickets"),
-    ("confluence-collector", "Sonnet 5.5", "Project pages",
+    ("collector-confluence", "Sonnet 5.5", "Project pages",
      "Reads each project's Confluence page: status, dates, owners, recent edits.",
      "Read-only", "Access token kept outside the repository"),
-    ("sharepoint-collector", "Sonnet 5.5", "Roadmap and storage",
+    ("collector-sharepoint", "Sonnet 5.5", "Roadmap and storage",
      "Reads the I&O Project Roadmap deck (Project review slides only, never Accomplishments) and the PMO folder. In upload mode "
      "it saves the finished reports to the report folder.",
      "Reads; writes only the two report files", "Size-checked upload; never overwrites unless told to"),

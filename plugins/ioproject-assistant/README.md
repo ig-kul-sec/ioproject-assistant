@@ -22,6 +22,7 @@ On Claude Code 2.1.275 or later this works in one step:
 | `/ioproject-assistant:setup` | One-time setup and health check (Python, Jira/Confluence tokens, Microsoft 365, folder) |
 | `/ioproject-assistant:run-report` | Builds today's report (default period: since Monday) |
 | `/ioproject-assistant:run-report since 2026-10-12` | Same, for another period |
+| `/ioproject-assistant:run-leadership-updates` | Leadership update: reads the main reports of the last 7 days and the I&O Project Roadmap deck, shows the deck's previous information beside a proposal for new statuses (HTML report, SharePoint, unsent Outlook draft to the PMO, Confluence draft page) |
 
 Requirements: Python 3.10+ (no packages), the Microsoft 365 connector enabled in claude.ai, Jira and Confluence personal access tokens in `~/.ioassistant/secrets.env`.
 
@@ -29,7 +30,7 @@ Full step-by-step guide (sharing and day-to-day use): [docs/PLUGIN_GUIDE.md](../
 
 ## Contents
 
-- `agents/`: orchestrator, 4 collectors (Teams, Jira, Confluence, SharePoint), report builder, Outlook drafter, Confluence publisher
-- `skills/`: the instructions each agent follows, plus `run-report` and `setup`
+- `agents/`: orchestrator-assistant-report, orchestrator-leadership, 4 collectors (Teams, Jira, Confluence, SharePoint), report builder, Outlook drafter, Confluence publisher
+- `skills/`: the instructions each agent follows, plus `run-report`, `run-leadership-updates` and `setup`
 - `src/ioassistant/`: report rendering (Python standard library only)
 - `config/`: model prices and non-secret default settings

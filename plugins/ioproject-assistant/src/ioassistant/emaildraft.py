@@ -15,12 +15,24 @@ CC = "igor.kulyk@sectigo.com"
 
 
 def subject_for(run_id: str) -> str:
-    """'IOProjectAssistantReport_20261017_1759' -> 'IO Project Assistant Report 20261017 1759'."""
-    return run_id.replace("IOProjectAssistantReport", "IO Project Assistant Report").replace("_", " ")
+    """'IOProjectAssistantReport_20261017_1759' -> 'IO Project Assistant Report 20261017 1759';
+    'IOProjectLeadershipUpdates_20261105_1008' -> 'IO Projects Leadership Updates 20261105 1008'."""
+    return (run_id.replace("IOProjectAssistantReport", "IO Project Assistant Report")
+            .replace("IOProjectLeadershipUpdates", "IO Projects Leadership Updates").replace("_", " "))
 
 
 def _a(label: str, url: str) -> str:
     return f'<a href="{escape(url, quote=True)}">{escape(label)}</a>'
+
+
+def footer_block(br: str = "<br>") -> str:
+    """The standard footer block of the Outlook draft and the Confluence page (br: "<br>" or "<br />")."""
+    return (
+        "<p><strong>AI AGENT FACTORY:</strong> <strong>IO Project Assistant</strong> | Version: " + escape(__version__)
+        + " | Author: " + f'<a href="mailto:{brand.AUTHOR_EMAIL}">{brand.AUTHOR_EMAIL}</a>'
+        + " | " + _a("User-Guide", brand.GUIDE_URL) + " | GitHub: " + _a(brand.REPO_URL, brand.REPO_URL)
+        + br + "sectigo.com | Sectigo© 2026. All rights reserved.</p>"
+    )
 
 
 def lead_line(window) -> str:
@@ -36,10 +48,7 @@ def render(run_id: str, window=None) -> str:
         f"Spending report: {_a(run_id + '_spending.html', brand.sharepoint_file_url(run_id + '_spending.html'))}<br>"
         f"Folder: {_a('IO Project Assistant Reports', brand.sharepoint_folder_url())}<br>"
         f"Confluence parent page: {_a('PMO AI Agent Factory', brand.CONFLUENCE_PARENT_URL)}</p>"
-        "<hr>"
-        f"<p><strong>AI AGENT FACTORY:</strong> <strong>IO Project Assistant</strong> | Version: {escape(__version__)} | Author: "
-        f'<a href="mailto:{brand.AUTHOR_EMAIL}">{brand.AUTHOR_EMAIL}</a> | {_a('User-Guide', brand.GUIDE_URL)} | GitHub: {_a(brand.REPO_URL, brand.REPO_URL)}<br>'
-        "sectigo.com | Sectigo© 2026. All rights reserved.</p>"
+        "<hr>" + footer_block("<br>")
     )
 
 

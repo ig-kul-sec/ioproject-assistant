@@ -6,6 +6,20 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
+## [1.0.0] - 2026-11-07
+
+### Added
+- New pipeline **IO Projects Leadership Updates** (skill `run-leadership-updates`, agent `orchestrator-leadership`): regular update of the leadership project deck. It reads the main IO Project Assistant reports of the analysis period (default the last 7 days, `LEADERSHIP_PERIOD_DAYS`) and the I&O Project Roadmap deck (project slides 5-9, `LEADERSHIP_DECK_URL` / `LEADERSHIP_DECK_SLIDES`), and writes a report `IOProjectLeadershipUpdates_<yyyymmdd>_<hhmm>.html` (New York time) in the style of the main report: summary tiles, projects at a glance, contents rail, and the tabs "Project updates", "Sources" and "Data gaps". Each project card has the key changes of the period, then the deck's previous information on the left beside a proposal for the new statuses and text on the right (new and superseded bullets marked, with the reason), then the key project resources in two columns (Jira epics, Confluence, SharePoint, project chats, other links). At risk is orange, Off track red; the header title is red and the DEV tag off-white (`brand.banner` has optional `title_color` and `dev_color`; the other reports are unchanged). The deck is only read, never changed.
+- The report is uploaded to the SharePoint report folder (next to the main report), a Confluence draft page `TEST: IO Projects Leadership Updates <yyyymmdd> <hhmm> (Draft)` is created under PMO AI Agent Factory > IO Project Assistant, and an unsent Outlook draft `IO Projects Leadership Updates <yyyymmdd> <hhmm>` is created (To `LEADERSHIP_EMAIL_TO`, default pmo@sectigo.com; CC the user). `continue from upload <RUN_ID>` resumes after a manual upload.
+- The leadership run has its own **spending report** with the same rules as the main report: `usage.json` records model, tokens and seconds for every agent run (the orchestrator's own tokens are filled in by `run-leadership-updates` afterwards, which also refreshes the SharePoint copy), it is rendered by the existing `spend` command, uploaded next to the report (`<RUN_ID>_spending.html`) and linked from the Outlook draft and the Confluence page ("Spending report:" line, same place as in the main report's template). Its header reads "I&O PROJECTS LEADERSHIP UPDATES run - SPENDING" (the main report's spending header is unchanged).
+- New commands `python -m ioassistant.cli leadership-collect <run folder> --from <ISO> --to <ISO>` (deterministic digest of the main reports per deck project, `reports.json`) and `leadership-report <data.json> [--compact]`; `email` and `confluence` build the leadership bodies when the run folder is a leadership run. Module `leadership.py`; project name matching between the deck and the main reports in `config/leadership-projects.json`.
+- `collector-sharepoint` has a read-only **deck mode** (`sharepoint-roadmap` skill) that returns the deck's project slides with RAG letters, PM/TL and all text blocks, including Accomplishments (the status report's read mode still skips them).
+
+### Changed
+- `emaildraft.footer_block()` holds the footer shared by the Outlook draft and the Confluence page (output unchanged).
+- The orchestrator agents follow one naming pattern: `orchestrator` is now `orchestrator-assistant-report` (launch it as `ioproject-assistant:orchestrator-assistant-report`) and the new `leadership-orchestrator` is `orchestrator-leadership`.
+- The collector agents follow the same pattern: `confluence-collector`, `jira-collector`, `org-collector`, `sharepoint-collector` and `teams-collector` are now `collector-confluence`, `collector-jira`, `collector-org`, `collector-sharepoint` and `collector-teams` (launch them as `ioproject-assistant:collector-<name>`).
+
 ## [0.5.16] - 2026-11-05
 
 ### Changed

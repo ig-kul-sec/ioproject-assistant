@@ -20,7 +20,7 @@ Run these checks yourself; if one fails, tell the user in one sentence what is m
 
 ## 2. Run the pipeline
 
-Launch the Agent tool with `subagent_type: "ioproject-assistant:orchestrator"`. Prompt: "Run the daily IO Project Assistant pipeline." Add the analysis period only if the user gave one: `$ARGUMENTS`. Say once that a run usually takes 10-20 minutes.
+Launch the Agent tool with `subagent_type: "ioproject-assistant:orchestrator-assistant-report"`. Prompt: "Run the daily IO Project Assistant pipeline." Add the analysis period only if the user gave one: `$ARGUMENTS`. Say once that a run usually takes 10-20 minutes.
 
 If the user's request is `continue from upload <RUN_ID>` (after a manual upload), skip the first two checks' wait time but still run the pre-flight, then launch the orchestrator with the prompt `Continue from upload <RUN_ID>`, do step 3 for its resume row, and go to step 4.
 
@@ -35,7 +35,7 @@ PYTHONPATH="${CLAUDE_PLUGIN_ROOT}/src" python -m ioassistant.cli spend output/<R
 
 The first command fills the row and renders the local report; the second rebuilds the compact copy in `output/<RUN_ID>/upload/`. In resume mode add `--orchestrator-row "orchestrator (resume)"` to the first command (the first run's row stays). Always give the path with the run folder in it, not a bare `usage.json`.
 
-The SharePoint copy of the spending report was uploaded before the orchestrator's figures existed, so refresh it when the main report is on SharePoint (the upload succeeded, or in resume mode `Continue from upload` verified it): launch `ioproject-assistant:sharepoint-collector` in upload mode for `output/<RUN_ID>/upload/<RUN_ID>_spending.html` with "Replace mode: this is the run's own spending report, refreshed with the final figures; replace only that file." Do not retry a denied or failed refresh; say that only the local copy has the final figures. If the main report was never uploaded (blocked upload), skip the refresh and say the same. The refresh itself is not added to the spending report.
+The SharePoint copy of the spending report was uploaded before the orchestrator's figures existed, so refresh it when the main report is on SharePoint (the upload succeeded, or in resume mode `Continue from upload` verified it): launch `ioproject-assistant:collector-sharepoint` in upload mode for `output/<RUN_ID>/upload/<RUN_ID>_spending.html` with "Replace mode: this is the run's own spending report, refreshed with the final figures; replace only that file." Do not retry a denied or failed refresh; say that only the local copy has the final figures. If the main report was never uploaded (blocked upload), skip the refresh and say the same. The refresh itself is not added to the spending report.
 
 ## 4. Tell the user what they got
 

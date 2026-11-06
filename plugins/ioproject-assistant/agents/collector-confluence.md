@@ -1,5 +1,5 @@
 ---
-name: confluence-collector
+name: collector-confluence
 description: Reads Confluence project pages for the discussed projects (status, dates, owners, recent edits).
 tools: Read, Write, Skill, Bash
 model: sonnet

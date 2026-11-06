@@ -22,8 +22,8 @@ def test_summarize_counts_each_message_once_and_measures_seconds(tmp_path):
         "not json",
         _line("2026-10-22T14:01:30.500Z", "m2", "claude-sonnet-5-5", other),
     ]), encoding="utf-8")
-    row = transcript_usage.summarize(path, "teams-collector")
-    assert row["agent"] == "teams-collector" and row["model"] == "claude-sonnet-5-5"
+    row = transcript_usage.summarize(path, "collector-teams")
+    assert row["agent"] == "collector-teams" and row["model"] == "claude-sonnet-5-5"
     assert (row["input_tokens"], row["output_tokens"]) == (7, 48)
     assert (row["cache_read_tokens"], row["cache_write_tokens"], row["api_calls"]) == (150, 10, 2)
     assert row["seconds"] == 90.5

@@ -1,0 +1,14 @@
+{
+  "_comment": "IO Projects Leadership Updates: the project names on the I&O Project Roadmap deck (slides 5-9) and the words that identify the same project in the main IO Project Assistant reports (case-insensitive, any word; first project that matches wins). Add a line when the deck gets a new project or the main report renames one.",
+  "projects": [
+    {"name": "HSM Upgrade", "match": ["hsm"]},
+    {"name": "Oracle RAC", "match": ["oracle rac"]},
+    {"name": "Network v2.0", "match": ["network 2.0", "network v2", "network 2"]},
+    {"name": "Rubrik", "match": ["rubrik"]},
+    {"name": "AI POC Observability", "match": ["observability"]},
+    {"name": "Postgres DB", "match": ["postgres", "edb"]},
+    {"name": "Migration EOL/EOS OSs", "match": ["eol", "eos", "os upgrade"]},
+    {"name": "Debian OS lifecycle management", "match": ["debian"]},
+    {"name": "IT Service Management", "match": ["service management", "freshservice", "itsm"]}
+  ]
+}

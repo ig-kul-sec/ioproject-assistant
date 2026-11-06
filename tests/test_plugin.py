@@ -48,9 +48,10 @@ def test_no_repo_relative_paths_left():
 
 
 def test_orchestrator_launches_namespaced_agents():
-    text = (PLUGIN / "agents" / "orchestrator.md").read_text(encoding="utf-8")
+    text = (PLUGIN / "agents" / "orchestrator-assistant-report.md").read_text(encoding="utf-8")
     assert 'subagent_type: "ioproject-assistant:<name>"' in text
-    standalone = {"release-log-publisher"}  # run by the maintainer after a release, not part of a report run
-    agents = {p.stem for p in PLUGIN.glob("agents/*.md")} - {"orchestrator"} - standalone
+    # not part of a status report run: the maintainer's release log, and the separate IO Projects Leadership Updates pipeline
+    standalone = {"release-log-publisher", "orchestrator-leadership"}
+    agents = {p.stem for p in PLUGIN.glob("agents/*.md")} - {"orchestrator-assistant-report"} - standalone
     for name in agents:
         assert f"`{name}`" in text, f"orchestrator never launches {name}"

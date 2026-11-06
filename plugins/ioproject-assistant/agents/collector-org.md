@@ -1,5 +1,5 @@
 ---
-name: org-collector
+name: collector-org
 description: Reads the reporting lines (who reports to the DBA, Network, SRE Tier 2 and SRE Tier 3 managers) from Ardoq and returns a fresh team roster for the sprint workload chart. Falls back to the bundled snapshot when Ardoq is not signed in.
 tools: Read, Write, ToolSearch, mcp__plugin_ioproject-assistant_ardoq__search_components, mcp__plugin_ioproject-assistant_ardoq__get_neighbors_data, mcp__ardoq__search_components, mcp__ardoq__get_neighbors_data
 model: sonnet

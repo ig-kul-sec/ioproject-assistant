@@ -23,5 +23,5 @@ def test_agent_front_matter_is_valid():
         assert fm["name"] == path.stem, f"{path.name}: name must match the file name"
         desc = fm["description"]
         quoted = desc[:1] in ("'", '"') and desc[-1:] == desc[:1]
-        # an unquoted YAML value must not contain ': ' (this broke jira-collector)
+        # an unquoted YAML value must not contain ': ' (this broke collector-jira)
         assert quoted or ": " not in desc, f"{path.name}: quote the description (contains ': ')"

@@ -8,8 +8,9 @@ from pathlib import Path
 from . import __version__, brand, emaildraft, spend
 
 def title_for(run_id: str) -> str:
-    """'IOProjectAssistantReport_20261017_1759' -> 'TEST: IO Project Assistant Report 20261017 1759 (Draft)'."""
-    return "TEST: " + run_id.replace("IOProjectAssistantReport", "IO Project Assistant Report").replace("_", " ") + " (Draft)"
+    """'IOProjectAssistantReport_20261017_1759' -> 'TEST: IO Project Assistant Report 20261017 1759 (Draft)';
+    'IOProjectLeadershipUpdates_20261105_1008' -> 'TEST: IO Projects Leadership Updates 20261105 1008 (Draft)'."""
+    return "TEST: " + emaildraft.subject_for(run_id) + " (Draft)"
 
 
 def _a(label: str, url: str) -> str:
@@ -24,10 +25,7 @@ def render(data: dict, run_id: str) -> str:
         f"Spending report: {_a(run_id + '_spending.html', brand.sharepoint_file_url(run_id + '_spending.html'))}<br />"
         f"Folder: {_a('IO Project Assistant Reports', brand.sharepoint_folder_url())}<br />"
         f"Confluence parent page: {_a('PMO AI Agent Factory', brand.CONFLUENCE_PARENT_URL)}</p>"
-        "<hr />"
-        f"<p><strong>AI AGENT FACTORY:</strong> <strong>IO Project Assistant</strong> | Version: {escape(__version__)} | Author: "
-        f'<a href="mailto:{brand.AUTHOR_EMAIL}">{brand.AUTHOR_EMAIL}</a> | {_a('User-Guide', brand.GUIDE_URL)} | GitHub: {_a(brand.REPO_URL, brand.REPO_URL)}<br />'
-        "sectigo.com | Sectigo© 2026. All rights reserved.</p>"
+        "<hr />" + emaildraft.footer_block("<br />")
     )
 
 
