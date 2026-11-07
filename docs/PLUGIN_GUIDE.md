@@ -20,6 +20,24 @@ You type one command. About 10-20 minutes later you have:
 
 It reads (never changes) the Daily Ops StandUp, Rubrik Project SyncUp and Postgres EDB migration Teams chats, the "RUBRIK - Project Status" emails, Jira (IOSP, RM, COR), Confluence, the I&O Project Roadmap deck and the reporting lines in Ardoq (used to group sprint tickets by team). The only things it writes are the two SharePoint files, the unsent draft and the one new Confluence page.
 
+## Two pipelines, two orchestrators
+
+Since 1.0.0 the plugin has **two pipelines**. Each one has its own orchestrator agent (an AI agent that runs and coordinates the steps), its own goal and its own command. They do not replace each other: the leadership pipeline builds on the output of the daily one.
+
+| | **Daily status report** | **Leadership updates** |
+|---|---|---|
+| Orchestrator | `orchestrator-assistant-report` | `orchestrator-leadership` |
+| Command | `/ioproject-assistant:run-report` | `/ioproject-assistant:run-leadership-updates` |
+| Goal | Show where every I&O project and the current sprint stand **today** | Propose what the leadership project deck should say **next**: new statuses and text per project |
+| When | Every working day | Weekly (period: the last 7 days, or the one you give) |
+| Reads | The raw sources: Teams chats and transcripts, Jira, Confluence, the SharePoint roadmap deck, Ardoq | Only the finished daily reports in `output/` and the roadmap deck. It never reads Teams, Jira or Confluence itself |
+| Runs | Five collector agents, then merges the data and renders the report | One digest step (`leadership-collect`) and the deck read, then writes a proposal per project |
+| Result | Status report (Projects, Operations, Sprint management, Data gaps) | Leadership report (Project updates, Sources, Data gaps): the deck's current text beside the proposal, with the reason for each change |
+| Changes the deck? | No | No. It only proposes |
+| Also creates | Spending report, SharePoint upload, unsent Outlook draft (default list), Confluence draft page | Same set: its own spending report, upload, unsent Outlook draft (To the PMO) and Confluence draft page |
+
+Run the daily report first. The leadership run stops with a clear message if there is no daily report in the period.
+
 ---
 
 # Part A: Sharing the plugin (owner)
@@ -359,8 +377,8 @@ IO Project Assistant is a **Claude Code plugin**. It has no server and no databa
 | Layer | What it is | Where |
 |---|---|---|
 | Entry points | Three skills the user types: `run-report`, `run-leadership-updates`, `setup` | `skills/run-report`, `skills/run-leadership-updates`, `skills/setup` |
-| Coordination | One **orchestrator** agent (Claude Opus) that runs the pipeline | `agents/orchestrator-assistant-report.md` |
-| Data collection | Five **collector** agents (Claude Sonnet), one per source (Teams, Jira, Confluence, SharePoint, Ardoq) | `agents/*-collector.md` |
+| Coordination | Two **orchestrator** agents (Claude Opus), one per pipeline: `orchestrator-assistant-report` runs the daily status report, `orchestrator-leadership` runs the leadership updates (see C2) | `agents/orchestrator-assistant-report.md`, `agents/orchestrator-leadership.md` |
+| Data collection | Five **collector** agents (Claude Sonnet), one per source (Teams, Jira, Confluence, SharePoint, Ardoq) | `agents/collector-*.md` |
 | Rendering | Python package `ioassistant` (standard library only) that turns merged JSON into HTML, email and Confluence bodies | `src/ioassistant/` |
 | Publishing | Agents that upload to SharePoint and create the Outlook draft and the Confluence page | `collector-sharepoint` (upload mode), `report-email-drafter`, `report-confluence-publisher`; maintainer only, outside a run: `release-log-publisher` |
 | Know-how | Skills holding the detailed rules each agent follows (schemas, API calls, limits) | `skills/*/SKILL.md` |
@@ -377,6 +395,25 @@ Design principles:
 ## C2. Agents (subagents)
 
 All agents are launched as `ioproject-assistant:<name>`.
+
+### The two orchestrators
+
+> **Two orchestrators, two goals.** Both run on Claude Opus and coordinate the other agents, but they serve different purposes and use different sources. Pick the one that matches the question.
+
+| | `orchestrator-assistant-report` | `orchestrator-leadership` |
+|---|---|---|
+| **Question it answers** | "Where do the projects and the sprint stand today?" | "What should the leadership deck say next?" |
+| **Started by** | `/ioproject-assistant:run-report` | `/ioproject-assistant:run-leadership-updates` |
+| **Input** | Teams, Jira, Confluence, SharePoint roadmap, Ardoq, through the collector agents | The daily reports in `output/` (digest by `leadership-collect`) and the roadmap deck (read by `collector-sharepoint` in deck mode) |
+| **Core function** | Collects, merges and rates: status from evidence, summaries, "Jira updates needed", sprint charts | Compares and proposes: the proposal starts as a copy of the deck and changes only on evidence from the period, each change with its reason |
+| **Agents it launches** | `collector-teams`, `collector-jira`, `collector-confluence`, `collector-sharepoint`, `collector-org`, `report-builder`, `report-email-drafter`, `report-confluence-publisher` | `collector-sharepoint` (deck and upload), `report-email-drafter`, `report-confluence-publisher`. It starts no collector for Teams, Jira or Confluence |
+| **Run id** | `IOProjectAssistantReport_<yyyymmdd>_<hhmm>` | `IOProjectLeadershipUpdates_<yyyymmdd>_<hhmm>` |
+| **Output** | Status report and spending report | Leadership report and its own spending report |
+| **Outlook draft** | To the default PMO and project-lead list (`REPORT_EMAIL_TO`) | To `LEADERSHIP_EMAIL_TO` (pmo@sectigo.com) |
+| **Needs first** | Nothing but a working setup | At least one daily report in the period |
+| **Never** | Changes sources or sends the draft | Changes the deck, reads the raw sources, or sends the draft |
+
+### All agents
 
 | Agent | Model | Job | Tools / access | Writes |
 |---|---|---|---|---|
@@ -451,6 +488,37 @@ A typical run takes 10-20 minutes. Any failed step is recorded as a data gap, an
 
 **Resume mode.** After a manual upload (or a blocked one), type `/ioproject-assistant:run-report continue from upload <RUN_ID>`. It checks that the report is in the SharePoint folder, then creates the Outlook draft and the Confluence page without re-running the pipeline and fills in its own spending row.
 
+### C4a. The leadership run, step by step
+
+This is the second pipeline, run by `orchestrator-leadership`.
+
+```mermaid
+flowchart TD
+    U["User: /ioproject-assistant:run-leadership-updates"] --> PF["Pre-flight: Python, tokens, M365, daily reports, folder"]
+    PF --> O["orchestrator-leadership (Opus): RUN_ID + period"]
+    O --> D["leadership-collect: digest of the daily reports of the period"]
+    O --> DK["collector-sharepoint (deck mode): roadmap deck slides 5-9"]
+    D --> M["Merge into data.json: deck (as read) + proposal + reason per project"]
+    DK --> M
+    M --> R["leadership-report: HTML report + spending report"]
+    R --> UP["collector-sharepoint (upload): report first, then spending report"]
+    UP --> E["report-email-drafter: unsent Outlook draft to the PMO"]
+    UP --> CF["report-confluence-publisher: new draft page"]
+    E --> F["run-leadership-updates: final spending figures + summary"]
+    CF --> F
+```
+
+1. **Start.** The user types `/ioproject-assistant:run-leadership-updates`. The skill checks Python, the token file, the Microsoft 365 connector, the folder and that at least one daily report exists in `output/`.
+2. **Run id and period.** The orchestrator names the run `IOProjectLeadershipUpdates_<yyyymmdd>_<hhmm>` (America/New_York time, `DEV_` prefix on the DEV branch). The period is the last `LEADERSHIP_PERIOD_DAYS` days (default 7) until now, or the range the user gave ("since 2026-10-30").
+3. **Digest and deck, in parallel.** `leadership-collect` (no AI) groups the daily reports of the period per deck project: status history, updates, risks, action items and resources. `collector-sharepoint` reads the deck's project slides (read-only). With no daily report in the period, or an unreadable deck, the run stops and says why.
+4. **Merge.** The orchestrator writes `data.json`: for each project the deck as read (left side), a `proposal` that starts as a copy of the deck and changes only on evidence from the period (right side), the reason for each change, the key changes of the period and the project resources. Projects named differently on the deck and in the daily reports are matched through `config/leadership-projects.json`.
+5. **Render.** `leadership-report` builds the report; `spend` builds its own spending report.
+6. **Upload.** Both files go to the SharePoint report folder (the report first). If the upload is blocked or denied it is not retried: the run stops with the file paths for a manual upload, and no draft or page is made yet.
+7. **Draft and page, in parallel.** After a successful upload: the unsent Outlook draft `IO Projects Leadership Updates <yyyymmdd> <hhmm>` (To `LEADERSHIP_EMAIL_TO`, CC the user) and the Confluence draft page `TEST: IO Projects Leadership Updates <yyyymmdd> <hhmm> (Draft)`.
+8. **Finish.** `run-leadership-updates` fills in the orchestrator's own token usage, re-renders the spending report and refreshes its SharePoint copy, then summarizes the projects whose status the proposal changes and the data gaps.
+
+**Resume mode.** After a manual upload type `/ioproject-assistant:run-leadership-updates continue from upload <RUN_ID>`. It checks that the report is on SharePoint, then creates the draft and the page and adds its own spending row.
+
 ## C5. Files a run produces
 
 All files go in `output/<RUN_ID>/` inside the folder Claude was opened in.
@@ -465,6 +533,8 @@ All files go in `output/<RUN_ID>/` inside the folder Claude was opened in.
 | `upload/<RUN_ID>.html`, `upload/<RUN_ID>_spending.html` | Compact copies uploaded to SharePoint |
 | `upload/<RUN_ID>_email.html` | Outlook draft body |
 | `upload/<RUN_ID>_confluence.xhtml` | Confluence page body (storage format) |
+
+A leadership run (`IOProjectLeadershipUpdates_<yyyymmdd>_<hhmm>`) writes the same kinds of files, with these differences: `reports.json` (digest of the daily reports of the period) and `deck.json` (the deck as read) instead of the collector files, and `data.json` holds the deck beside the proposal for each project (schema in the `run-leadership-updates` skill).
 
 The report starts with a header: links to the SharePoint archive, the Confluence parent page and the Jira scrum board, plus the analysis period. Below it come summary tiles, a contents list on the left, and four tabs.
 
@@ -556,10 +626,12 @@ Run it as `PYTHONPATH="<plugin>/src" python -m ioassistant.cli <command> <json>`
 
 ## C8. Version history
 
-Full notes are in `CHANGELOG.md`. Current version: **0.5.15**.
+Full notes are in `CHANGELOG.md`. Current version: **1.0.0**.
 
 | Version | Date | What changed |
 |---|---|---|
+| 1.0.0 | 2026-11-07 | New pipeline **IO Projects Leadership Updates** (skill `run-leadership-updates`, agent `orchestrator-leadership`): reads the daily reports of the period and the I&O Project Roadmap deck and proposes new statuses and text per project, with a report, its own spending report, SharePoint upload, an unsent Outlook draft to the PMO and a Confluence draft page. The plugin now has two orchestrators with different goals (see "Two pipelines, two orchestrators"). Agents renamed: `orchestrator` is `orchestrator-assistant-report`; `confluence-collector`, `jira-collector`, `org-collector`, `sharepoint-collector` and `teams-collector` are `collector-confluence`, `collector-jira`, `collector-org`, `collector-sharepoint` and `collector-teams`. `collector-sharepoint` also has a read-only deck mode. |
+| 0.5.16 | 2026-11-05 | The plugin guide describes 0.5.15. |
 | 0.5.15 | 2026-11-04 | The default "To" list of the Outlook draft now includes cody.bredendick@sectigo.com. The release-log skill names the real title of the Confluence parent page. |
 | 0.5.14 | 2026-11-03 | New maintainer agent `release-log-publisher` (skill `confluence-release-log`, command `release-log`) keeps a RELEASE LOG section at the end of the Confluence parent page with the versions deployed to PROD, from `CHANGELOG.md` on `main`. It is not part of `run-report`. |
 | 0.5.13 | 2026-11-03 | Standups from 2026-10-27 are read from the meeting's own transcript (through the calendar event); the "Daily Ops Standup_<yyyymmdd>" emails are used only before that. The Sprint management ticket tables have the same columns as the project tables (Start, End, Related tickets) with "overdue N d" tags. The Outlook draft and Confluence page link the Confluence parent page. |
