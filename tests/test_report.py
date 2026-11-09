@@ -113,6 +113,25 @@ def test_overdue_tickets_are_highlighted_and_listed_under_jira_updates(tmp_path)
     assert "Finished late" not in html and "<th>Due</th>" in html
 
 
+def test_summary_has_whats_next_above_risks(tmp_path):
+    data = {"projects": [
+        {"name": "WithNext", "summary": [{"text": "Did a thing"}], "risks": ["Might slip"],
+         "action_items": [{"text": "Order <disks> for IOSP-7", "owner": "Pat", "due": "2026-11-12"},
+                          {"text": "Plain next step"}, {"text": "  "}, "String item"]},
+        {"name": "NoNext", "summary": [{"text": "Quiet"}], "risks": ["Other risk"]},
+    ]}
+    html = _render_data(tmp_path, data)
+    start = html.index("Project updates (summary)")  # one summary section per project card, in project order
+    mid = html.index("Project updates (summary)", start + 1)
+    first = html[start:mid]
+    assert first.index("Did a thing") < first.index(">What's next<") < first.index("Order &lt;disks&gt;") < first.index(">Risks<")
+    assert "(Owner: Pat, Due: 11/12)" in first and "Plain next step" in first and "String item" in first
+    assert 'href="https://sectigo.atlassian.net/browse/IOSP-7"' in first and "Order <disks>" not in html
+    assert first.count("<li>") == 1 + 3 + 1  # summary, three non-empty action items, one risk
+    rest = html[mid:html.index("Project sources</summary>", mid)]
+    assert rest.count(">What's next<") == 0 and ">Risks<" in rest  # no action items: the group is left out
+
+
 def test_project_sources_merged_and_report_sources_removed(tmp_path):
     data = {"projects": [{
         "name": "P",
@@ -126,7 +145,9 @@ def test_project_sources_merged_and_report_sources_removed(tmp_path):
         assert gone not in html
     assert "Project sources</summary>" in html
     block = html[html.index("Project sources</summary>"):html.index("Jira tickets for this project (active)")]
-    assert block.index("Meeting chats") < block.index("SharePoint folder") < block.index("Confluence page") < block.index("Jira epic")
+    assert block.index("Jira epic") < block.index(">SharePoint<") < block.index(">Confluence<") < block.index(">Project chats<")
+    assert "<div class='res'>" in block and block.count("<div class='rg'>") == 4  # two-column grid, four groups
+    assert ".res{display:grid;grid-template-columns:repeat(2" in html
     assert 'href="https://sectigo.atlassian.net/browse/IOSP-5"' in block and "The epic" in block
     assert "<span>3</span> Project sources" in html and "<span>4</span> Jira tickets for this project (active)" in html
 
@@ -469,7 +490,7 @@ def test_idle_employees_per_team_listed_without_tickets():
         {"key": "IOSP-2", "status": "Open", "assignee": "shane feola"},
     ]
     html = report.render({"sprint": {"name": "S1", "tickets": tickets}, "org_teams": TEAMS, "projects": []}, "R")
-    section = html[html.index("Employees without tickets assigned in sprint (IOSP, COR)"):]
+    section = html[html.index("Employees without tickets assigned in sprint (IOSP, COR, CITN, DBA)"):]
     section = section[:section.index("</table>")]
     assert "<td>DBA</td><td>Prajeet Singh Kahlon</td><td>0 of 1</td><td>everyone has a ticket</td>" in section
     assert "<td>Network</td><td>Jaime Larsen</td><td>0 of 1</td><td>everyone has a ticket</td>" in section

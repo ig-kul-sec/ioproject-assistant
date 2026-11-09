@@ -1,6 +1,6 @@
 ---
 name: jira-project-review
-description: Review JIRA tickets in the IOSP, RM and COR spaces for discussed projects and the active sprint (changes, comments, dates, assignees, statuses).
+description: Review JIRA tickets in the IOSP, RM and COR spaces for discussed projects, and the active sprint including its CITN and DBA tickets (changes, comments, dates, assignees, statuses).
 ---
 
 # JIRA project review
@@ -13,6 +13,7 @@ Spaces:
 - **IOSP**: epics, tasks, weekly scrum boards. The active sprint feeds the SPRINT STATUS section.
 - **RM**: release management tickets.
 - **COR**: projects managed in COR.
+- **CITN** (Corporate IT Network Team) and **DBA**: in scope for Sprint management only. Their tickets count wherever they sit in a sprint of the I&O Scrum board (the board's filter is `project IN (IOSP, COR, DBA, "Corporate IT Network Team")`), so they feed the sprint tickets, charts, workload and the "Tickets added or removed" list. They are not searched for the discussed projects or the Daily Ops items.
 
 For each discussed project (by key from the Teams collector, otherwise by epic/name search):
 1. Epic + child tickets: key, summary, status, assignee, start date, due/end date, URL, `created` (YYYY-MM-DD), `description` (plain text of the ticket description, first 600 characters, null when empty) and `sprint` (the name of the active sprint the ticket is in, else its latest sprint, null if none; use the Agile "Sprint" field, whose id is `customfield_10020`, see `/rest/api/3/field`).

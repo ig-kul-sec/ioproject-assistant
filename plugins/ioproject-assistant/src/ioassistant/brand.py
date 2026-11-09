@@ -99,17 +99,23 @@ def is_dev(run_id: str) -> bool:
 
 def banner(title: str, subtitle: str, range_line: str = "", compact: bool = False, note_html: str = "",
            subtitle_last: bool = False, tail_html: str = "", dev: bool = False, title_color: str = "",
-           dev_color: str = "#ff3b30") -> str:
+           dev_color: str = "#ff3b30", highlight: str = "") -> str:
     """Header band. subtitle_last puts the subtitle (e.g. the Generated line) after the range and link lines.
-    dev puts a "DEV:" in front of the title (red unless dev_color says otherwise); title_color overrides the title colour."""
+    dev puts a "DEV:" in front of the title (red unless dev_color says otherwise); title_color overrides the title colour.
+    highlight is a word of the title that is underlined and marked with a Spearmint highlight."""
     # wordmark for the Forest band. Compact builds (connector upload, text only) carry no logo: a model cannot
     # retype the base64 faithfully, and an approximated logo would break the brand rules.
     logo = "" if compact else _data_uri("sectigo-logo-light.png", "image/png")
     img = f"<img src='{logo}' alt='Sectigo'>" if logo else ""
     mark = f"<span style='color:{dev_color}'>DEV:</span> " if dev else ""
     h1 = f"<h1 style='color:{title_color}'>" if title_color else "<h1>"
+    title_html = escape(title)
+    if highlight and escape(highlight) in title_html:
+        word = (f"<span style='text-decoration:underline;text-underline-offset:5px;background:rgba(6,223,199,.38);"
+                f"border-radius:4px;padding:0 6px'>{escape(highlight)}</span>")
+        title_html = title_html.replace(escape(highlight), word, 1)
     return (
-        f"<header class='top'><div class='wrap'>{img}{h1}{mark}{escape(title)}</h1>"
+        f"<header class='top'><div class='wrap'>{img}{h1}{mark}{title_html}</h1>"
         + ("" if subtitle_last else f"<p>{escape(subtitle)}</p>")
         + (f"<p class='range'>{escape(range_line)}</p>" if range_line else "")
         + (f"<p class='store'>{note_html}</p>" if note_html else "")

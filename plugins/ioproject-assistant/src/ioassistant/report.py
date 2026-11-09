@@ -9,7 +9,7 @@ from zoneinfo import ZoneInfo
 from html import escape, unescape
 from pathlib import Path
 
-from . import brand, orgteams, spend
+from . import brand, orgteams, resources, spend
 
 NA = "n/a"
 
@@ -430,7 +430,7 @@ def _sprint_charts(sprint: dict, roster: dict | None = None, window=None) -> str
         + _sec(2, "Sprint burndown chart", _burndown(sprint, _ref_date({"window": window})))
         + _sec(3, "Tickets by status", _bars(status_rows, total=True))
         + _sec(4, "Tickets by team", _team_workload(tickets, roster))
-        + _sec(5, "Employees without tickets assigned in sprint (IOSP, COR)",_idle_employees(tickets, roster))
+        + _sec(5, "Employees without tickets assigned in sprint (IOSP, COR, CITN, DBA)", _idle_employees(tickets, roster))
         + _sec(6, "Tickets by employee",
                "<p class='legend'><i class='seg'></i> done <i class='seg open'></i> not done"
                f" &middot; {len(people)} employees account for {assigned} of {len(tickets)} tickets"
@@ -535,8 +535,25 @@ def _summary(p: dict, base: str) -> str:
         it = it if isinstance(it, dict) else {"text": it}
         refs = ", ".join(_ticket_link(k, base) for k in it.get("tickets") or [])
         out.append(f"<li>{_rich(it.get('text'), base)}" + (f" <span class='refs'>({refs})</span>" if refs else "") + "</li>")
-    risks = [f"<li>{_rich(r, base)}</li>" for r in p.get("risks", [])]
-    return _ul(out) + (f"<p class='lbl'>Risks</p>{_ul(risks)}" if risks else "")
+    return (_ul(out) + _group("What's next", _next_items(p, base)) + _group("Risks", [f"<li>{_rich(r, base)}</li>" for r in p.get("risks", [])]))
+
+
+def _group(label: str, items: list[str]) -> str:
+    """A labelled bullet group under the summary bullets; left out when it has no items. The label is a fixed string."""
+    return f"<p class='lbl'>{label}</p>{_ul(items)}" if items else ""
+
+
+def _next_items(p: dict, base: str) -> list[str]:
+    """The project's next action items: text, then the owner and the due date (mm/dd) when known."""
+    out = []
+    for it in p.get("action_items") or []:
+        it = it if isinstance(it, dict) else {"text": it}
+        if not str(it.get("text") or "").strip():
+            continue
+        meta = ", ".join(x for x in (f"Owner: {_t(it['owner'])}" if it.get("owner") else "",
+                                      f"Due: {_dated(it['due'])}" if it.get("due") else "") if x)
+        out.append(f"<li>{_rich(it['text'], base)}" + (f" <span class='refs'>({meta})</span>" if meta else "") + "</li>")
+    return out
 
 
 def _jira_updates(p: dict, base: str, today: date | None = None, compact: bool = False) -> str:
@@ -592,19 +609,28 @@ def _jira_updates(p: dict, base: str, today: date | None = None, compact: bool =
 
 
 def _project_sources(p: dict, base: str) -> str:
-    """Where the project lives: its meeting chats, SharePoint folder, Confluence page and Jira epic(s)."""
+    """Where the project lives: its Jira epic(s), SharePoint folder, Confluence page and project chats, plus the fixed
+    resources of config/project-resources.json (a Jira strategic initiative and a Planner group only when the project has one)."""
     links = p.get("links") or {}
+    fixed = resources.find(p.get("name"))
     epics = [t for t in p.get("tickets") or [] if t.get("epic")]
+    known = {str(t.get("key")) for t in epics}
+    more_epics = [x for x in resources.of_kind(fixed, "epic") if x["key"] not in known]  # the run's own epic rows win
     epic_rows = "".join(
         f"<li>{_ticket_link(t, base)}" + (f" {_rich(t.get('name') or t.get('summary'), base)}" if t.get("name") or t.get("summary") else "") + "</li>"
         for t in epics
-    )
-    return (
-        "<p class='lbl'>Meeting chats</p>" + _link_list(links.get("teams"))
-        + "<p class='lbl'>SharePoint folder</p>" + _link_list(links.get("sharepoint"))
-        + "<p class='lbl'>Confluence page</p>" + _link_list(links.get("confluence"))
-        + f"<p class='lbl'>Jira {'epics' if len(epics) > 1 else 'epic'}</p>" + (f"<ul>{epic_rows}</ul>" if epic_rows else f"<p>{NA}</p>")
-    )
+    ) + "".join(f"<li>{_ticket_link(x, base)}</li>" for x in more_epics)
+    # two columns, filled row by row: Jira epic(s) | SharePoint, Confluence | Project chats (labels as in the leadership report)
+    groups = [
+        (f"Jira {'epics' if len(epics) + len(more_epics) > 1 else 'epic'}", f"<ul>{epic_rows}</ul>" if epic_rows else f"<p>{NA}</p>"),
+        ("SharePoint", _link_list(links.get("sharepoint"))),
+        ("Confluence", _link_list((links.get("confluence") or []) + resources.of_kind(fixed, "confluence"))),
+        ("Project chats", _link_list((links.get("teams") or []) + resources.of_kind(fixed, "chat"))),
+    ]
+    for kind, label in (("initiative", "Jira strategic initiative"), ("planner", "Planner")):
+        if resources.of_kind(fixed, kind):
+            groups.append((label, _link_list(resources.of_kind(fixed, kind))))
+    return "<div class='res'>" + "".join(f"<div class='rg'><p class='lbl'>{label}</p>{body}</div>" for label, body in groups) + "</div>"
 
 
 def _natural(text) -> list:
@@ -818,6 +844,9 @@ summary.top::before{content:'\\25BE';color:var(--forest);font-size:18px}details.
 summary.sec{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;margin:1.4rem 0 .4rem;font-size:15px;border-bottom:1px solid var(--forest);padding-bottom:4px}
 summary.sec span{background:var(--forest);color:var(--spearmint);border-radius:50%;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;font-size:12px}
 .lbl{font-weight:600;margin:.6rem 0 .2rem}.refs{font-size:13px}
+.res{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 32px}
+.rg{min-width:0}.rg .lbl{margin-top:.8rem}
+@media(max-width:640px){.res{grid-template-columns:minmax(0,1fr)}}
 table.tix tr.done td{opacity:.6}
 tr.overdue td{background:color-mix(in srgb,var(--coral) 22%,transparent)}
 svg.bd{display:block;width:100%;max-width:680px;height:auto;margin:.4rem 0}

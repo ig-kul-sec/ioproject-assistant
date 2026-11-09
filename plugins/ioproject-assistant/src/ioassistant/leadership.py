@@ -13,7 +13,7 @@ from html import escape
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from . import brand, emaildraft, report, spend
+from . import brand, emaildraft, report, resources, spend
 
 RUN_PREFIX = "IOProjectLeadershipUpdates"
 TZ = ZoneInfo("America/New_York")
@@ -299,18 +299,26 @@ def _key_changes(p: dict) -> str:
 
 def _resources(p: dict) -> str:
     res = p.get("resources") or {}
-    epics = res.get("epics") or []
+    fixed = resources.find(p.get("name"))  # config/project-resources.json: added to what the run found
+    run_epics = res.get("epics") or []
+    known = {str(e.get("key")) for e in run_epics}
+    epics = run_epics + [{"key": x["key"], "url": x["url"]} for x in resources.of_kind(fixed, "epic") if x["key"] not in known]
     epic_rows = "".join(
         f"<li>{report._ticket_link(e, report.JIRA_BROWSE)}"
         + (f" {report._rich(e.get('name'))}" if e.get("name") else "")
         + (f" <span class='src'>({escape(str(e['status']))})</span>" if e.get("status") else "") + "</li>"
         for e in epics
     )
-    # two columns, filled row by row in this order: Jira epics, Confluence, SharePoint, Project chats, Other links
+    # two columns, filled row by row in this order: Jira epics, Confluence, SharePoint, Project chats, then (only for a
+    # project that has them) Jira strategic initiative and Planner, then Other links
     groups = [f"<div class='rg'><p class='lbl'>Jira {'epics' if len(epics) > 1 else 'epic'}</p>"
               + (f"<ul>{epic_rows}</ul>" if epic_rows else f"<p>{NA}</p>") + "</div>"]
-    for key, label in (("confluence", "Confluence"), ("sharepoint", "SharePoint"), ("chats", "Project chats")):
-        groups.append(f"<div class='rg'><p class='lbl'>{label}</p>{report._link_list(res.get(key))}</div>")
+    for key, label, kind in (("confluence", "Confluence", "confluence"), ("sharepoint", "SharePoint", None), ("chats", "Project chats", "chat")):
+        items = (res.get(key) or []) + (resources.of_kind(fixed, kind) if kind else [])
+        groups.append(f"<div class='rg'><p class='lbl'>{label}</p>{report._link_list(items)}</div>")
+    for kind, label in (("initiative", "Jira strategic initiative"), ("planner", "Planner")):
+        if resources.of_kind(fixed, kind):
+            groups.append(f"<div class='rg'><p class='lbl'>{label}</p>{report._link_list(resources.of_kind(fixed, kind))}</div>")
     if res.get("jira") or res.get("other"):
         groups.append("<div class='rg'><p class='lbl'>Other links</p>"
                       + report._link_list((res.get("jira") or []) + (res.get("other") or [])) + "</div>")
@@ -398,7 +406,7 @@ def _sources(data: dict) -> str:
             + (f"<ul>{runs}</ul>" if runs else f"<p>{NA}</p>"))
 
 
-TITLE_RED = "#ff3b30"  # the red of the "DEV:" tag in the main report's header; the leadership title uses it, the DEV tag turns off-white
+TITLE_WHITE = "#FFFFFF"  # the leadership title is white; the word LEADERSHIP is underlined and highlighted (brand.banner highlight=)
 
 LEADERSHIP_CSS = """
 :root{--orange:#F79009;--red:#D92D20}
@@ -411,8 +419,6 @@ nav.toc .dot.pause{background:var(--off-white);border-style:dashed;border-color:
 .rag{display:inline-block;border-radius:6px;padding:1px 8px;font-size:12px;font-weight:600;white-space:nowrap;border:1px solid var(--off-black)}
 .rag.ok{background:var(--spearmint);color:var(--forest)}.rag.risk{background:var(--orange);color:var(--off-black)}
 .rag.off{background:var(--red);color:var(--off-white);border-color:var(--red)}.rag.na{color:var(--off-black)}
-.res{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 32px}
-.rg{min-width:0}.rg .lbl{margin-top:.8rem}
 .cmp{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 24px;margin:.4rem 0}
 .cmp .hd{font:700 15px 'Urbanist',Arial,sans-serif;background:var(--forest);color:var(--off-white);padding:8px 12px;border-radius:6px 6px 0 0}
 .cmp .hd.new{background:var(--spearmint);color:var(--forest)}
@@ -446,8 +452,14 @@ def render(data: dict, title: str, compact: bool = False) -> str:
     return report._shrink(html, report.JIRA_BROWSE) if compact else html
 
 
+def _is_paused(p: dict) -> bool:
+    """Paused by the proposal (the new status), or by the deck when the proposal gives none."""
+    prop, deck = p.get("proposal") or {}, p.get("deck") or {}
+    return _status(prop.get("status") or deck.get("status"))[1] == "pause"
+
+
 def _render(data: dict, title: str, compact: bool) -> str:
-    projects = data["projects"]
+    projects = sorted(data["projects"], key=_is_paused)  # Paused projects go last; stable, so the rest keep their order
     other = data.get("other_projects") or []
     gaps = [g for g in data.get("gaps") or [] if g]
     moved = sum(1 for p in projects if _status((p.get("deck") or {}).get("status"))[0] != _status((p.get("proposal") or {}).get("status"))[0])
@@ -474,7 +486,7 @@ def _render(data: dict, title: str, compact: bool) -> str:
         + "<body id='top'>"
         + brand.banner("I&O PROJECTS LEADERSHIP UPDATES", f"Generated: {report._stamp(data.get('generated_at'))}",
                        report._range(data.get("window")), compact=compact, note_html=note, subtitle_last=True,
-                       dev=brand.is_dev(title), title_color=TITLE_RED, dev_color=brand.OFF_WHITE)
+                       dev=brand.is_dev(title), title_color=TITLE_WHITE, dev_color=brand.OFF_WHITE, highlight="LEADERSHIP")
         + "<div class='wrap layout'>" + _toc(projects, bool(other)) + "<main>"
         + f"<h2 id='summary'>Summary</h2><div class='kpis'>{kpis}</div>"
         + "<p class='tools'>"

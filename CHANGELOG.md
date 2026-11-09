@@ -6,6 +6,18 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
+## [1.1.0] - 2026-11-09
+
+### Added
+- **Fixed project resources.** New `config/project-resources.json` and module `resources.py`: links that are added to a project on every run, matched by key words in the project name (whole words, case-insensitive). Shown in "Project sources" of the status report and in "Key project resources" of the leadership report, merged with what the run finds (a link with the same URL is shown once). Two new groups appear only for projects that have them: "Jira strategic initiative" and "Planner". Configured for **Network 2.0** (Jira epic IOSP-477, Confluence, Teams project chat, Planner), **EoL OS management** (strategic initiative SI-5, Confluence, Teams project chat) and **OS Lifecycle management** (Jira epic IOSP-806, Confluence, Planner; matches "OS lifecycle" and "Debian").
+- **"What's next"** group in "Project updates (summary)" of each project in the status report, above "Risks": the project's action items with owner and due date (mm/dd). A project with no action items shows no group.
+
+### Changed
+- Status report, "Project sources" is laid out in two columns, in the order Jira epic(s), SharePoint, Confluence, Project chats; the labels match the leadership report (SharePoint, Confluence, Project chats).
+- **Sprint management** covers two more Jira spaces, CITN (Corporate IT Network Team) and DBA. The board filter already included them, so no collection change was needed; the skill, agent and guide text now say so. The section "Employees without tickets assigned in sprint" is now "Employees without tickets assigned in sprint (IOSP, COR, CITN, DBA)".
+- Leadership report header: the title is white and the word LEADERSHIP is underlined and highlighted (it was red).
+- Leadership report: projects Paused by the proposal (or by the deck when the proposal gives no status) are listed last in the contents, at a glance and in the cards.
+
 ## [1.0.0] - 2026-11-07
 
 ### Added

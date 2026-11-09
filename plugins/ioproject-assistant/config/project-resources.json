@@ -1,0 +1,33 @@
+{
+  "_comment": "Fixed resources per project, added to the 'Project sources' section of the status report and to 'Key project resources' of the leadership report on every run. A project gets the links of the first entry whose 'match' word is found in its name (case-insensitive, whole words, any word). kind: epic and initiative (Jira, the label is the key from the URL), confluence, planner, chat (Teams project chat). Links that the run finds itself are kept; a link with the same URL is shown once.",
+  "projects": [
+    {
+      "name": "Network 2.0",
+      "match": ["network 2.0", "network v2.0", "network v2", "network 2"],
+      "links": [
+        {"kind": "epic", "url": "https://sectigo.atlassian.net/browse/IOSP-477"},
+        {"kind": "confluence", "label": "Network v2.0", "url": "https://sectigo.atlassian.net/wiki/spaces/CO/pages/94175911/Network+v2.0"},
+        {"kind": "chat", "label": "Network 2.0 project chat", "url": "https://teams.microsoft.com/l/chat/19%3Ameeting_YTJkNDY1ODYtNDBjZS00Mjk2LTg1N2YtYWQ3NzZkZjM0ZGRh%40thread.v2/conversations?context=%7B%22contextType%22%3A%22chat%22%7D"},
+        {"kind": "planner", "label": "Network 2.0 Planner", "url": "https://planner.cloud.microsoft/ui/web/premiumplan/9e70c516-8bd8-406c-8b9b-582891c6746b/org/62bba996-09fe-4c69-ad26-1eec9cfd7a3b?tid=0e9c4894-6caa-465d-9660-4b6968b49fb7"}
+      ]
+    },
+    {
+      "name": "EoL OS management",
+      "match": ["eol", "eos", "end of life", "end-of-life"],
+      "links": [
+        {"kind": "initiative", "url": "https://sectigo.atlassian.net/browse/SI-5"},
+        {"kind": "confluence", "label": "EoL OS management", "url": "https://sectigo.atlassian.net/wiki/spaces/CO/pages/94183326/EoL+OS+management"},
+        {"kind": "chat", "label": "EoL OS management project chat", "url": "https://teams.microsoft.com/l/chat/19%3Ameeting_ZDFkYTg1YTMtNmIwNS00MDhlLWE0MGMtMGQwMmM3MWExOGFi%40thread.v2/conversations?context=%7B%22contextType%22%3A%22chat%22%7D"}
+      ]
+    },
+    {
+      "name": "OS Lifecycle management",
+      "match": ["os lifecycle", "debian"],
+      "links": [
+        {"kind": "epic", "url": "https://sectigo.atlassian.net/browse/IOSP-806"},
+        {"kind": "confluence", "label": "OS Lifecycle management", "url": "https://sectigo.atlassian.net/wiki/spaces/CO/pages/94178822/OS+Lifecycle+management"},
+        {"kind": "planner", "label": "OS Lifecycle management Planner", "url": "https://planner.cloud.microsoft/ui/web/premiumplan/3400b6b4-2cbc-437f-9be2-262d897f0750/org/62bba996-09fe-4c69-ad26-1eec9cfd7a3b?tid=0e9c4894-6caa-465d-9660-4b6968b49fb7"}
+      ]
+    }
+  ]
+}

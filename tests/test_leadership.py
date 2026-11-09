@@ -129,7 +129,10 @@ def _run_dir(tmp_path, name="IOProjectLeadershipUpdates_20261106_1100"):
 def test_report_layout(tmp_path):
     run = _run_dir(tmp_path)
     html = leadership.build(run / "data.json").read_text(encoding="utf-8")
-    assert "I&O PROJECTS LEADERSHIP UPDATES" in html or "I&amp;O PROJECTS LEADERSHIP UPDATES" in html
+    # header: white title, the word LEADERSHIP underlined and highlighted
+    h1 = html[html.index("<h1"):html.index("</h1>")]
+    assert h1.startswith("<h1 style='color:#FFFFFF'>") and "I&amp;O PROJECTS " in h1 and " UPDATES" in h1
+    assert re.search(r"<span style='text-decoration:underline[^']*background:rgba\(6,223,199[^']*'>LEADERSHIP</span>", h1)
     tabs = re.findall(r"<button role='tab' data-tab='[^']+'>([^<]+)</button>", html)
     assert tabs == ["Project updates", "Sources", "Data gaps"]  # Sources is the 2nd tab
     panel_sources = html.index("id='tab-sources'")
@@ -143,10 +146,9 @@ def test_report_layout(tmp_path):
     res = card[card.index("class='res'"):]
     assert res.index("Jira epic") < res.index(">Confluence<") < res.index(">SharePoint<") < res.index(">Project chats<")
     assert ".res{display:grid;grid-template-columns:repeat(2" in html
-    # colours: At risk orange, Off track red; the header title is the DEV red and the DEV tag is off-white
+    # colours: At risk orange, Off track red
     assert ".pill.risk{background:var(--orange)" in html and "--orange:#F79009" in html
     assert ".pill.off{background:var(--red)" in html and "--red:#D92D20" in html
-    assert "<h1 style='color:#ff3b30'>" in html
     assert "Previous information: roadmap deck (slide 6)" in html and "Proposal: new statuses" in html
     assert 'class="pill off">Off track' in html and 'class="pill risk">At risk' in html and "was Off track" in html
     assert "Rubrik &lt;DR&gt;" in html and "Ship &lt;appliances&gt;" in html and "Rubrik <DR>" not in html
@@ -164,7 +166,21 @@ def test_report_compact_and_dev(tmp_path):
     out = leadership.build(run / "data.json", compact=True)
     html = out.read_text(encoding="utf-8")
     assert out.parent.name == "upload" and "@font-face" not in html and "data:image" not in html
-    assert "<span style='color:#F3F2EA'>DEV:</span>" in html and "<h1 style='color:#ff3b30'>" in html  # white tag, red title
+    assert "<span style='color:#F3F2EA'>DEV:</span>" in html and "<h1 style='color:#FFFFFF'>" in html  # white tag and white title
+
+
+def test_paused_projects_go_last():
+    paused = {"status": "Paused"}
+    data = {"projects": [
+        {"name": "Alpha Paused", "deck": {"status": "On track"}, "proposal": paused},  # paused by the proposal
+        {"name": "Beta Paused", "deck": paused},                                       # paused by the deck, no proposal status
+        {"name": "Gamma Active", "deck": {"status": "On track"}, "proposal": {"status": "At risk"}},
+        {"name": "Delta Resumed", "deck": paused, "proposal": {"status": "On track"}},  # resumed: stays in the main list
+    ]}
+    html = leadership.render(data, "IOProjectLeadershipUpdates_1_1")
+    cards = html[html.index('<details class="card"'):]
+    order = [cards.index(n) for n in ("Gamma Active", "Delta Resumed", "Alpha Paused", "Beta Paused")]
+    assert order == sorted(order)  # active ones first in their original order, then the paused ones in theirs
 
 
 def test_main_report_header_is_unchanged(tmp_path):

@@ -58,7 +58,7 @@ STEPS = [
 SOURCES = [
     ("Teams", "Daily Ops StandUp chat; Rubrik Project SyncUp chat and transcript"),
     ("Outlook", "'RUBRIK - Project Status' emails"),
-    ("Jira", "IOSP, RM and COR tickets; the active sprint; epic IOSP-471 (Rubrik DR backup)"),
+    ("Jira", "IOSP, RM and COR tickets; the active sprint (IOSP, COR, CITN and DBA tickets); epic IOSP-471 (Rubrik DR backup)"),
     ("Confluence", "Project pages: status, dates, owners"),
     ("SharePoint", "I&O Project Roadmap deck (Project review slides); PMO folder"),
 ]
