@@ -539,9 +539,9 @@ A leadership run (`IOProjectLeadershipUpdates_<yyyymmdd>_<hhmm>`) writes the sam
 The report starts with a header: links to the SharePoint archive, the Confluence parent page and the Jira scrum board, plus the analysis period. Below it come summary tiles, a contents list on the left, and four tabs.
 
 **Projects:** projects at a glance, then a card per project with these sections:
-- updates
+- updates: the summary bullets, then "What's next" (the project's action items with owner and due date, left out when there are none) and "Risks"
 - Jira updates needed (including a table of active tickets past their due date)
-- project sources: meeting chats, SharePoint folder, Confluence page and links to the Jira epic(s)
+- project sources, in two columns: Jira epic(s), SharePoint, Confluence, Project chats, plus a Jira strategic initiative and a Planner link for projects that have them (fixed links from `config/project-resources.json` are added to what the run finds)
 - Jira tickets for this project (active): active tickets only, epic first, sorted by sprint; tickets past their End date are highlighted and tagged "overdue N d"
 
 **Operations:** the **Daily Ops operational health and incidents** table lists Daily Ops Standup items that belong to no project: health, incidents, problems, issues, changes and maintenance. It shows the date, type, item, status, who gave the update, owner, related Jira tickets with their status, and the source link.
@@ -561,6 +561,7 @@ Tables sort by column, cards collapse, and Jira keys are links.
 | `cli.py` | Command line: `report`, `spend`, `confluence`, `email`, `presentation`, `sprint-changes`, `sprint-tickets`, `release-log`, `leadership-collect`, `leadership-report` (`--compact` for upload copies; `--orchestrator-tokens`, `--orchestrator-seconds` and `--orchestrator-row` for `spend`) |
 | `report.py` | Status report HTML renderer |
 | `leadership.py` | IO Projects Leadership Updates: `leadership-collect` (digest of the main reports of a period per roadmap-deck project, using `config/leadership-projects.json`), `leadership-report` (deck vs proposal HTML), and the Outlook / Confluence bodies (`email` and `confluence` pick them from the run folder name) |
+| `resources.py` | Fixed per-project resources from `config/project-resources.json` (Jira epic and strategic initiative, Confluence, Planner, Teams project chat; a project gets the links of the first entry whose match word is in its name). Added to "Project sources" in the status report and "Key project resources" in the leadership report; add a project by adding an entry |
 | `orgteams.py` | Team roster (Ardoq reporting lines): live `org_teams` from the run, else `config/org-teams.json`; matches Jira assignees to teams |
 | `sprintchanges.py` | `sprint-changes` command: reads the Jira change history (read-only) and adds `sprint.changes`, the tickets added to or removed from the sprint during the analyzed period |
 | `sprinttickets.py` | `sprint-tickets` command: reads every ticket of the current and open past sprints from Jira (read-only, paged, count checked), with start and end dates, related tickets and resolution dates, replaces `tickets` in `data.json` and makes the sprint covering the report day the current one |
@@ -626,10 +627,11 @@ Run it as `PYTHONPATH="<plugin>/src" python -m ioassistant.cli <command> <json>`
 
 ## C8. Version history
 
-Full notes are in `CHANGELOG.md`. Current version: **1.0.0**.
+Full notes are in `CHANGELOG.md`. Current version: **1.1.0**.
 
 | Version | Date | What changed |
 |---|---|---|
+| 1.1.0 | 2026-11-09 | Fixed project resources (`config/project-resources.json`) for Network 2.0, EoL OS management and OS Lifecycle management, shown in both reports (new "Jira strategic initiative" and "Planner" groups). New "What's next" group above "Risks" in each project's summary. "Project sources" in two columns (Jira epic(s), SharePoint, Confluence, Project chats). Sprint management also covers the CITN and DBA Jira spaces. Leadership report: white header with LEADERSHIP underlined and highlighted; Paused projects last. |
 | 1.0.0 | 2026-11-07 | New pipeline **IO Projects Leadership Updates** (skill `run-leadership-updates`, agent `orchestrator-leadership`): reads the daily reports of the period and the I&O Project Roadmap deck and proposes new statuses and text per project, with a report, its own spending report, SharePoint upload, an unsent Outlook draft to the PMO and a Confluence draft page. The plugin now has two orchestrators with different goals (see "Two pipelines, two orchestrators"). Agents renamed: `orchestrator` is `orchestrator-assistant-report`; `confluence-collector`, `jira-collector`, `org-collector`, `sharepoint-collector` and `teams-collector` are `collector-confluence`, `collector-jira`, `collector-org`, `collector-sharepoint` and `collector-teams`. `collector-sharepoint` also has a read-only deck mode. |
 | 0.5.16 | 2026-11-05 | The plugin guide describes 0.5.15. |
 | 0.5.15 | 2026-11-04 | The default "To" list of the Outlook draft now includes cody.bredendick@sectigo.com. The release-log skill names the real title of the Confluence parent page. |
