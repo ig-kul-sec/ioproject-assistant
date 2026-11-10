@@ -69,7 +69,7 @@ def _date_td(value) -> str:
 
 
 def _overdue_days(ticket: dict, today: date) -> int | None:
-    """Days past the due date (End, else Due) for a ticket that is not closed or done; None when it is not overdue."""
+    """Days past the due date (End, else Due) for a ticket that is not closed or done (RM: Success); None when it is not overdue."""
     if _is_done(ticket):
         return None
     try:
@@ -182,7 +182,7 @@ def _sprint_changes(sprint: dict, window=None) -> str:
     )
 
 
-STATUS_ORDER = ("backlog", "to do", "in progress", "qa", "on hold", "unassigned", "done")  # workflow order
+STATUS_ORDER = ("backlog", "to do", "in progress", "qa", "on hold", "unassigned", "done", "success")  # workflow order
 
 
 def _status_rank(status) -> int:
@@ -196,7 +196,7 @@ def _sprint_body(sprint: dict, base: str = "", today: date | None = None) -> str
     base, today = base or JIRA_BROWSE, today or date.today()
     dur = _days(sprint.get("start"), sprint.get("end"))
     tickets = sorted(sprint.get("tickets", []), key=lambda t: _status_rank(t.get("status")))  # stable: Jira order within a status
-    done = sum(1 for t in tickets if any(w in str(t.get("status") or "").lower() for w in DONE_WORDS))
+    done = sum(1 for t in tickets if _is_done(t))
     pct = f"{round(100 * done / len(tickets))}%" if tickets else NA
     def row(t: dict) -> str:
         days = _overdue_days(t, today)
@@ -493,7 +493,11 @@ def _ticket_link(ref, base: str) -> str:
 
 
 def _is_done(ticket: dict) -> bool:
-    return any(w in str(ticket.get("status") or "").lower() for w in DONE_WORDS)
+    """Done, Closed, Resolved or Complete; on an RM (release management) ticket also Success."""
+    status = str(ticket.get("status") or "").strip().lower()
+    if str(ticket.get("key") or "").upper().startswith("RM-") and status == "success":
+        return True
+    return any(w in status for w in DONE_WORDS)
 
 
 def _sec(n: int, text: str, body: str) -> str:
@@ -958,7 +962,7 @@ def _render(data: dict, title: str, compact: bool) -> str:
     past = [s for s in data.get("past_sprints") or [data.get("past_sprint")] if s]
     sprint_of = {str(t.get("key")): s.get("name") for s in past for t in s.get("tickets") or [] if s.get("name")}
     sprint_of.update({str(t.get("key")): sprint.get("name") for t in tickets if sprint.get("name")})  # current wins
-    done = sum(1 for t in tickets if any(w in str(t.get("status") or "").lower() for w in DONE_WORDS))
+    done = sum(1 for t in tickets if _is_done(t))
     kpis = (
         _card("Projects reported", len(projects))
         + _card("Need attention", attention, "at risk or off track")

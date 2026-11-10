@@ -760,3 +760,15 @@ def test_sprint_tickets_fill_ids_by_name_when_collector_omits_them():
     data = {"sprint": {"name": "I&O 26.44"}, "past_sprints": [{"name": "I&O 26.43"}, {"name": "gone", "id": 7}]}
     sprinttickets.fill_ids(data, [{"id": 376, "name": "I&O 26.44"}, {"id": 374, "name": "I&O 26.43"}])
     assert data["sprint"]["id"] == 376 and data["past_sprints"][0]["id"] == 374 and data["past_sprints"][1]["id"] == 7
+
+
+def test_success_counts_as_done_for_rm_tickets_only():
+    from datetime import date
+    rm = {"key": "RM-1658", "status": "Success", "end": "2026-01-01"}
+    other = {"key": "IOSP-1", "status": "Success", "end": "2026-01-01"}
+    assert report._is_done(rm) and report._overdue_days(rm, date(2026, 11, 9)) is None
+    assert not report._is_done(other) and report._overdue_days(other, date(2026, 11, 9)) > 0
+    assert report._is_done({"key": "RM-2", "status": "Done"}) and not report._is_done({"key": "RM-3", "status": "In Progress"})
+    sprint = {"name": "S", "tickets": [rm, other, {"key": "RM-4", "status": "Done"}]}
+    html = report.render({"projects": [], "sprint": sprint}, "IOProjectAssistantReport_20261109_0900")
+    assert "2 of 3 tickets done" in html

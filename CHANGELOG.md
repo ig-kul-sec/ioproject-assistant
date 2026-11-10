@@ -6,6 +6,12 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
+## [1.1.1] - 2026-11-10
+
+### Changed
+- **EoL OS management** has a second Teams project chat in its fixed resources (`config/project-resources.json`), shown with the first one under "Project chats".
+- **RM tickets with status Success count as Done** in the status report (done counts, workload charts, burndown, overdue highlighting and the active-ticket lists). Other spaces are unchanged.
+
 ## [1.1.0] - 2026-11-09
 
 ### Added

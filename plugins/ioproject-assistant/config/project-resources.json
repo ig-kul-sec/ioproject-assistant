@@ -17,7 +17,8 @@
       "links": [
         {"kind": "initiative", "url": "https://sectigo.atlassian.net/browse/SI-5"},
         {"kind": "confluence", "label": "EoL OS management", "url": "https://sectigo.atlassian.net/wiki/spaces/CO/pages/94183326/EoL+OS+management"},
-        {"kind": "chat", "label": "EoL OS management project chat", "url": "https://teams.microsoft.com/l/chat/19%3Ameeting_ZDFkYTg1YTMtNmIwNS00MDhlLWE0MGMtMGQwMmM3MWExOGFi%40thread.v2/conversations?context=%7B%22contextType%22%3A%22chat%22%7D"}
+        {"kind": "chat", "label": "EoL OS management project chat", "url": "https://teams.microsoft.com/l/chat/19%3Ameeting_ZDFkYTg1YTMtNmIwNS00MDhlLWE0MGMtMGQwMmM3MWExOGFi%40thread.v2/conversations?context=%7B%22contextType%22%3A%22chat%22%7D"},
+        {"kind": "chat", "label": "EoL OS management project chat 2", "url": "https://teams.microsoft.com/l/chat/19%3Ameeting_ZmY1NjFlNGEtOTM3Yy00MGJmLTk4OGEtODhhMTRiZTBiZjZm%40thread.v2/conversations?context=%7B%22contextType%22%3A%22chat%22%7D"}
       ]
     },
     {

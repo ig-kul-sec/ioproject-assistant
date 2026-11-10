@@ -21,7 +21,7 @@ def test_find_matches_whole_words_only():
     assert resources.of_kind(net, "epic")[0]["key"] == "IOSP-477"
     # EoL and Debian OS lifecycle are separate projects with their own resources
     eol = resources.find("End of life (EoL) servers and OS upgrades")
-    assert _kinds(eol) == ["chat", "confluence", "initiative"]
+    assert _kinds(eol) == ["chat", "chat", "confluence", "initiative"]
     assert resources.of_kind(eol, "initiative")[0]["key"] == "SI-5" and resources.of_kind(eol, "confluence")[0]["label"] == "EoL OS management"
     deb = resources.find("Debian OS lifecycle management")
     assert _kinds(deb) == ["confluence", "epic", "planner"]
