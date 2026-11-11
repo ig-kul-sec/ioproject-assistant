@@ -300,7 +300,9 @@ def _key_changes(p: dict) -> str:
 def _resources(p: dict) -> str:
     res = p.get("resources") or {}
     fixed = resources.find(p.get("name"))  # config/project-resources.json: added to what the run found
-    run_epics = res.get("epics") or []
+    name = p.get("name")
+    run_epics = resources.drop_excluded(res.get("epics"), name)  # "exclude" in project-resources.json
+    res = {k: resources.drop_excluded(v, name) if k != "epics" else v for k, v in res.items()}
     known = {str(e.get("key")) for e in run_epics}
     epics = run_epics + [{"key": x["key"], "url": x["url"]} for x in resources.of_kind(fixed, "epic") if x["key"] not in known]
     epic_rows = "".join(

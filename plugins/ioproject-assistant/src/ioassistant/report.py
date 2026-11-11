@@ -617,7 +617,10 @@ def _project_sources(p: dict, base: str) -> str:
     resources of config/project-resources.json (a Jira strategic initiative and a Planner group only when the project has one)."""
     links = p.get("links") or {}
     fixed = resources.find(p.get("name"))
-    epics = [t for t in p.get("tickets") or [] if t.get("epic")]
+    name = p.get("name")
+    links = {kind: resources.drop_excluded(items, name) for kind, items in links.items()}  # "exclude" in project-resources.json
+    epics = [t for t in p.get("tickets") or [] if t.get("epic")
+             and resources.drop_excluded([{"url": t.get("url") or base + str(t.get("key"))}], name)]
     known = {str(t.get("key")) for t in epics}
     more_epics = [x for x in resources.of_kind(fixed, "epic") if x["key"] not in known]  # the run's own epic rows win
     epic_rows = "".join(

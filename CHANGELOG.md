@@ -6,6 +6,11 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
+## [1.1.2] - 2026-11-11
+
+### Changed
+- **EoL OS management no longer shows the Debian OS lifecycle management links** that a run found for it (Jira epic IOSP-806, Confluence "OS Lifecycle management" and "OS lifecycle mngmnt roadmap", SharePoint folder "Upgrading Gentoo to Debian"). `config/project-resources.json` entries have an optional `exclude` list of URLs that are dropped from what a run finds for that project, in the status report ("Project sources") and the leadership report ("Key project resources").
+
 ## [1.1.1] - 2026-11-10
 
 ### Changed

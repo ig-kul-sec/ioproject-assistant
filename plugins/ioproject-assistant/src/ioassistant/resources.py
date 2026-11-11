@@ -7,6 +7,7 @@ from __future__ import annotations
 import json
 import re
 from pathlib import Path
+from urllib.parse import unquote
 
 PATH = Path(__file__).resolve().parents[2] / "config" / "project-resources.json"
 KINDS = ("epic", "initiative", "confluence", "planner", "chat")
@@ -31,13 +32,29 @@ def _link(item: dict) -> dict:
     return {"kind": kind, "label": item.get("label") or key or url, "url": url, "key": key}
 
 
-def find(name, entries: list[dict] | None = None) -> list[dict]:
-    """The links of the first entry with a match word in the project name (whole words, case-insensitive); [] when none."""
+def _entry(name, entries: list[dict] | None = None) -> dict:
     low = str(name or "").lower()
     for entry in load() if entries is None else entries:
         if any(_has_word(low, w) for w in entry.get("match", [])):
-            return [_link(x) for x in entry.get("links", [])]
-    return []
+            return entry
+    return {}
+
+
+def find(name, entries: list[dict] | None = None) -> list[dict]:
+    """The links of the first entry with a match word in the project name (whole words, case-insensitive); [] when none."""
+    return [_link(x) for x in _entry(name, entries).get("links", [])]
+
+
+def _norm_url(url) -> str:
+    """Comparable form of a link: decoded, no query or fragment, no SharePoint sharing prefix (/:f:/r), no trailing slash."""
+    path = unquote(str(url or "")).split("#")[0].split("?")[0]
+    return re.sub(r"/:[a-z]:/[a-z]/", "/", path).rstrip("/").lower()
+
+
+def drop_excluded(links, name, entries: list[dict] | None = None) -> list[dict]:
+    """The links a run found, without the URLs the project's entry lists under "exclude" (they belong to another project)."""
+    skip = {_norm_url(u) for u in _entry(name, entries).get("exclude", [])}
+    return [x for x in links or [] if _norm_url(x.get("url")) not in skip]
 
 
 def of_kind(links: list[dict], kind: str) -> list[dict]:

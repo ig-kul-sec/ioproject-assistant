@@ -54,6 +54,35 @@ def test_status_report_adds_the_fixed_resources():
     assert "Planner" not in rubrik and "Jira strategic initiative" not in rubrik and "planner.cloud" not in rubrik
 
 
+def test_eol_drops_links_of_the_debian_project():
+    wiki = "https://sectigo.atlassian.net/wiki/spaces/CO/pages/"
+    found = {
+        "sharepoint": [{"label": "Upgrading Gentoo to Debian folder", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Upgrading Gentoo to Debian"},
+                       {"label": "Deck", "url": "https://comodoca.sharepoint.com/sites/IOProjectTeam/Shared Documents/Presentations/Deck.pptx"}],
+        "confluence": [{"label": "OS lifecycle mngmnt roadmap", "url": wiki + "94177517/OS+lifecycle+mngmnt+roadmap"},
+                       {"label": "OS Lifecycle management", "url": wiki + "94178822/OS+Lifecycle+management"},
+                       {"label": "Run page", "url": "https://wiki.example/run"}],
+    }
+    tickets = [{"key": "IOSP-806", "name": "Debian epic", "status": "In Progress", "epic": True},
+               {"key": "COR-11842", "name": "Debian P0", "status": "In Progress", "epic": True}]
+    html = report.render({"projects": [{"name": "End of life (EoL) servers and OS upgrades", "links": found, "tickets": tickets},
+                                       {"name": "Debian OS lifecycle management", "links": found, "tickets": tickets}]},
+                         "IOProjectAssistantReport_20261109_0900")
+    eol, deb = (c[:c.index("Jira tickets for this project (active)")] for c in html.split("Project sources</summary>")[1:])
+    assert "Gentoo" not in eol and "94177517" not in eol and "94178822" not in eol and "IOSP-806" not in eol
+    assert "Deck" in eol and "Run page" in eol and ">COR-11842</a>" in eol  # the other links stay
+    assert "Gentoo" in deb and "94177517" in deb and "IOSP-806" in deb  # only EoL is filtered
+    share = "https://comodoca.sharepoint.com/:f:/r/sites/IOProjectTeam/Shared%20Documents/Upgrading%20Gentoo%20to%20Debian?d=x&csf=1"
+    assert resources.drop_excluded([{"url": share}], "EOL upgrades") == []
+    assert resources.drop_excluded([{"url": share}], "Debian OS lifecycle management") != []
+
+    lead = leadership.render({"projects": [{"name": "End of life (EoL) servers and OS upgrades", "resources": {
+        "epics": [{"key": "IOSP-806", "url": "https://sectigo.atlassian.net/browse/IOSP-806"}],
+        "confluence": found["confluence"], "sharepoint": found["sharepoint"]}}]}, "IOProjectLeadershipUpdates_20261109_0900")
+    key = lead.split("Key project resources")[1]
+    assert "IOSP-806" not in key and "94177517" not in key and "Gentoo" not in key and "Run page" in key and "Deck" in key
+
+
 def test_leadership_report_adds_the_fixed_resources():
     data = {"projects": [{"name": "Network v2.0"}, {"name": "Rubrik"}]}
     html = leadership.render(data, "IOProjectLeadershipUpdates_20261109_0900")
