@@ -1,4 +1,4 @@
-"""Fixed resources per project (Jira epic and initiative, Confluence, Planner, Teams chat) from config/project-resources.json.
+"""Fixed resources per project (Jira epic and initiative, Confluence, Planner, Teams chat, SharePoint folder) from config/project-resources.json.
 
 Both reports add them to what a run finds itself: "Project sources" (status report) and "Key project resources"
 (leadership report). Standard library only."""
@@ -10,7 +10,7 @@ from pathlib import Path
 from urllib.parse import unquote
 
 PATH = Path(__file__).resolve().parents[2] / "config" / "project-resources.json"
-KINDS = ("epic", "initiative", "confluence", "planner", "chat")
+KINDS = ("epic", "initiative", "confluence", "planner", "chat", "sharepoint")
 KEY_IN_URL = re.compile(r"/browse/([A-Z][A-Z0-9]+-\d+)(?:[/?#]|$)")
 
 
@@ -59,3 +59,9 @@ def drop_excluded(links, name, entries: list[dict] | None = None) -> list[dict]:
 
 def of_kind(links: list[dict], kind: str) -> list[dict]:
     return [x for x in links if x["kind"] == kind]
+
+
+def drop_known(found, fixed: list[dict]) -> list[dict]:
+    """The links a run found, without those that are the same page as a fixed link (same URL once the sharing query is ignored)."""
+    known = {_norm_url(x["url"]) for x in fixed}
+    return [x for x in found or [] if _norm_url(x.get("url")) not in known]

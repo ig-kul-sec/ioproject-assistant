@@ -6,6 +6,16 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
+## [1.1.3] - 2026-11-12
+
+### Added
+- **EoL OS management project chat is now collected** by the Teams collector (skill `teams-standup-collection`, step 2d), not only linked. The old chat is read for dates before 2026-11-12 and the new chat from 2026-11-12 (`TEAMS_EOL_CHAT_URL`, `TEAMS_EOL_CHAT_URL_NEW`, `TEAMS_EOL_CHAT_NEW_FROM` in `config/defaults.env`); a window that spans the date reads both. The new chat is also listed as "EoL OS management project chat 3" under "Project chats" in `config/project-resources.json`.
+
+### Changed
+- **EoL OS management has a fixed SharePoint source:** the folder "Upgrading Gentoo to Debian". It is shown under "SharePoint" in "Project sources" (status report) and "Key project resources" (leadership report), and the SharePoint collector reads it for EoL (`sharepoint-roadmap`, step 3b). `config/project-resources.json` accepts a new link kind `sharepoint`. The folder is removed from EoL's `exclude` list (added in 1.1.2); OS Lifecycle management still gets it from a run as before.
+
+- **The upload copy now lists every active ticket** (it was capped at the first 20 per project, with a "left out of this copy" note), and every overdue ticket in "Jira task updates needed". The copy still leaves out the embedded fonts and the logo, so it is about 250 KB for a typical run (the full report is about 800 KB; the 1 MB inline limit of the connector upload is unchanged). `report.COMPACT_TICKET_CAP` is now `None`; set it to a number (20 gave about 170 KB) to cap tickets again if uploads fail on size.
+
 ## [1.1.2] - 2026-11-11
 
 ### Changed

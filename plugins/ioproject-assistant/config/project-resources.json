@@ -1,5 +1,5 @@
 {
-  "_comment": "Fixed resources per project, added to the 'Project sources' section of the status report and to 'Key project resources' of the leadership report on every run. A project gets the links of the first entry whose 'match' word is found in its name (case-insensitive, whole words, any word). kind: epic and initiative (Jira, the label is the key from the URL), confluence, planner, chat (Teams project chat). Links that the run finds itself are kept, except the URLs in an entry's optional 'exclude' list (they belong to another project); a link with the same URL is shown once.",
+  "_comment": "Fixed resources per project, added to the 'Project sources' section of the status report and to 'Key project resources' of the leadership report on every run. A project gets the links of the first entry whose 'match' word is found in its name (case-insensitive, whole words, any word). kind: epic and initiative (Jira, the label is the key from the URL), confluence, planner, chat (Teams project chat), sharepoint (a SharePoint folder, also read by the SharePoint collector). Links that the run finds itself are kept, except the URLs in an entry's optional 'exclude' list (they belong to another project); a link with the same URL is shown once.",
   "projects": [
     {
       "name": "Network 2.0",
@@ -17,14 +17,15 @@
       "exclude": [
         "https://sectigo.atlassian.net/wiki/spaces/CO/pages/94178822/OS+Lifecycle+management",
         "https://sectigo.atlassian.net/wiki/spaces/CO/pages/94177517/OS+lifecycle+mngmnt+roadmap",
-        "https://sectigo.atlassian.net/browse/IOSP-806",
-        "https://comodoca.sharepoint.com/:f:/r/sites/IOProjectTeam/Shared%20Documents/Upgrading%20Gentoo%20to%20Debian?d=wfcfc5eae1c9f4846916dc4b4ee92821e&csf=1&web=1&e=bTdoQo"
+        "https://sectigo.atlassian.net/browse/IOSP-806"
       ],
       "links": [
         {"kind": "initiative", "url": "https://sectigo.atlassian.net/browse/SI-5"},
+        {"kind": "sharepoint", "label": "Upgrading Gentoo to Debian folder", "url": "https://comodoca.sharepoint.com/:f:/r/sites/IOProjectTeam/Shared%20Documents/Upgrading%20Gentoo%20to%20Debian?d=wfcfc5eae1c9f4846916dc4b4ee92821e&csf=1&web=1&e=QSA0J6"},
         {"kind": "confluence", "label": "EoL OS management", "url": "https://sectigo.atlassian.net/wiki/spaces/CO/pages/94183326/EoL+OS+management"},
         {"kind": "chat", "label": "EoL OS management project chat", "url": "https://teams.microsoft.com/l/chat/19%3Ameeting_ZDFkYTg1YTMtNmIwNS00MDhlLWE0MGMtMGQwMmM3MWExOGFi%40thread.v2/conversations?context=%7B%22contextType%22%3A%22chat%22%7D"},
-        {"kind": "chat", "label": "EoL OS management project chat 2", "url": "https://teams.microsoft.com/l/chat/19%3Ameeting_ZmY1NjFlNGEtOTM3Yy00MGJmLTk4OGEtODhhMTRiZTBiZjZm%40thread.v2/conversations?context=%7B%22contextType%22%3A%22chat%22%7D"}
+        {"kind": "chat", "label": "EoL OS management project chat 2", "url": "https://teams.microsoft.com/l/chat/19%3Ameeting_ZmY1NjFlNGEtOTM3Yy00MGJmLTk4OGEtODhhMTRiZTBiZjZm%40thread.v2/conversations?context=%7B%22contextType%22%3A%22chat%22%7D"},
+        {"kind": "chat", "label": "EoL OS management project chat 3", "url": "https://teams.microsoft.com/l/chat/19%3Ameeting_MTk2MDlkYjYtNDFkNy00ZGRkLTg2OTEtNjdhN2NhYTg3ZWM1%40thread.v2/conversations?context=%7B%22contextType%22%3A%22chat%22%7D"}
       ]
     },
     {

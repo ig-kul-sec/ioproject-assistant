@@ -77,7 +77,20 @@ def test_per_project_view(tmp_path):
     assert "AI AGENT FACTORY:" in html and "User-Guide</a>" in html and "sk=sheeUB2-jY3qJTuYhUBMTQ" in html and "Version: " in html and "github.com/ig-kul-sec/ioproject-assistant" in html
 
 
-def test_compact_trims_closed_and_caps_active_tickets(tmp_path):
+def test_compact_lists_every_active_ticket_by_default(tmp_path):
+    tickets = [{"key": f"IOSP-{i}", "name": f"Active {i}", "status": "In Progress"} for i in range(1, 31)]
+    tickets += [{"key": f"IOSP-{i}", "name": f"Closed {i}", "status": "Done"} for i in range(101, 106)]
+    run = tmp_path / "R_4"
+    run.mkdir()
+    (run / "data.json").write_text(json.dumps({"projects": [{"name": "Big", "tickets": tickets}]}), encoding="utf-8")
+    small = report.build(run / "data.json", compact=True).read_text(encoding="utf-8")
+    assert report.COMPACT_TICKET_CAP is None
+    assert "Active 30" in small and "Closed 101" not in small and "left out of this copy" not in small
+    assert "5 closed or done tickets are not listed." in small
+
+
+def test_compact_trims_closed_and_caps_active_tickets(tmp_path, monkeypatch):
+    monkeypatch.setattr(report, "COMPACT_TICKET_CAP", 20)
     tickets = [{"key": f"IOSP-{i}", "name": f"Active {i}", "status": "In Progress"} for i in range(1, 31)]
     tickets += [{"key": f"IOSP-{i}", "name": f"Closed {i}", "status": "Done"} for i in range(101, 106)]
     run = tmp_path / "R_3"

@@ -316,7 +316,10 @@ def _resources(p: dict) -> str:
     groups = [f"<div class='rg'><p class='lbl'>Jira {'epics' if len(epics) > 1 else 'epic'}</p>"
               + (f"<ul>{epic_rows}</ul>" if epic_rows else f"<p>{NA}</p>") + "</div>"]
     for key, label, kind in (("confluence", "Confluence", "confluence"), ("sharepoint", "SharePoint", None), ("chats", "Project chats", "chat")):
-        items = (res.get(key) or []) + (resources.of_kind(fixed, kind) if kind else [])
+        if key == "sharepoint":  # fixed SharePoint folders first; a run-found link to the same folder is not repeated
+            items = resources.of_kind(fixed, "sharepoint") + resources.drop_known(res.get(key), resources.of_kind(fixed, "sharepoint"))
+        else:
+            items = (res.get(key) or []) + (resources.of_kind(fixed, kind) if kind else [])
         groups.append(f"<div class='rg'><p class='lbl'>{label}</p>{report._link_list(items)}</div>")
     for kind, label in (("initiative", "Jira strategic initiative"), ("planner", "Planner")):
         if resources.of_kind(fixed, kind):

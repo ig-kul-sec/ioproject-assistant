@@ -124,7 +124,7 @@ RAG = {
     "off track": ("Off track", "off"), "off-track": ("Off track", "off"), "red": ("Off track", "off"),
 }
 DONE_WORDS = ("done", "closed", "resolved", "complete")
-COMPACT_TICKET_CAP = 20  # active tickets per project in the upload copy (keeps it under about 100 KB)
+COMPACT_TICKET_CAP: int | None = None  # active tickets per project in the upload copy; None = all (about 250 KB). 20 gives about 170 KB.
 TOP_NOTES = 3
 
 
@@ -585,7 +585,7 @@ def _jira_updates(p: dict, base: str, today: date | None = None, compact: bool =
             + rows + "</table>"
         )
     if late:
-        shown = late[:COMPACT_TICKET_CAP] if compact else late
+        shown = late[:COMPACT_TICKET_CAP] if compact and COMPACT_TICKET_CAP else late
         rows = "".join(
             f"<tr class=\"overdue\"><td>{_ticket_link(t, base)}</td><td>{_rich(t.get('name') or t.get('summary'), base)}</td>"
             f"<td>{_t(t.get('status'))}</td><td>{_t(t.get('assignee'))}</td>{_end_td(t, d)}</tr>"
@@ -630,7 +630,7 @@ def _project_sources(p: dict, base: str) -> str:
     # two columns, filled row by row: Jira epic(s) | SharePoint, Confluence | Project chats (labels as in the leadership report)
     groups = [
         (f"Jira {'epics' if len(epics) + len(more_epics) > 1 else 'epic'}", f"<ul>{epic_rows}</ul>" if epic_rows else f"<p>{NA}</p>"),
-        ("SharePoint", _link_list(links.get("sharepoint"))),
+        ("SharePoint", _link_list(resources.of_kind(fixed, "sharepoint") + resources.drop_known(links.get("sharepoint"), resources.of_kind(fixed, "sharepoint")))),
         ("Confluence", _link_list((links.get("confluence") or []) + resources.of_kind(fixed, "confluence"))),
         ("Project chats", _link_list((links.get("teams") or []) + resources.of_kind(fixed, "chat"))),
     ]
@@ -650,7 +650,7 @@ def _tickets(p: dict, base: str, compact: bool = False, sprint_of: dict | None =
     every = p.get("tickets") or []
     ts = sorted((t for t in every if not _is_done(t)), key=lambda t: not t.get("epic"))  # active only, epic first
     closed, capped = len(every) - len(ts), 0
-    if compact:  # the upload copy must stay small: only the first COMPACT_TICKET_CAP active tickets
+    if compact and COMPACT_TICKET_CAP:  # optional: the upload copy shows only the first COMPACT_TICKET_CAP active tickets
         capped, ts = max(0, len(ts) - COMPACT_TICKET_CAP), ts[:COMPACT_TICKET_CAP]
 
     def sprint(t):

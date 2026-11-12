@@ -21,7 +21,8 @@ def test_find_matches_whole_words_only():
     assert resources.of_kind(net, "epic")[0]["key"] == "IOSP-477"
     # EoL and Debian OS lifecycle are separate projects with their own resources
     eol = resources.find("End of life (EoL) servers and OS upgrades")
-    assert _kinds(eol) == ["chat", "chat", "confluence", "initiative"]
+    assert _kinds(eol) == ["chat", "chat", "chat", "confluence", "initiative", "sharepoint"]
+    assert resources.of_kind(eol, "sharepoint")[0]["label"] == "Upgrading Gentoo to Debian folder"
     assert resources.of_kind(eol, "initiative")[0]["key"] == "SI-5" and resources.of_kind(eol, "confluence")[0]["label"] == "EoL OS management"
     deb = resources.find("Debian OS lifecycle management")
     assert _kinds(deb) == ["confluence", "epic", "planner"]
@@ -48,6 +49,7 @@ def test_status_report_adds_the_fixed_resources():
     assert "Run page" in net and ">Network v2.0</a>" in net and "Network 2.0 project chat" in net
     assert ">Planner<" in net and "Network 2.0 Planner" in net and "Jira strategic initiative" not in net
     assert ">SI-5</a>" in eol and "Jira strategic initiative" in eol and "EoL OS management project chat" in eol
+    assert "Upgrading Gentoo to Debian folder" in eol  # the fixed SharePoint folder of the EoL project
     assert "IOSP-806" not in eol and ">Planner<" not in eol and "OS Lifecycle management" not in eol
     assert "IOSP-806" in deb and "OS Lifecycle management</a>" in deb and ">Planner<" in deb and "OS Lifecycle management Planner" in deb
     assert "SI-5" not in deb and "Jira strategic initiative" not in deb and "project chat" not in deb and "EoL OS management" not in deb
@@ -69,18 +71,23 @@ def test_eol_drops_links_of_the_debian_project():
                                        {"name": "Debian OS lifecycle management", "links": found, "tickets": tickets}]},
                          "IOProjectAssistantReport_20261109_0900")
     eol, deb = (c[:c.index("Jira tickets for this project (active)")] for c in html.split("Project sources</summary>")[1:])
-    assert "Gentoo" not in eol and "94177517" not in eol and "94178822" not in eol and "IOSP-806" not in eol
+    # the Gentoo to Debian folder is a fixed EoL source: shown once (the run-found copy of the same folder is not repeated)
+    assert eol.count("Upgrading Gentoo to Debian") == 1 and "94177517" not in eol and "94178822" not in eol and "IOSP-806" not in eol
     assert "Deck" in eol and "Run page" in eol and ">COR-11842</a>" in eol  # the other links stay
     assert "Gentoo" in deb and "94177517" in deb and "IOSP-806" in deb  # only EoL is filtered
     share = "https://comodoca.sharepoint.com/:f:/r/sites/IOProjectTeam/Shared%20Documents/Upgrading%20Gentoo%20to%20Debian?d=x&csf=1"
-    assert resources.drop_excluded([{"url": share}], "EOL upgrades") == []
+    assert resources.drop_excluded([{"url": share}], "EOL upgrades") != []  # no longer excluded from EoL
     assert resources.drop_excluded([{"url": share}], "Debian OS lifecycle management") != []
+    fixed = resources.of_kind(resources.find("EOL upgrades"), "sharepoint")
+    assert resources.drop_known([{"url": share}], fixed) == []  # same folder, other sharing link
+    other = share.replace("Upgrading%20Gentoo%20to%20Debian", "Other%20folder")
+    assert resources.drop_known([{"url": other}], fixed) != []  # another folder stays
 
     lead = leadership.render({"projects": [{"name": "End of life (EoL) servers and OS upgrades", "resources": {
         "epics": [{"key": "IOSP-806", "url": "https://sectigo.atlassian.net/browse/IOSP-806"}],
         "confluence": found["confluence"], "sharepoint": found["sharepoint"]}}]}, "IOProjectLeadershipUpdates_20261109_0900")
     key = lead.split("Key project resources")[1]
-    assert "IOSP-806" not in key and "94177517" not in key and "Gentoo" not in key and "Run page" in key and "Deck" in key
+    assert "IOSP-806" not in key and "94177517" not in key and key.count("Upgrading Gentoo to Debian") == 1 and "Run page" in key and "Deck" in key
 
 
 def test_leadership_report_adds_the_fixed_resources():
