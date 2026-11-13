@@ -165,6 +165,16 @@ def test_project_sources_merged_and_report_sources_removed(tmp_path):
     assert "<span>3</span> Project sources" in html and "<span>4</span> Jira tickets for this project (active)" in html
 
 
+def test_project_sources_lists_outlook_status_emails_only_when_used(tmp_path):
+    email = {"label": "NETWORK 2.0 - Project status (2026/11/13) email", "url": "https://outlook.example/m1"}
+    data = {"projects": [{"name": "With", "links": {"email": [email]}}, {"name": "Without", "links": {}}]}
+    html = _render_data(tmp_path, data)
+    with_card, without_card = (c[:c.index("Jira tickets for this project (active)")] for c in html.split("Project sources</summary>")[1:3])
+    assert ">Outlook status emails<" in with_card
+    assert 'href="https://outlook.example/m1"' in with_card and "NETWORK 2.0 - Project status (2026/11/13) email" in with_card
+    assert "Outlook status emails" not in without_card
+
+
 def test_tickets_default_to_sprint_ascending(tmp_path):
     tickets = [
         {"key": "IOSP-1", "name": "No sprint", "status": "To Do"},

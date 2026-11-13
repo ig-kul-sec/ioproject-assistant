@@ -6,6 +6,11 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
+## [1.1.5] - 2026-11-14
+
+### Added
+- **Outlook status emails are listed in "Project sources"** (status report). When a run used the `<PROJECT> - Project Status (yyyy/mm/dd)` emails of a project (`links.email` in `data.json`), its card shows an "Outlook status emails" group with a link to each email, placed before the Jira strategic initiative and Planner groups. Projects without such emails get no group.
+
 ## [1.1.4] - 2026-11-13
 
 ### Added

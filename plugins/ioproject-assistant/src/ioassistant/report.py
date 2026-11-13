@@ -634,6 +634,8 @@ def _project_sources(p: dict, base: str) -> str:
         ("Confluence", _link_list((links.get("confluence") or []) + resources.of_kind(fixed, "confluence"))),
         ("Project chats", _link_list((links.get("teams") or []) + resources.of_kind(fixed, "chat"))),
     ]
+    if links.get("email"):  # Outlook "<PROJECT> - Project Status (yyyy/mm/dd)" emails used as a source in this run
+        groups.append(("Outlook status emails", _link_list(links.get("email"))))
     for kind, label in (("initiative", "Jira strategic initiative"), ("planner", "Planner")):
         if resources.of_kind(fixed, kind):
             groups.append((label, _link_list(resources.of_kind(fixed, kind))))
