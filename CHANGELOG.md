@@ -6,6 +6,11 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
+## [1.1.4] - 2026-11-13
+
+### Added
+- **Outlook project status emails are now a source** for every project, not only Rubrik. The Teams collector (skill `teams-standup-collection`, new step 2e) searches Outlook for subjects `<PROJECT NAME> - Project Status (yyyy/mm/dd)` (for example `NETWORK 2.0 - Project status (2026/11/13)` and `EOL OS Management - Project Status (2026/11/12)`), keeps those whose subject date is inside the analysis window, reads each in full and adds status, dates, owners, risks and asks to the project's notes, action items and risks (notes marked `status email <date>`). `NETWORK 2.0` is matched to "Network 2.0" and `EOL OS Management` to "EoL OS management" (the same project as the EoL chats); any other name becomes its own project and is reviewed by the Jira and Confluence collectors. `RUBRIK` emails stay in step 2b. A rating stated in an email is quoted in the notes but does not set the project `status` (the roadmap deck still comes first); conflicts with other sources go to `gaps`. New output field `sources.status_emails`.
+
 ## [1.1.3] - 2026-11-12
 
 ### Added

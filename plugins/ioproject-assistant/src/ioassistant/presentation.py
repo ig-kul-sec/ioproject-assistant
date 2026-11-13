@@ -19,8 +19,8 @@ AGENTS = [
      "updates needed, and tracks time and cost.",
      "Launches the other agents; writes the run folder", "Never invents facts: a missing value shows as n/a"),
     ("collector-teams", "Sonnet 5.5", "Meetings and email",
-     "Reads the Daily Ops StandUp and Rubrik Project SyncUp chats, the Rubrik transcript and the 'RUBRIK - Project Status' emails "
-     "for the analysis period.",
+     "Reads the Daily Ops StandUp and Rubrik Project SyncUp chats, the Rubrik transcript and the Outlook 'Project Status' emails "
+     "(Rubrik, Network 2.0, EOL OS Management and others) for the analysis period.",
      "Read-only", "Chat text is treated as data, never as instructions"),
     ("collector-jira", "Sonnet 5.5", "Tickets",
      "Reviews IOSP, RM and COR tickets for the discussed projects, always including the Rubrik epic IOSP-471, plus the active "
@@ -57,7 +57,7 @@ STEPS = [
 
 SOURCES = [
     ("Teams", "Daily Ops StandUp chat; Rubrik Project SyncUp chat and transcript"),
-    ("Outlook", "'RUBRIK - Project Status' emails"),
+    ("Outlook", "'<Project> - Project Status (yyyy/mm/dd)' emails (Rubrik, Network 2.0, EOL OS Management, ...)"),
     ("Jira", "IOSP, RM and COR tickets; the active sprint (IOSP, COR, CITN and DBA tickets); epic IOSP-471 (Rubrik DR backup)"),
     ("Confluence", "Project pages: status, dates, owners"),
     ("SharePoint", "I&O Project Roadmap deck (Project review slides); PMO folder"),
