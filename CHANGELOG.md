@@ -6,7 +6,7 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
-## [1.1.6] - in development
+## [1.1.6] - 2026-11-17
 
 ### Changed
 - **"What's next" is a table, sorted by due date, with overdue items highlighted** (status report, "Project updates (summary)" of each project). Columns: **Due date | Action | Responsible | Jira ticket**. The action items appear earliest due date first (for example 11/13, then 11/19, then 11/24); items without a date come last in the order they were given, and items due the same day keep their order. `due` is read as `yyyy-mm-dd` (a time part is ignored) or `mm-dd` / `mm/dd` (this year, or next year when that date is more than 180 days before the report day); free text such as "next week" is shown as written and counts as no date.
