@@ -6,6 +6,14 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
+## [1.1.6] - in development
+
+### Changed
+- **"What's next" is a table, sorted by due date, with overdue items highlighted** (status report, "Project updates (summary)" of each project). Columns: **Due date | Action | Responsible | Jira ticket**. The action items appear earliest due date first (for example 11/13, then 11/19, then 11/24); items without a date come last in the order they were given, and items due the same day keep their order. `due` is read as `yyyy-mm-dd` (a time part is ignored) or `mm-dd` / `mm/dd` (this year, or next year when that date is more than 180 days before the report day); free text such as "next week" is shown as written and counts as no date.
+- **Overdue items are highlighted** like overdue Jira tickets: coral row and an "overdue N d" tag in the Due date cell. An item is overdue when its due date is before the report day (the end of the analysis window); due on the report day is not overdue.
+- **Jira tickets get their own column.** A key-only parenthetical at the end of an action, such as "(COR-12185 and COR-12195)", moves out of the Action text into the Jira ticket column as links; a key written inside the sentence stays there and is listed in the column too. No ticket shows "n/a".
+- **"Risks" now comes above "What's next"** in the project summary.
+
 ## [1.1.5] - 2026-11-14
 
 ### Added

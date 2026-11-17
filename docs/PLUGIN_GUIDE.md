@@ -539,7 +539,7 @@ A leadership run (`IOProjectLeadershipUpdates_<yyyymmdd>_<hhmm>`) writes the sam
 The report starts with a header: links to the SharePoint archive, the Confluence parent page and the Jira scrum board, plus the analysis period. Below it come summary tiles, a contents list on the left, and four tabs.
 
 **Projects:** projects at a glance, then a card per project with these sections:
-- updates: the summary bullets, then "What's next" (the project's action items with owner and due date, left out when there are none) and "Risks"
+- updates: the summary bullets, then "Risks" and "What's next": a table of the project's action items (Due date, Action, Responsible, Jira ticket), earliest due date first and undated items last. An item due before the report day is highlighted as overdue, and a Jira key at the end of an action is shown in the Jira ticket column. "What's next" is left out when there are no action items
 - Jira updates needed (including a table of active tickets past their due date)
 - project sources, in two columns: Jira epic(s), SharePoint, Confluence, Project chats, plus a Jira strategic initiative and a Planner link for projects that have them (fixed links from `config/project-resources.json` are added to what the run finds)
 - Jira tickets for this project (active): active tickets only, epic first, sorted by sprint; tickets past their End date are highlighted and tagged "overdue N d"

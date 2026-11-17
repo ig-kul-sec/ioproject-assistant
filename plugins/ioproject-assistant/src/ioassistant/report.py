@@ -530,7 +530,7 @@ def _link_list(items) -> str:
     return f"<ul>{rows}</ul>" if rows else f"<p>{NA}</p>"
 
 
-def _summary(p: dict, base: str) -> str:
+def _summary(p: dict, base: str, today: date | None = None) -> str:
     items = p.get("summary")
     if not items:  # fall back to the latest notes when the merge did not write a summary
         items = [{"text": n} for n in p.get("notes", [])[:TOP_NOTES]]
@@ -539,7 +539,7 @@ def _summary(p: dict, base: str) -> str:
         it = it if isinstance(it, dict) else {"text": it}
         refs = ", ".join(_ticket_link(k, base) for k in it.get("tickets") or [])
         out.append(f"<li>{_rich(it.get('text'), base)}" + (f" <span class='refs'>({refs})</span>" if refs else "") + "</li>")
-    return (_ul(out) + _group("What's next", _next_items(p, base)) + _group("Risks", [f"<li>{_rich(r, base)}</li>" for r in p.get("risks", [])]))
+    return (_ul(out) + _group("Risks", [f"<li>{_rich(r, base)}</li>" for r in p.get("risks", [])]) + _next_table(p, base, today))
 
 
 def _group(label: str, items: list[str]) -> str:
@@ -547,17 +547,86 @@ def _group(label: str, items: list[str]) -> str:
     return f"<p class='lbl'>{label}</p>{_ul(items)}" if items else ""
 
 
-def _next_items(p: dict, base: str) -> list[str]:
-    """The project's next action items: text, then the owner and the due date (mm/dd) when known."""
-    out = []
+DUE_MD = re.compile(r"(0?[1-9]|1[0-2])[-/](0?[1-9]|[12]\d|3[01])")
+
+
+def _due_date(value, today: date) -> date | None:
+    """The date an action item is due, for ordering: yyyy-mm-dd (a time part is ignored) or mm-dd / mm/dd
+    (this year; next year when that date is more than 180 days past). None when absent or not a date."""
+    text = str(value or "").strip()
+    try:
+        return date.fromisoformat(text[:10])
+    except ValueError:
+        pass
+    m = DUE_MD.fullmatch(text)
+    if not m:
+        return None
+    for year in (today.year, today.year + 1):
+        try:
+            d = date(year, int(m.group(1)), int(m.group(2)))
+        except ValueError:
+            return None
+        if (today - d).days <= 180:
+            return d
+    return None
+
+
+# a parenthetical that holds only Jira keys: "(COR-12192)", "(COR-12185 and COR-12195)", "(IOSP-1004/1005)"
+KEY_PAREN = re.compile(r"\s*\(\s*(?:IOSP|RM|COR)-\d+(?:\s*(?:,|/|&|\band\b)\s*(?:(?:IOSP|RM|COR)-)?\d+)*\s*\)")
+
+
+def _paren_keys(chunk: str) -> list[str]:
+    """The keys in a key-only parenthetical; the bare numbers of the 'IOSP-1004/1005' shorthand get the prefix before them."""
+    prefix, keys = None, []
+    for m in re.finditer(r"(?:(IOSP|RM|COR)-)?(\d+)", chunk):
+        prefix = m.group(1) or prefix
+        keys.append(f"{prefix}-{m.group(2)}")
+    return keys
+
+
+def _split_ticket_keys(text: str) -> tuple[str, list[str]]:
+    """(action text, Jira keys for the ticket column). A key-only parenthetical moves out of the text into the column;
+    a key written inside the sentence stays there and is listed in the column as well."""
+    keys: list[str] = []
+
+    def grab(m) -> str:
+        keys.extend(_paren_keys(m.group(0)))
+        return ""
+
+    rest = KEY_PAREN.sub(grab, text).strip()
+    if not rest:  # nothing but a key: keep the text as it is
+        return text, TICKET_IN_TEXT.findall(text)
+    return rest, list(dict.fromkeys(keys + TICKET_IN_TEXT.findall(rest)))
+
+
+def _next_rows(p: dict, base: str, today: date | None = None) -> list[str]:
+    """Table rows for the project's next action items, earliest due date first (undated items last, in their given
+    order). An item due before the report day is highlighted like an overdue ticket; due on that day is not overdue."""
+    today = today or date.today()
+    rows = []
     for it in p.get("action_items") or []:
         it = it if isinstance(it, dict) else {"text": it}
         if not str(it.get("text") or "").strip():
             continue
-        meta = ", ".join(x for x in (f"Owner: {_t(it['owner'])}" if it.get("owner") else "",
-                                      f"Due: {_dated(it['due'])}" if it.get("due") else "") if x)
-        out.append(f"<li>{_rich(it['text'], base)}" + (f" <span class='refs'>({meta})</span>" if meta else "") + "</li>")
-    return out
+        action, keys = _split_ticket_keys(str(it["text"]))
+        tickets = ", ".join(_ticket_link(k, base) for k in keys) if keys else NA
+        due = _due_date(it.get("due"), today)
+        late = (today - due).days if due and due < today else None
+        shown = due.isoformat() if due else it.get("due")  # the parsed date keeps column sorting right for "mm/dd" values
+        due_td = _end_td({"due": shown}, late) if late else _date_td(shown)
+        cls = ' class="overdue"' if late else ""
+        rows.append((due, f"<tr{cls}>{due_td}<td>{_rich(action, base)}</td><td>{_t(it.get('owner'))}</td><td>{tickets}</td></tr>"))
+    rows.sort(key=lambda r: (r[0] is None, r[0] or date.min))  # stable: equal or missing dates keep their order
+    return [html for _, html in rows]
+
+
+def _next_table(p: dict, base: str, today: date | None = None) -> str:
+    """The "What's next" group: Due date | Action | Responsible | Jira ticket; left out when there are no action items."""
+    rows = _next_rows(p, base, today)
+    if not rows:
+        return ""
+    head = "<tr><th data-dir='asc'>Due date</th><th>Action</th><th>Responsible</th><th>Jira ticket</th></tr>"
+    return f"<p class='lbl'>What's next</p><table>{head}{''.join(rows)}</table>"
 
 
 def _jira_updates(p: dict, base: str, today: date | None = None, compact: bool = False) -> str:
@@ -791,7 +860,7 @@ def _project(p: dict, base: str = JIRA_BROWSE, compact: bool = False, sprint_of:
         f'<details class="card" id="{_anchor(p.get("name"))}" open>'
         f'<summary class="card-h"><div><h3>{_t(p.get("name"))}</h3><div class="meta">{_people(p)}</div></div>'
         f"{_pill(p)}</summary>"
-        f"{_sec(1, 'Project updates (summary)', _summary(p, base))}"
+        f"{_sec(1, 'Project updates (summary)', _summary(p, base, today))}"
         f"{_sec(2, 'Jira task updates needed', _jira_updates(p, base, today, compact))}"
         f"{_sec(3, 'Project sources', _project_sources(p, base))}"
         f"{_sec(4, 'Jira tickets for this project (active)', _tickets(p, base, compact, sprint_of, today))}</details>"

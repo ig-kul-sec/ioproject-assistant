@@ -126,8 +126,17 @@ def test_overdue_tickets_are_highlighted_and_listed_under_jira_updates(tmp_path)
     assert "Finished late" not in html and "<th>Due</th>" in html
 
 
-def test_summary_has_whats_next_above_risks(tmp_path):
-    data = {"projects": [
+def _next_table(html):
+    """The "What's next" table of the first project that has one, as (header cells, [row cells]) with the row tag kept."""
+    block = html[html.index(">What's next<"):]
+    block = block[:block.index("</table>")]
+    rows = re.findall(r"<tr([^>]*)>(.*?)</tr>", block, re.S)
+    head = re.findall(r"<th[^>]*>(.*?)</th>", rows[0][1], re.S)
+    return head, [(attrs, re.findall(r"<td[^>]*>(.*?)</td>", body, re.S)) for attrs, body in rows[1:]]
+
+
+def test_summary_has_risks_above_whats_next_table(tmp_path):
+    data = {"window": {"to": "2026-11-16T10:00:00-05:00"}, "projects": [
         {"name": "WithNext", "summary": [{"text": "Did a thing"}], "risks": ["Might slip"],
          "action_items": [{"text": "Order <disks> for IOSP-7", "owner": "Pat", "due": "2026-11-12"},
                           {"text": "Plain next step"}, {"text": "  "}, "String item"]},
@@ -137,12 +146,79 @@ def test_summary_has_whats_next_above_risks(tmp_path):
     start = html.index("Project updates (summary)")  # one summary section per project card, in project order
     mid = html.index("Project updates (summary)", start + 1)
     first = html[start:mid]
-    assert first.index("Did a thing") < first.index(">What's next<") < first.index("Order &lt;disks&gt;") < first.index(">Risks<")
-    assert "(Owner: Pat, Due: 11/12)" in first and "Plain next step" in first and "String item" in first
-    assert 'href="https://sectigo.atlassian.net/browse/IOSP-7"' in first and "Order <disks>" not in html
-    assert first.count("<li>") == 1 + 3 + 1  # summary, three non-empty action items, one risk
+    assert first.index("Did a thing") < first.index(">Risks<") < first.index("Might slip") < first.index(">What's next<") < first.index("Order &lt;disks&gt;")
+    assert "Plain next step" in first and "String item" in first and "Order <disks>" not in html
+    assert first.count("<li>") == 1 + 1  # summary bullet, one risk: the action items are table rows
+    head, rows = _next_table(first)
+    assert head == ["Due date", "Action", "Responsible", "Jira ticket"] and len(rows) == 3  # the blank item is dropped
+    assert "<th data-dir='asc'>Due date</th><th>Action</th><th>Responsible</th><th>Jira ticket</th>" in first
+    assert rows[0][1][2] == "Pat" and rows[1][1][2] == "n/a"  # Responsible follows Action; no owner: n/a
     rest = html[mid:html.index("Project sources</summary>", mid)]
     assert rest.count(">What's next<") == 0 and ">Risks<" in rest  # no action items: the group is left out
+
+
+def test_whats_next_highlights_items_due_before_the_report_day(tmp_path):
+    data = {"window": {"to": "2026-11-16T10:00:00-05:00"}, "projects": [{"name": "P", "summary": [{"text": "x"}], "action_items": [
+        {"text": "Late by three", "owner": "Jaime", "due": "2026-11-13"},
+        {"text": "Due on the report day", "due": "2026-11-16"},
+        {"text": "Later", "due": "2026-11-20"},
+        {"text": "No date"},
+        {"text": "Not a date", "due": "next week"},
+    ]}]}
+    html = _render_data(tmp_path, data)
+    head, rows = _next_table(html)
+    assert [attrs for attrs, _ in rows] == [' class="overdue"', "", "", "", ""]  # only the first is late
+    assert rows[0][1][1] == "Late by three"
+    assert '<td class="od" data-s="2026-11-13">11/13 <span class="odn">overdue 3 d</span></td>' in html  # the pill of overdue tickets
+    assert all("overdue" not in cells[0] for _, cells in rows[1:])  # due on the report day, later, undated: not overdue
+
+
+def test_whats_next_jira_keys_get_their_own_column(tmp_path):
+    data = {"projects": [{"name": "P", "summary": [{"text": "x"}], "action_items": [
+        {"text": "Review the tasks (COR-12185 and COR-12195)", "due": "2026-11-20"},
+        {"text": "Finish the upload (COR-12192)", "due": "2026-11-21"},
+        {"text": "Provision the VM (COR-12685); Raymond said he would work on it", "due": "2026-11-22"},
+        {"text": "Order the parts (IOSP-1004/1005)", "due": "2026-11-23"},
+        {"text": "Order disks for IOSP-7", "due": "2026-11-24"},
+        {"text": "No ticket here (MicroAge PM)", "due": "2026-11-25"},
+    ]}]}
+    _, rows = _next_table(_render_data(tmp_path, data))
+    action = [cells[1] for _, cells in rows]
+    ticket = [cells[3] for _, cells in rows]
+    browse = "https://sectigo.atlassian.net/browse/"
+    assert action[0] == "Review the tasks" and ticket[0].count("<a ") == 2
+    assert f'href="{browse}COR-12185"' in ticket[0] and f'href="{browse}COR-12195"' in ticket[0]
+    assert action[1] == "Finish the upload" and f'href="{browse}COR-12192"' in ticket[1]
+    assert action[2] == "Provision the VM; Raymond said he would work on it" and f'href="{browse}COR-12685"' in ticket[2]
+    assert action[3] == "Order the parts" and f'href="{browse}IOSP-1004"' in ticket[3] and f'href="{browse}IOSP-1005"' in ticket[3]
+    assert "(" not in "".join(action[:4])  # the key-only parentheses are gone from the text
+    assert f'href="{browse}IOSP-7"' in action[4] and f'href="{browse}IOSP-7"' in ticket[4]  # a key inside a sentence stays and is listed
+    assert action[5] == "No ticket here (MicroAge PM)" and ticket[5] == "n/a"
+
+
+def test_whats_next_is_sorted_by_due_date_undated_last(tmp_path):
+    data = {"window": {"from": "2026-11-09T00:00:00-05:00", "to": "2026-11-12T10:00:00-05:00"},
+            "projects": [{"name": "P", "summary": [{"text": "Did a thing"}], "action_items": [
+                {"text": "Provide MicroAge the app inventory", "owner": "Jaime Larsen", "due": "2026-11-24"},
+                {"text": "No date first"},
+                {"text": "Test new firewall to Arista connectivity", "owner": "Mike Marshall", "due": "2026-11-19T17:00:00-05:00"},
+                {"text": "Slash date", "due": "11/16"},
+                "String item",
+                {"text": "Forward the project timeline", "owner": "Jaime Larsen", "due": "2026-11-13"},
+                {"text": "Same day, listed second", "due": "2026-11-13"},
+                {"text": "Not a date", "due": "next week"},
+                {"text": "Next year", "due": "01-05"},
+            ]}]}
+    html = _render_data(tmp_path, data)
+    block = html[html.index(">What's next<"):]
+    order = ["Forward the project timeline", "Same day, listed second", "Slash date", "Test new firewall",
+             "Provide MicroAge", "Next year", "No date first", "String item", "Not a date"]
+    positions = [block.index(text) for text in order]
+    assert positions == sorted(positions)
+    due = [cells[0] for _, cells in _next_table(html)[1]]
+    assert due[0] == "11/13" and due[-3:] == ["n/a", "n/a", "next week"]  # the report is on 11/12, so nothing is overdue here
+    assert '<td data-s="2026-11-19">11/19</td>' in block and '<td data-s="2027-01-05">01/05</td>' in block
+    # 01-05 with the report on 2026-11-12 is more than 180 days past this year, so it is next January: after the November items
 
 
 def test_project_sources_merged_and_report_sources_removed(tmp_path):
