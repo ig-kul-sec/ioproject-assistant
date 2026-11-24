@@ -70,7 +70,7 @@ def test_per_project_view(tmp_path):
     assert 'href="https://sectigo.atlassian.net/browse/RM-5"' in html  # related ticket
     assert html.index("IOSP-471</a>") < html.index("IOSP-2</a>")  # epic first
     assert "Jira tickets for this project (active)" in html
-    assert "Done one" not in html and "1 closed or done ticket is not listed." in html  # only active tickets are listed
+    assert "Done one" not in html and "1 closed, done or rejected ticket is not listed." in html  # only active tickets are listed
     assert "Add backup VLAN IPs" in html and "Move start to 10/18" in html
     assert html.index("What to do</th>") < html.index("Reason/Comment</th>") and "Agreed in the SyncUp" in html
     assert html.index("Description</th>") < html.index("Reason/Comment</th>", html.index("Description</th>")) and "No ticket for the new VLAN" in html
@@ -86,7 +86,7 @@ def test_compact_lists_every_active_ticket_by_default(tmp_path):
     small = report.build(run / "data.json", compact=True).read_text(encoding="utf-8")
     assert report.COMPACT_TICKET_CAP is None
     assert "Active 30" in small and "Closed 101" not in small and "left out of this copy" not in small
-    assert "5 closed or done tickets are not listed." in small
+    assert "5 closed, done or rejected tickets are not listed." in small
 
 
 def test_compact_trims_closed_and_caps_active_tickets(tmp_path, monkeypatch):
@@ -98,10 +98,10 @@ def test_compact_trims_closed_and_caps_active_tickets(tmp_path, monkeypatch):
     (run / "data.json").write_text(json.dumps({"projects": [{"name": "Big", "tickets": tickets}]}), encoding="utf-8")
     full = report.build(run / "data.json").read_text(encoding="utf-8")
     small = report.build(run / "data.json", compact=True).read_text(encoding="utf-8")
-    assert "Closed 101" not in full and "Active 30" in full and "5 closed or done tickets are not listed." in full
+    assert "Closed 101" not in full and "Active 30" in full and "5 closed, done or rejected tickets are not listed." in full
     assert "left out of this copy" not in full  # the full report lists every active ticket
     assert "Closed 101" not in small and "Active 30" not in small
-    assert f"Active {report.COMPACT_TICKET_CAP}<" in small and "5 closed or done tickets are not listed." in small
+    assert f"Active {report.COMPACT_TICKET_CAP}<" in small and "5 closed, done or rejected tickets are not listed." in small
     assert "10 more active tickets are left out of this copy" in small
 
 
@@ -871,3 +871,16 @@ def test_success_counts_as_done_for_rm_tickets_only():
     sprint = {"name": "S", "tickets": [rm, other, {"key": "RM-4", "status": "Done"}]}
     html = report.render({"projects": [], "sprint": sprint}, "IOProjectAssistantReport_20261109_0900")
     assert "2 of 3 tickets done" in html
+
+
+def test_rejected_ticket_is_not_active_in_project_ticket_list():
+    """Rejected counts like Done/Closed in "Jira tickets for this project (active)" (e.g. COR-6126); sprint stats are unchanged."""
+    p = {"tickets": [
+        {"key": "COR-1", "name": "Open work", "status": "In Progress"},
+        {"key": "COR-6126", "name": "Rejected work", "status": "Rejected"},
+        {"key": "COR-3", "name": "Finished work", "status": "Done"},
+    ]}
+    html = report._tickets(p, "https://sectigo.atlassian.net")
+    assert "Open work" in html and "Rejected work" not in html and "Finished work" not in html
+    assert "2 closed, done or rejected tickets are not listed." in html
+    assert report._is_finished({"status": "Rejected"}) and not report._is_done({"status": "Rejected"})

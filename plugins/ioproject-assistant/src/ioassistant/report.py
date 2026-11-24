@@ -500,6 +500,11 @@ def _is_done(ticket: dict) -> bool:
     return any(w in status for w in DONE_WORDS)
 
 
+def _is_finished(ticket: dict) -> bool:
+    """Done like _is_done, or Rejected: no open work is left, so the ticket is not "active" in the project ticket list."""
+    return _is_done(ticket) or "rejected" in str(ticket.get("status") or "").strip().lower()
+
+
 def _sec(n: int, text: str, body: str) -> str:
     return f'<details class="sub" open><summary class="sec"><span>{n}</span> {escape(text)}</summary>{body}</details>'
 
@@ -719,7 +724,7 @@ def _natural(text) -> list:
 def _tickets(p: dict, base: str, compact: bool = False, sprint_of: dict | None = None, today: date | None = None) -> str:
     today = today or date.today()
     every = p.get("tickets") or []
-    ts = sorted((t for t in every if not _is_done(t)), key=lambda t: not t.get("epic"))  # active only, epic first
+    ts = sorted((t for t in every if not _is_finished(t)), key=lambda t: not t.get("epic"))  # active only (not done, closed or rejected), epic first
     closed, capped = len(every) - len(ts), 0
     if compact and COMPACT_TICKET_CAP:  # optional: the upload copy shows only the first COMPACT_TICKET_CAP active tickets
         capped, ts = max(0, len(ts) - COMPACT_TICKET_CAP), ts[:COMPACT_TICKET_CAP]
@@ -731,7 +736,7 @@ def _tickets(p: dict, base: str, compact: bool = False, sprint_of: dict | None =
     ts = sorted(ts, key=lambda t: (not sprint(t), _natural(sprint(t)), not t.get("epic"), _natural(t.get("key"))))
     notes = []
     if closed:
-        notes.append(f"{closed} closed or done ticket{' is' if closed == 1 else 's are'} not listed.")
+        notes.append(f"{closed} closed, done or rejected ticket{' is' if closed == 1 else 's are'} not listed.")
     if capped:
         notes.append(f"{capped} more active ticket{' is' if capped == 1 else 's are'} left out of this copy "
                      f"(the first {COMPACT_TICKET_CAP} are shown); the full list is in the local report.")
