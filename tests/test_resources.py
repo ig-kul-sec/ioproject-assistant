@@ -17,7 +17,7 @@ def test_config_is_valid():
 
 def test_find_matches_whole_words_only():
     net = resources.find("Network 2.0")
-    assert _kinds(net) == ["chat", "confluence", "epic", "planner"]
+    assert _kinds(net) == ["chat", "chat", "confluence", "epic", "planner"]
     assert resources.of_kind(net, "epic")[0]["key"] == "IOSP-477"
     # EoL and Debian OS lifecycle are separate projects with their own resources
     eol = resources.find("End of life (EoL) servers and OS upgrades")

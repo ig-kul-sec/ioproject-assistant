@@ -6,6 +6,12 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
+## [1.1.7] - 2026-11-24
+
+### Added
+- **Network 2.0 has a second Teams project chat** ("Network 2.0 project chat 2") in its fixed resources (`config/project-resources.json`), shown with the first one under "Project chats" in "Project sources" (status report) and "Key project resources" (leadership report).
+- **Both Network 2.0 project chats are now collected**, messages and meeting transcripts, by the Teams collector (skill `teams-standup-collection`, step 2f). Both are read for the whole window (`TEAMS_NETWORK_CHAT_URL`, `TEAMS_NETWORK_CHAT_URL_2` in `config/defaults.env`); notes are marked `network chat`, `network chat 2` and `network transcript`, and the chat URLs are reported under `sources` as `network_chat_url` and `network_chat_url_2`.
+
 ## [1.1.6] - 2026-11-17
 
 ### Changed
