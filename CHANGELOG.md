@@ -6,6 +6,11 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
+## [1.1.8] - in development
+
+### Fixed
+- **A project's Jira ticket list now includes its sub-epics and their tasks.** The Jira collector (skill `jira-project-review`, step 1) only took the direct children of a project's IOSP epic. Many projects keep their work in COR sub-epics that are tied to the project epic by a "relates to" link, with the tasks under those epics, so "Jira tickets for this project (active)" was nearly empty. Example: Network 2.0 (IOSP-477) showed 7 tickets while Jira has 42 active ones (epics COR-12184 to COR-12190 and COR-12223, and their 34 tasks). The collector now follows the links from the project epic to other epics and takes each linked epic and its children (one level down), paged until the last page; this also applies to the always-included Rubrik DR backup and Postgres EDB epics.
+
 ## [1.1.7] - 2026-11-24
 
 ### Added
