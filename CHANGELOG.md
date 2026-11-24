@@ -6,7 +6,7 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
-## [1.1.9] - in development
+## [1.1.9] - 2026-11-24
 
 ### Changed
 - **Rejected tickets are not "active".** In "Jira tickets for this project (active)" a ticket with status Rejected (for example COR-6126) is now left out like Done, Closed, Resolved and Complete, and the note under the table says "N closed, done or rejected tickets are not listed". Sprint charts, workload and overdue highlighting are unchanged.
