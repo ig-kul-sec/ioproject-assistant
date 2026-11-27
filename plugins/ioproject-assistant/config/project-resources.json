@@ -9,7 +9,15 @@
         {"kind": "confluence", "label": "Network v2.0", "url": "https://sectigo.atlassian.net/wiki/spaces/CO/pages/94175911/Network+v2.0"},
         {"kind": "chat", "label": "Network 2.0 project chat", "url": "https://teams.microsoft.com/l/chat/19%3Ameeting_YTJkNDY1ODYtNDBjZS00Mjk2LTg1N2YtYWQ3NzZkZjM0ZGRh%40thread.v2/conversations?context=%7B%22contextType%22%3A%22chat%22%7D"},
         {"kind": "chat", "label": "Network 2.0 project chat 2", "url": "https://teams.microsoft.com/l/chat/19%3Ameeting_NjlhZTcyNGItYWE0ZS00ZDViLTg2NjgtNTUwOTk1YjhmNDAy%40thread.v2/conversations?context=%7B%22contextType%22%3A%22chat%22%7D"},
-        {"kind": "planner", "label": "Network 2.0 Planner", "url": "https://planner.cloud.microsoft/ui/web/premiumplan/9e70c516-8bd8-406c-8b9b-582891c6746b/org/62bba996-09fe-4c69-ad26-1eec9cfd7a3b?tid=0e9c4894-6caa-465d-9660-4b6968b49fb7"}
+        {"kind": "planner", "label": "Network 2.0 Planner", "url": "https://planner.cloud.microsoft/ui/web/premiumplan/9e70c516-8bd8-406c-8b9b-582891c6746b/org/62bba996-09fe-4c69-ad26-1eec9cfd7a3b?tid=0e9c4894-6caa-465d-9660-4b6968b49fb7"},
+        {"kind": "sharepoint", "label": "MicroAge SharePoint: Network 2.0 - Arista and Palo Alto (CLIENT SHARE ONLY)", "url": "https://microage.sharepoint.com/:f:/r/sites/SectigoInc/Shared%20Documents/Network%202.0%20-%20Arista%20and%20Palo%20Alto/CLIENT%20SHARE%20ONLY?d=w92963888bfa54f07a2fdf13aa8c01499&csf=1&web=1&e=OAlhOK"}
+      ]
+    },
+    {
+      "name": "Postgres EDB migration",
+      "match": ["postgres", "edb"],
+      "links": [
+        {"kind": "chat", "label": "Postgres EDB migration project chat 3", "url": "https://teams.microsoft.com/l/chat/19%3A1c63bc6c973843eab7568f5e87e26ef8%40thread.v2/conversations?context=%7B%22contextType%22%3A%22chat%22%7D"}
       ]
     },
     {

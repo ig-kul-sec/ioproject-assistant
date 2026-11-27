@@ -7,7 +7,7 @@ def _kinds(links):
 
 def test_config_is_valid():
     entries = resources.load()
-    assert [e["name"] for e in entries] == ["Network 2.0", "EoL OS management", "OS Lifecycle management"]
+    assert [e["name"] for e in entries] == ["Network 2.0", "Postgres EDB migration", "EoL OS management", "OS Lifecycle management"]
     for entry in entries:
         for link in resources.find(entry["match"][0]):  # builds every link: raises on an unknown kind
             assert link["url"].startswith("https://") and '"' not in link["url"] and " " not in link["url"]
@@ -17,8 +17,12 @@ def test_config_is_valid():
 
 def test_find_matches_whole_words_only():
     net = resources.find("Network 2.0")
-    assert _kinds(net) == ["chat", "chat", "confluence", "epic", "planner"]
+    assert _kinds(net) == ["chat", "chat", "confluence", "epic", "planner", "sharepoint"]
     assert resources.of_kind(net, "epic")[0]["key"] == "IOSP-477"
+    assert resources.of_kind(net, "sharepoint")[0]["url"].startswith("https://microage.sharepoint.com/")  # the MicroAge folder
+    edb = resources.find("Postgres EDB migration")
+    assert _kinds(edb) == ["chat"] and "1c63bc6c973843eab7568f5e87e26ef8" in edb[0]["url"]
+    assert resources.find("EDB Postgres migration") == edb
     # EoL and Debian OS lifecycle are separate projects with their own resources
     eol = resources.find("End of life (EoL) servers and OS upgrades")
     assert _kinds(eol) == ["chat", "chat", "chat", "confluence", "initiative", "sharepoint"]
