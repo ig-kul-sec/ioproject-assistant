@@ -6,7 +6,7 @@ Workflow: add entries under the in-development version at the top on `DEV` as yo
 `[0.4.0] - in development` to the release date, bump `version` in `plugins/ioproject-assistant/.claude-plugin/plugin.json`,
 tag the `main` commit `vX.Y.Z` and paste the section into the GitHub Release. DEV builds may use `X.Y.Z-dev.N`.
 
-## [1.1.10] - in development
+## [1.1.10] - 2026-11-27
 
 ### Added
 - **Postgres EDB migration has fixed resources.** `config/project-resources.json` now has an entry for the project (match words `postgres`, `edb`) with its Teams project chat 3 (the thread already collected as `TEAMS_EDB_CHAT_URL_3`), shown under "Project chats" in "Project sources" (status report) and "Key project resources" (leadership report).
